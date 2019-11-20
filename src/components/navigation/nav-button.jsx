@@ -3,9 +3,7 @@ import styled from 'styled-components';
 import { NavLink } from "react-router-dom";
 
 const activeClassName = "active";
-const NavItem = styled(NavLink).attrs({
-    activeClassName
-})`
+const NavItem = styled(NavLink).attrs({activeClassName})`
   cursor: pointer;
   color: #61dafb;
   padding: 15px 25px;

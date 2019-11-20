@@ -1,9 +1,15 @@
 import React from 'react';
-import Navigation from './components/navigation';
+import Navigation from './components/navigation/navigation';
 import Sidebar from './components/sidebar';
-import Layout from "./components/layout";
 import { BrowserRouter, Route } from "react-router-dom";
-import NavButton from "./components/nav-button";
+import NavButton from "./components/navigation/nav-button";
+import styled from "styled-components";
+
+const Layout = styled.div `
+  display: flex;
+  flex-flow: column;
+  min-height: 100vh;
+`;
 
 export default class App extends React.PureComponent {
   constructor(props) {
