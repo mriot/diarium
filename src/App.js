@@ -1,8 +1,7 @@
 import React from 'react';
 import Navigation from './components/navigation/navigation';
-import Sidebar from './components/sidebar';
+import Sidebar from './components/sidebar/sidebar';
 import { BrowserRouter, Route } from "react-router-dom";
-import NavButton from "./components/navigation/nav-button";
 import styled from "styled-components";
 
 const Layout = styled.div `
@@ -14,6 +13,7 @@ const Layout = styled.div `
 export default class App extends React.PureComponent {
   constructor(props) {
     super(props);
+
     this.state = { 
 
      }
@@ -21,22 +21,16 @@ export default class App extends React.PureComponent {
 
   render() { 
     return ( 
-      <Layout>
-        <Navigation>
-          <BrowserRouter>
-            <NavButton to="/home" value="Home" />
-            <NavButton to="/lorem" value="Lorem" />
-            <NavButton to="/ipsum" value="Ipsum" />
-            <NavButton to="/navButton" value="NavButton" />
-
-            {/* <Route path="/navButton" render={} /> */}
-          </BrowserRouter>
-        </Navigation>
-        <Sidebar />
-      </Layout>
-     );
+      <BrowserRouter>
+        <Layout>
+          <Navigation />
+          <Sidebar />
+        </Layout>
+      </BrowserRouter>
+    )
   }
 }
+
 /**
  * dark dark = #20232a
  * lighter dark = #282c34
