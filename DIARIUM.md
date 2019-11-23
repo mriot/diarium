@@ -1,7 +1,7 @@
 # Diarium
 
 ## Navigation
-* Eintrag bearbeiten / Ansicht umschalten (ggf.inline)
+* Eintrag bearbeiten / Ansicht umschalten
 * Eintrag speichern (+ auto speichern zwischendurch)
 * Favoriten
 * Suche
@@ -10,16 +10,17 @@
 ## Content
 * Mit Markdown formatieren
     * Markdown Editor und Preview
-        * Split: Anpassbar
-* Kleine Toolbar -> Formatvorlagen
+        * Split Ansicht ist anpassbar
+* Kleine Toolbar als Header im Editor -> Formatvorlagen
     * __Medien hochladen / einbinden__
     * Bild einfügen
     * Link einfügen
 
 ## Sidebar
-* TimeTracker Kalender
+* Kalender (TimeTracker style)
     * Mit Feiertagen
-    * _Google Calendar Anbindung_
+    * Tage mit Einträgen werden farblich hervorgehoben
+    * _Evtl. Google Calendar Anbindung_
 * Progress in % 
     * Monat und Jahr (wie viele Tage abgedeckt sind)
 * Fetch actions anzeigen (wie beim TimeTracker)
