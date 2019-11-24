@@ -9,6 +9,17 @@ const StyledSidebar = styled.aside`
   position: relative;
   background-color: #20232a;
 `
+const Today = styled.div `
+  color: #fff;
+  font-size: 18px;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
 
 export default class Sidebar extends React.PureComponent {
   constructor(props) {
@@ -16,17 +27,45 @@ export default class Sidebar extends React.PureComponent {
 
     this.state = {
       sidebarWidth: 300,
-      calendarInitDate: new Date()
+      calendarInitDate: new Date(),
+      forceUpdateCounter: 0,
     }
   }
 
   render() {
     return (
       <StyledSidebar style={{width: this.state.sidebarWidth}}>
+        <Today onClick={() => {
+          this.setState({
+            forceUpdateCounter: this.state.forceUpdateCounter + 1
+          })
+        }}>
+          {
+            this.state.calendarInitDate.toLocaleDateString("de-DE", {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })
+          }
+        </Today>
         <Calendar
+          key={this.state.forceUpdateCounter}
           value={this.state.calendarInitDate}
           minDetail={"decade"}
           minDate={new Date(2019, 0, 1)}
+          tileClassName = {
+            ({activeStartDate, date, view}) => {
+              if (view === "month") {
+                console.log(date.getDate(), date.getMonth() + 1, date.getFullYear());
+                // TODO: :)
+                // if (date.getDate() === 2) {
+                //   return "marked"
+                // }
+                // return null
+              }
+            }
+          }
 
           // arrow navigation (view = month => fetch)
           onActiveDateChange={(...args) => console.log("onActiveDateChange", ...args)}
