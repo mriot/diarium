@@ -24,6 +24,7 @@ const Logo = styled.span `
 `
 const Separator = styled.div `
   width: 2px;
+  align-self: stretch;
   margin: 10px 0 10px 35px;
   background-color: #777;
 `
