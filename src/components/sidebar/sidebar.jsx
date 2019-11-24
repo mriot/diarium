@@ -2,6 +2,7 @@ import React from 'react';
 import styled from "styled-components";
 import Calendar from 'react-calendar';
 import Progress from './progress';
+import FetchActions from './fetchactions';
 
 const StyledSidebar = styled.aside`
   flex: 1;
@@ -25,6 +26,7 @@ export default class Sidebar extends React.PureComponent {
           showNavigation={true}
         />
         <Progress />
+        <FetchActions />
       </StyledSidebar>
     );
   }

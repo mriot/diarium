@@ -2,7 +2,7 @@ import React from 'react';
 import styled from "styled-components";
 import ProgressBar from '../common/progressbar';
 
-const StyledProgress = styled.div `
+const ProgressContainer = styled.div `
 
 `
 
@@ -18,13 +18,13 @@ export default class Progress extends React.PureComponent {
 
 	render() {
 		return (
-			<StyledProgress>
+			<ProgressContainer>
 				<span>{`Einträge im Oktober 2018: ${this.state.progressMonth}%`}</span>
 				<ProgressBar progress={this.state.progressMonth} />
 
 				<span>{`Einträge gesamt im Jahr 2018: ${this.state.progressYear}%`}</span>
 				<ProgressBar progress={this.state.progressYear} />
-			</StyledProgress>
+			</ProgressContainer>
 		);
 	}
 }
