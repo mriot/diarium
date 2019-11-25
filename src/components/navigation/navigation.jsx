@@ -35,8 +35,8 @@ export default class Navigation extends React.PureComponent {
       <Nav>
         <Logo>DIARIUM</Logo>
         <ButtonContainer>
-          <NavButton to="/edit" value="Eintrag bearbeiten" />
-          <NavButton to="/save" value="Eintrag speichern" />
+          <NavButton to="/edit" value="Bearbeiten" />
+          <NavButton to="/save" value="Speichern" />
           <NavButton to="/favorites" value="Favoriten" />
           <TextInput />
           <Separator />
