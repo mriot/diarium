@@ -5,7 +5,7 @@ import Progress from './progress';
 import FetchActions from './fetchactions';
 
 const StyledSidebar = styled.aside`
-  flex: 1;
+  width: 300px;
   position: relative;
   background-color: #20232a;
 `
@@ -26,7 +26,6 @@ export default class Sidebar extends React.PureComponent {
     super(props);
 
     this.state = {
-      sidebarWidth: 300,
       calendarInitDate: new Date(),
       forceUpdateCounter: 0,
     }
@@ -34,7 +33,7 @@ export default class Sidebar extends React.PureComponent {
 
   render() {
     return (
-      <StyledSidebar style={{width: this.state.sidebarWidth}}>
+      <StyledSidebar>
         <Today onClick={() => {
           this.setState({
             forceUpdateCounter: this.state.forceUpdateCounter + 1
