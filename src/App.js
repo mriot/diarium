@@ -3,7 +3,7 @@ import Navigation from './components/navigation/navigation';
 import Sidebar from './components/sidebar/sidebar';
 import { BrowserRouter, Route } from "react-router-dom";
 import styled from "styled-components";
-import CustomEditor from './components/editor/customeditor';
+import MarkdownEditor from './components/editor/markdown-editor';
 
 const Layout = styled.div `
   display: flex;
@@ -32,7 +32,7 @@ export default class App extends React.PureComponent {
           <Navigation />
           <Main>
             <Sidebar />
-            <CustomEditor />
+            <MarkdownEditor />
           </Main>
         </Layout>
       </BrowserRouter>
