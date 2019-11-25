@@ -3,12 +3,18 @@ import Navigation from './components/navigation/navigation';
 import Sidebar from './components/sidebar/sidebar';
 import { BrowserRouter, Route } from "react-router-dom";
 import styled from "styled-components";
+import CustomEditor from './components/editor/customeditor';
 
 const Layout = styled.div `
   display: flex;
   flex-flow: column;
-  min-height: 100vh;
-`;
+  height: 100vh;
+`
+const Main = styled.div `
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+`
 
 export default class App extends React.PureComponent {
   constructor(props) {
@@ -24,7 +30,10 @@ export default class App extends React.PureComponent {
       <BrowserRouter>
         <Layout>
           <Navigation />
-          <Sidebar />
+          <Main>
+            <Sidebar />
+            <CustomEditor />
+          </Main>
         </Layout>
       </BrowserRouter>
     )
