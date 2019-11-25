@@ -59,10 +59,10 @@ export default class Sidebar extends React.PureComponent {
               if (view === "month") {
                 console.log(date.getDate(), date.getMonth() + 1, date.getFullYear());
                 // TODO: :)
-                // if (date.getDate() === 2) {
-                //   return "marked"
-                // }
-                // return null
+                if (date.getDate() === 2) {
+                  return "marked"
+                }
+                return null
               }
             }
           }

@@ -16,3 +16,29 @@ code {
 a {
   text-decoration: none;
 }
+
+
+/* REACT-CALENDAR (2.19.2) - CUSTOM STYLING */
+.react-calendar__navigation {
+  margin-bottom: 5px !important;
+  border-bottom: 1px solid #272b34;
+}
+.react-calendar__navigation button {
+  font-size: 14px;
+}
+.react-calendar__month-view__weekdays abbr[title] {
+  text-decoration: none;
+}
+.react-calendar__tile.marked {
+  box-shadow: inset 0 0 0 2px #61dafb;
+}
+.react-calendar__tile--now {
+  z-index: 1;
+  text-decoration: underline;
+  font-weight: 900 !important;
+}
+.react-calendar__tile--active {
+  font-weight: 700;
+  color: #000 !important;
+  background-color: #e6e6e6 !important;
+}
