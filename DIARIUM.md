@@ -15,6 +15,14 @@
     * __Medien hochladen / einbinden__
     * Bild einfügen
     * Link einfügen
+    * Code Snippet einfügen
+    * __Undo / Redo__
+    * _Speichern_
+* __Fullscreen Ansicht__
+* Metadaten Editor
+    * Kategorien / Labels
+* __Ausgewählter Tag wird als Pfad in Adresszeile geschrieben__
+    * z.B. /2019/11/22  <- 22. November 2019
 
 ## Sidebar
 * Kalender (TimeTracker style)
@@ -27,7 +35,23 @@
 
 ---
 
-## Verhalten / Ablauf
+## Datenbank
+* Inhalt sollte gecrypted sein
+* Felder
+    * ID
+    * Timestamp (z.B UTC)
+        * Zu welchem Tag gehört der Eintrag?
+    * Markup/Content type ("markdown", ...)
+        * Falls wir evtl. mal auf was anderes umbauen wollen
+    * _SFW/NSFW Flag_
+        * NSFW -> ggf. PW geschützt
+    * _Kategorien / Labels_
+        * z.B. "bild, sfw, fun, ..."
+    * 
+
+---
+
+## Verhalten
 * INIT AUFRUF
     * App aufrufen
     * Einloggen
