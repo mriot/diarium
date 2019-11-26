@@ -7,6 +7,7 @@ import MarkdownView from './markdown-view';
 import "codemirror/lib/codemirror.css";
 import "./theme/lucario2.css";
 import "codemirror/mode/markdown/markdown";
+import Toolbar from './toolbar';
 
 const ViewContainer = styled.div `
 
@@ -14,8 +15,14 @@ const ViewContainer = styled.div `
 const EditorContainer = styled.div `
 	width: 100%;
   position: relative;
-	background-color: #fff;
 	display: flex;
+	flex-direction: column;
+`
+const InnerContainer = styled.div `
+  position: relative;
+	display: flex;
+	width: 100%;
+	height: 100%;
 `
 const StyledCodeMirror = styled(CodeMirror) `
 	width: 50%;
@@ -30,10 +37,16 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.markdownView = React.createRef();
 		this.markdownEditor = React.createRef();
 
+		this.editorConfig = {
+			mode: "markdown",
+			lineNumbers: true,
+			theme: "lucario"
+		}
+
 		this.state = {
 			markdown: "# Hello World!",
 			viewMode: false,
-			ready: false,
+			nodesReady: false,
 		}
 	}
 
@@ -41,8 +54,7 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.markdownContainer = ReactDOM.findDOMNode(this.editorContainer.current);
 		this.editorNode = ReactDOM.findDOMNode(this.markdownEditor.current);
 		this.viewNode = ReactDOM.findDOMNode(this.markdownView.current);
-		console.log(this.markdownContainer);
-		this.setState({ready: true})
+		this.setState({nodesReady: true})
 	}
 
 	render() {
@@ -53,26 +65,30 @@ export default class MarkdownEditor extends React.PureComponent {
 						{this.state.markdown}
 					</ViewContainer>
 				}
+
 				{!this.state.viewMode &&
 					<EditorContainer ref={this.editorContainer}>
-						<StyledCodeMirror ref={this.markdownEditor} value={this.state.markdown} onChange={(markdown, ...args) => {
-							// console.log(markdown, ...args);
-							this.setState({markdown})
-						}} options={{
-							mode: "markdown",
-							lineNumbers: true,
-							theme: "lucario"
-						}} />
-
-						{this.state.ready &&
-							<SeparatorHandle
-								containerNode={this.markdownContainer}
-								editorNode={this.editorNode}
-								viewNode={this.viewNode}
+						<Toolbar />
+						<InnerContainer>
+							<StyledCodeMirror
+								ref={this.markdownEditor}
+								value={this.state.markdown}
+								onChange={markdown => {
+									this.setState({markdown})
+								}}
+								options={this.editorConfig}
 							/>
-						}
 
-						<MarkdownView markdown={this.state.markdown} ref={this.markdownView} />
+							{this.state.nodesReady &&
+								<SeparatorHandle
+									containerNode={this.markdownContainer}
+									editorNode={this.editorNode}
+									viewNode={this.viewNode}
+								/>
+							}
+
+							<MarkdownView markdown={this.state.markdown} ref={this.markdownView} />
+						</InnerContainer>
 					</EditorContainer>
 				}
 			</>

@@ -7,6 +7,7 @@ const RenderedMarkdownContainer = styled.div `
 	width: 50%;
 	padding: 0 5px;
 	box-sizing: border-box;
+	background-color: #fff;
 `
 
 export default class MarkdownView extends React.PureComponent {

@@ -8,8 +8,7 @@ const StyledSeparatorHandle = styled.div `
 	position: absolute;
 	height: 100%;
 	width: ${handleWidth};
-	background-color: transparent;
-	/* opacity: 0.7; */
+	background-color: #eee;
 	box-shadow: -5px 0 10px rgba(0,0,0,0.3), 0 0 10px rgba(0,0,0,0.3);
 	cursor: col-resize;
 	z-index: 10;
