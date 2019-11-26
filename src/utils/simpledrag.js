@@ -1,4 +1,7 @@
-// ripped from https://github.com/lingtalfi/simpledrag
+/*
+** ripped from https://github.com/lingtalfi/simpledrag
+** and slightly modified by MRIOT
+*/
 
 (function () {
 
@@ -102,6 +105,7 @@
 
 			function startDragging(e) {
 					if (e.currentTarget instanceof HTMLElement || e.currentTarget instanceof SVGElement) {
+							e.preventDefault(); // prevent text selection while dragging -mriot
 							dragging = true;
 							var left = el.style.left ? parseInt(el.style.left) : 0;
 							var top = el.style.top ? parseInt(el.style.top) : 0;
