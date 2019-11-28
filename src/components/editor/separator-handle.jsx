@@ -3,16 +3,20 @@ import ReactDOM from "react-dom";
 import styled from 'styled-components';
 import "../../utils/simpledrag";
 
-const handleWidth = "7px";
+const handleWidth = "5px";
 const StyledSeparatorHandle = styled.div `
 	position: absolute;
 	height: 100%;
 	width: ${handleWidth};
-	background-color: #eee;
-	box-shadow: -5px 0 10px rgba(0,0,0,0.3), 0 0 10px rgba(0,0,0,0.3);
+	background-color: #808080;
+	/* box-shadow: -5px 0 10px rgba(0,0,0,0.3), 0 0 10px rgba(0,0,0,0.3); */
 	cursor: col-resize;
 	z-index: 10;
 	transform: translateX(calc(${handleWidth} / 2 * -1));
+
+	&.hidden {
+		display: none !important;
+	}
 `
 
 export default class SeparatorHandle extends React.PureComponent {
@@ -22,7 +26,7 @@ export default class SeparatorHandle extends React.PureComponent {
 		this.handle = React.createRef();
 
 		this.state = {
-			left: 0,
+
 		}
 	}
 
@@ -42,7 +46,6 @@ export default class SeparatorHandle extends React.PureComponent {
 				handle.style.display = "block";
 			}
 
-
 			leftPaneWidth 	= handle.offsetLeft * 100 / containerRect.width;
 			rightPaneWidth 	= 100 - leftPaneWidth;
 
@@ -61,14 +64,12 @@ export default class SeparatorHandle extends React.PureComponent {
 
 			this.props.editorNode.style.width = leftPaneWidth + "%";
 			this.props.viewNode.style.width = rightPaneWidth + "%";
-
-			this.setState({left: element.style.left + "%"})
 		}, 'horizontal');
 	}
 	
 	render() {
 		return (
-			<StyledSeparatorHandle ref={this.handle}/>
+			<StyledSeparatorHandle ref={this.handle} className={this.props.hidden ? "hidden": ""} />
 		);
 	}
 }

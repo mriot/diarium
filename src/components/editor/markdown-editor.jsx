@@ -5,7 +5,7 @@ import SeparatorHandle from "./separator-handle";
 import CodeMirror from "react-codemirror";
 import MarkdownView from './markdown-view';
 import "codemirror/lib/codemirror.css";
-import "./theme/lucario2.css";
+import "code-mirror-themes/themes/clouds-midnight.css"
 import "codemirror/mode/markdown/markdown";
 import Toolbar from './toolbar';
 
@@ -14,6 +14,7 @@ const ViewContainer = styled.div `
 `
 const EditorContainer = styled.div `
 	width: 100%;
+	overflow: hidden;
   position: relative;
 	display: flex;
 	flex-direction: column;
@@ -27,6 +28,10 @@ const InnerContainer = styled.div `
 const StyledCodeMirror = styled(CodeMirror) `
 	width: 50%;
 	height: 100%;
+
+	& .CodeMirror {
+		height: 100%;
+	}
 `
 
 export default class MarkdownEditor extends React.PureComponent {
@@ -37,16 +42,26 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.markdownView = React.createRef();
 		this.markdownEditor = React.createRef();
 
+		this.CodeMirrorInstance = null;
+
 		this.editorConfig = {
 			mode: "markdown",
 			lineNumbers: true,
-			theme: "lucario"
+			theme: "clouds-midnight",
+			tabSize: 2,
+			lineWrapping: true,
+			fixedGutter: true,
+			showCursorWhenSelecting: true,
+			autofocus: true,
+			// custom prop
+			widthBackup: "50%"
 		}
 
 		this.state = {
 			markdown: "# Hello World!",
 			viewMode: false,
 			nodesReady: false,
+			renderSeparator: true,
 		}
 	}
 
@@ -54,7 +69,14 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.markdownContainer = ReactDOM.findDOMNode(this.editorContainer.current);
 		this.editorNode = ReactDOM.findDOMNode(this.markdownEditor.current);
 		this.viewNode = ReactDOM.findDOMNode(this.markdownView.current);
-		this.setState({nodesReady: true})
+
+		this.CodeMirrorInstance = this.markdownEditor.current.getCodeMirror();
+		this.CodeMirrorInstance.execCommand("goDocEnd");
+
+		this.editorNode.style.width = "50%";
+		this.viewNode.style.width = "50%";
+
+		this.setState({nodesReady: true});
 	}
 
 	render() {
@@ -68,7 +90,20 @@ export default class MarkdownEditor extends React.PureComponent {
 
 				{!this.state.viewMode &&
 					<EditorContainer ref={this.editorContainer}>
-						<Toolbar />
+						<Toolbar 
+							toggleColumns={() => {
+								this.setState({renderSeparator: !this.state.renderSeparator}, () => {
+										if (this.state.renderSeparator) {
+											this.editorNode.style.width = this.editorConfig.widthBackup;
+											this.viewNode.classList.remove("hidden");
+										} else {
+											this.editorConfig.widthBackup = this.editorNode.style.width;
+											this.editorNode.style.width = "100%";
+											this.viewNode.classList.add("hidden");
+										}
+								});
+							}}
+						/>
 						<InnerContainer>
 							<StyledCodeMirror
 								ref={this.markdownEditor}
@@ -81,6 +116,7 @@ export default class MarkdownEditor extends React.PureComponent {
 
 							{this.state.nodesReady &&
 								<SeparatorHandle
+									hidden={!this.state.renderSeparator}
 									containerNode={this.markdownContainer}
 									editorNode={this.editorNode}
 									viewNode={this.viewNode}
