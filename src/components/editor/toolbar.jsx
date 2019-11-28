@@ -62,7 +62,7 @@ export default class Toolbar extends React.PureComponent {
 					<IconButton>
 						<FontAwesomeIcon icon={faEye} />
 					</IconButton>
-					<IconButton>
+					<IconButton onClick={() => this.props.toggleColumns()}>
 						<FontAwesomeIcon icon={faColumns} />
 					</IconButton>
 				</RightSide>
