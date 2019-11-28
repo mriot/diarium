@@ -23,8 +23,10 @@
     * Kategorien / Labels
 * __Ausgewählter Tag wird als Pfad in Adresszeile geschrieben__
     * z.B. /2019/11/22  <- 22. November 2019
+* Kalender Navigation mit Pfeilen: "einen Tag vor/zurück"
 
 ## Sidebar
+* Toggle Sidebar?!
 * Kalender (TimeTracker style)
     * Mit Feiertagen
     * Tage mit Einträgen werden farblich hervorgehoben
