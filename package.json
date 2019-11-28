@@ -6,6 +6,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.7",
+    "code-mirror-themes": "^1.0.0",
     "codemirror": "^5.49.2",
     "react": "^16.9.0",
     "react-calendar": "^2.19.2",
