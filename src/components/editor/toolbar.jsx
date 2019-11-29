@@ -44,23 +44,30 @@ export default class Toolbar extends React.PureComponent {
 		return (
 			<StyledToolbar>
 				<LeftSide>
+
 					<IconButton title="Rückgängig">
 						<FontAwesomeIcon icon={faUndoAlt} />
 					</IconButton>
+
 					<IconButton title="Wiederholen">
 						<FontAwesomeIcon icon={faRedoAlt} />
 					</IconButton>
+
 					<IconButton title="Bild einfügen">
 						<FontAwesomeIcon icon={faImage} />
 					</IconButton>
+
 					<IconButton title="Link einfügen">
 						<FontAwesomeIcon icon={faLink} />
 					</IconButton>
+
 					<IconButton title="Code einfügen">
 						<FontAwesomeIcon icon={faCode} />
 					</IconButton>
+
 				</LeftSide>
 				<RightSide>
+
 					<IconButton
 						title="Zen-Mode"
 						onClick={() => this.props.toggleZenMode()}
@@ -68,6 +75,7 @@ export default class Toolbar extends React.PureComponent {
 					>
 						<FontAwesomeIcon icon={this.props.editorState.zenMode ? faCompress : faExpand} />
 					</IconButton>
+
 					<IconButton
 						title="Ansicht splitten"
 						onClick={() => this.props.togglePreview()}
@@ -75,6 +83,7 @@ export default class Toolbar extends React.PureComponent {
 					>
 						<FontAwesomeIcon icon={faColumns} />
 					</IconButton>
+					
 				</RightSide>
 			</StyledToolbar>
 		);
