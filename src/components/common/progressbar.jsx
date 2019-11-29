@@ -2,8 +2,8 @@ import React from 'react';
 import styled from "styled-components";
 
 const ProgressContainer = styled.div `
-	width: 100%;
-	height: 30px;
+	width: 95%;
+	height: 15px;
 	background: grey;
 	position: relative;
 	overflow: hidden;
@@ -11,11 +11,10 @@ const ProgressContainer = styled.div `
 `
 
 const ProgressFilling = styled.div `
+	position: absolute;
 	width: ${props => props.progress}%;
 	height: 100%;
-	background: green;
-	position: absolute;
-	/* border-radius: 10px; */
+	background-color: #61dafb;
 `
 
 export default class ProgressBar extends React.PureComponent {
