@@ -8,9 +8,9 @@ const StyledToolbar = styled.div `
 	height: 40px;
 	display: flex;
 	justify-content: space-between;
-	background-color: #eee;
+	background-color: #efefef;
 	font-size: 14px;
-	padding: 0 6px;
+	padding: 1px 6px;
 	border-bottom: 1px solid #ddd;
 	user-select: none;
 	border-top-left-radius: 8px;
@@ -26,14 +26,16 @@ const RightSide = styled.aside `
 	align-items: center;
 `
 const IconButton = styled.div `
-	padding: 7px;
+	padding: 6px 10px;
+	line-height: 1;
 	margin: 0 5px;
 	cursor: pointer;
 	border-radius: 3px;
 	color: #1f222a;
 
-	&:hover {
-		background-color: #fff;
+	&:hover,
+	&.active {
+		background-color: #c7c7c7;
 	}
 `
 
