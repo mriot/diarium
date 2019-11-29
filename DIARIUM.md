@@ -3,6 +3,7 @@
 ## Navigation
 * Eintrag bearbeiten / Ansicht umschalten
 * Eintrag speichern (+ auto speichern zwischendurch)
+* Zen-Mode
 * Favoriten
 * Suche
 * Logout
