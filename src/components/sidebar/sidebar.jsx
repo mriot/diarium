@@ -5,8 +5,9 @@ import Progress from './progress';
 import FetchActions from './fetchactions';
 
 const StyledSidebar = styled.aside`
-  width: 300px;
   position: relative;
+  width: 300px;
+  box-sizing: border-box;
   background-color: #20232a;
 `
 const Today = styled.div `
@@ -19,6 +20,10 @@ const Today = styled.div `
   &:hover {
     text-decoration: underline;
   }
+`
+const StyledCalendar = styled(Calendar) `
+  border-bottom: 1px solid #191919;
+	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
 `
 
 export default class Sidebar extends React.PureComponent {
@@ -48,7 +53,8 @@ export default class Sidebar extends React.PureComponent {
             })
           }
         </Today>
-        <Calendar
+        <StyledCalendar
+          className="calendar-dark-theme"
           key={this.state.forceUpdateCounter}
           value={this.state.calendarInitDate}
           minDetail={"decade"}
@@ -80,7 +86,7 @@ export default class Sidebar extends React.PureComponent {
           // onChange={value => console.log("onChange:", value)}
         />
         <Progress />
-        <FetchActions />
+        {/* <FetchActions /> */}
       </StyledSidebar>
     );
   }
