@@ -105,6 +105,7 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.setState({zenMode: !this.state.zenMode}, () => 
 			this.state.zenMode && this.togglePreview(false)
 		)
+		this.CodeMirrorInstance.focus()
 	}
 
 	render() {
