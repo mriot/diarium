@@ -4,6 +4,7 @@ import Sidebar from './components/sidebar/sidebar';
 import { BrowserRouter, Route } from "react-router-dom";
 import styled from "styled-components";
 import MarkdownEditor from './components/editor/markdown-editor';
+import 'react-tippy/dist/tippy.css';
 
 const Layout = styled.div `
   display: flex;

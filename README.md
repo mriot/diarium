@@ -15,15 +15,16 @@
 
 ### Dependencies
 
-* [fortawesome (icons)](https://github.com/FortAwesome/react-fontawesome)
 * [react-calendar](https://github.com/wojtekmaj/react-calendar)
 * [react-codemirror (editor)](https://github.com/JedWatson/react-codemirror)
 * [codemirror](https://github.com/codemirror/codemirror) and [docs](https://codemirror.net/doc/manual.html#overview)
 * [code-mirror-themes](https://github.com/FarhadG/code-mirror-themes)
+* [fortawesome (icons)](https://github.com/FortAwesome/react-fontawesome)
+* [react-tippy (Tooltips)](https://github.com/tvkhoa/react-tippy)
 * [react-markdown](https://github.com/rexxars/react-markdown)
 * [react-router(-dom)](https://github.com/ReactTraining/react-router) and [docs](https://reacttraining.com/react-router/web/guides/quick-start)
 * [styled-components](https://github.com/styled-components/styled-components) and [docs](https://www.styled-components.com/docs)
-* --- Libs / Utils ---
+* --- Misc / Utils ---
 * [simpledrag](https://github.com/lingtalfi/simpledrag)
 * [GitHub's markdown style](https://guides.github.com/features/mastering-markdown/) and [source](https://guides.github.com/components/primer/markdown.css)
 
