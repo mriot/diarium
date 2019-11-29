@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUndoAlt, faRedoAlt, faColumns, faEye, faImage, faLink, faCode } from '@fortawesome/free-solid-svg-icons';
+import { faUndoAlt, faRedoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons';
 
 const StyledToolbar = styled.div `
 	width: 100%;
@@ -61,10 +61,18 @@ export default class Toolbar extends React.PureComponent {
 					</IconButton>
 				</LeftSide>
 				<RightSide>
-					<IconButton title="Keine Ahnung">
-						<FontAwesomeIcon icon={faEye} />
+					<IconButton
+						title="Zen-Mode"
+						onClick={() => this.props.toggleZenMode()}
+						className={this.props.editorState.zenMode ? "active" : ""}
+					>
+						<FontAwesomeIcon icon={this.props.editorState.zenMode ? faCompress : faExpand} />
 					</IconButton>
-					<IconButton title="Vorschau umschalten" onClick={() => this.props.toggleColumns()}>
+					<IconButton
+						title="Ansicht splitten"
+						onClick={() => this.props.togglePreview()}
+						className={this.props.editorState.renderSeparator ? "active" : ""}
+					>
 						<FontAwesomeIcon icon={faColumns} />
 					</IconButton>
 				</RightSide>

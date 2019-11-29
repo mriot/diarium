@@ -18,6 +18,15 @@ const EditorContainer = styled.div `
   position: relative;
 	display: flex;
 	flex-direction: column;
+
+	&.zen-mode {
+		position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+		z-index: 1;
+	}
 `
 const InnerContainer = styled.div `
   position: relative;
@@ -60,6 +69,7 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.state = {
 			markdown: "# Hello World!",
 			viewMode: false,
+			zenMode: false,
 			nodesReady: false,
 			renderSeparator: true,
 		}
@@ -79,6 +89,24 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.setState({nodesReady: true});
 	}
 
+	togglePreview(status = !this.state.renderSeparator) {
+		this.setState({renderSeparator: status})
+		if (status) {
+			this.editorNode.style.width = this.editorConfig.widthBackup;
+			this.viewNode.classList.remove("hidden");
+		} else {
+			this.editorConfig.widthBackup = this.editorNode.style.width;
+			this.editorNode.style.width = "100%";
+			this.viewNode.classList.add("hidden");
+		}
+	}
+
+	toggleZenMode() {
+		this.setState({zenMode: !this.state.zenMode}, () => 
+			this.state.zenMode && this.togglePreview(false)
+		)
+	}
+
 	render() {
 		return (
 			<>
@@ -89,20 +117,11 @@ export default class MarkdownEditor extends React.PureComponent {
 				}
 
 				{!this.state.viewMode &&
-					<EditorContainer ref={this.editorContainer}>
+					<EditorContainer ref={this.editorContainer} className={this.state.zenMode ? "zen-mode" : ""}>
 						<Toolbar 
-							toggleColumns={() => {
-								this.setState({renderSeparator: !this.state.renderSeparator}, () => {
-										if (this.state.renderSeparator) {
-											this.editorNode.style.width = this.editorConfig.widthBackup;
-											this.viewNode.classList.remove("hidden");
-										} else {
-											this.editorConfig.widthBackup = this.editorNode.style.width;
-											this.editorNode.style.width = "100%";
-											this.viewNode.classList.add("hidden");
-										}
-								});
-							}}
+							editorState={this.state}
+							toggleZenMode={this.toggleZenMode.bind(this)}
+							togglePreview={this.togglePreview.bind(this)}
 						/>
 						<InnerContainer>
 							<StyledCodeMirror
