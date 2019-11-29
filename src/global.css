@@ -25,9 +25,6 @@ a {
   border: none !important;
   border-bottom: 1px solid #191919 !important;
   padding: 1px;
-
-  color: #efefef !important;
-  background-color: #1f222a !important;
 }
 .react-calendar__navigation {
   margin-bottom: 5px !important;
