@@ -2,12 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import NavButton from "./nav-button";
 import TextInput from "../common/textinput";
+import { particleStorm } from "../../utils/particle-wave";
 
 const Nav = styled.nav`
   width: 100%;
   height: auto;
   padding: 5px;
   display: flex;
+  position: relative;
   box-sizing: border-box;
   align-items: center;
   justify-content: space-between;
@@ -20,9 +22,13 @@ const ButtonContainer = styled.div `
   align-items: center;
   justify-content: space-around;
 `
+const Canvas = styled.canvas `
+  position: absolute;
+`
 const Logo = styled.span `
   color: #fff;
   font-size: 30px;
+  z-index: 1;
 `
 const Separator = styled.div `
   width: 2px;
@@ -32,9 +38,14 @@ const Separator = styled.div `
 `
 
 export default class Navigation extends React.PureComponent {
+  componentDidMount() {
+    // particleStorm()
+  }
+  
   render() { 
     return (
       <Nav>
+        {/* <Canvas id="canvas"></Canvas> */}
         <Logo>DIARIUM</Logo>
         <ButtonContainer>
           <NavButton to="/edit" value="Bearbeiten" />
