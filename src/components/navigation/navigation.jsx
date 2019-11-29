@@ -12,6 +12,8 @@ const Nav = styled.nav`
   align-items: center;
   justify-content: space-between;
   background-color: #20232a;
+  border-bottom: 1px solid #191919;
+	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
 `
 const ButtonContainer = styled.div `
   display: flex;
