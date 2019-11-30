@@ -9,13 +9,12 @@ const StyledSeparatorHandle = styled.div `
 	height: 100%;
 	width: ${handleWidth};
 	background-color: #808080;
-	/* box-shadow: -5px 0 10px rgba(0,0,0,0.3), 0 0 10px rgba(0,0,0,0.3); */
 	cursor: col-resize;
 	z-index: 10;
 	transform: translateX(calc(${handleWidth} / 2 * -1));
 
-	&.hidden {
-		display: none !important;
+	&:hover {
+		box-shadow: -5px 0 10px rgba(0,0,0,0.3), 0 0 10px rgba(0,0,0,0.3);
 	}
 `
 
@@ -23,53 +22,76 @@ export default class SeparatorHandle extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	
-		this.handle = React.createRef();
+		this.handleRef = React.createRef();
 
-		this.state = {
+		this.handleNode = null;
+		this.containerRect = null;
+	}
+	
+	setCorrectSeparatorPosition() {
+		this.handleNode.style.left = getComputedStyle(this.props.editorNode).width
+	}
 
-		}
+	componentDidUpdate(prevProps, prevState) {
+		this.containerRect = this.props.containerNode.getBoundingClientRect();
+		this.setCorrectSeparatorPosition();
 	}
 
 	componentDidMount() {
-		const node = ReactDOM.findDOMNode(this.handle.current);
-		const containerRect = this.props.containerNode.getBoundingClientRect();
+		this.handleNode = ReactDOM.findDOMNode(this.handleRef.current);
+		this.containerRect = this.props.containerNode.getBoundingClientRect();
 
-		let leftPaneWidth;
-		let rightPaneWidth;
+		let leftPaneWidth = 0;
+		let rightPaneWidth = 0;
 
-		node.style.left = containerRect.width / 2 + "px";
+		this.setCorrectSeparatorPosition();
 
-		node.sdrag(handle => {
-			if (handle.style.left.replace("px", "") < 0) {
+		window.addEventListener("resize", event => {
+			this.containerRect = this.props.containerNode.getBoundingClientRect();
+			this.setCorrectSeparatorPosition();
+		})
+
+		// using timeout hack to get the correct values
+		setTimeout(() => this.setCorrectSeparatorPosition(), 0)
+
+		// sdrag => from simpledrag.js library
+		this.handleNode.sdrag(handle => {
+			// hide separator if dragged outside of editor area
+			if (handle.style.left.replace("px", "") <= 0) {
 				handle.style.display = "none";
 			} else {
 				handle.style.display = "block";
 			}
 
-			leftPaneWidth 	= handle.offsetLeft * 100 / containerRect.width;
+			// calcs percentage values for both views
+			leftPaneWidth 	= handle.offsetLeft * 100 / this.containerRect.width;
 			rightPaneWidth 	= 100 - leftPaneWidth;
 
 			this.props.editorNode.style.width = leftPaneWidth + "%";
-			this.props.viewNode.style.width = rightPaneWidth + "%";
-
-		}, element => {
-			if (element.style.left.replace("px", "") < 0) {
-				element.style.left = 0;
+			this.props.previewNode.style.width = rightPaneWidth + "%";
+		}, handle => {
+			/**
+			 * almost 1:1 copy of the above code.
+			 * this fixes the problem with not perfectly aligned separator and panes
+			 	 if the user is dragging very fast
+			 */
+			// if handle dropped outside of editor area, move it back to 0
+			if (handle.style.left.replace("px", "") <= 0) {
+				handle.style.left = 0;
+				handle.style.display = "block";
 			}
 
-			element.style.display = "block";
-
-			leftPaneWidth 	= element.offsetLeft * 100 / containerRect.width;
+			leftPaneWidth 	= handle.offsetLeft * 100 / this.containerRect.width;
 			rightPaneWidth 	= 100 - leftPaneWidth;
 
 			this.props.editorNode.style.width = leftPaneWidth + "%";
-			this.props.viewNode.style.width = rightPaneWidth + "%";
+			this.props.previewNode.style.width = rightPaneWidth + "%";
 		}, 'horizontal');
 	}
 	
 	render() {
 		return (
-			<StyledSeparatorHandle ref={this.handle} className={this.props.hidden ? "hidden": ""} />
+			<StyledSeparatorHandle ref={this.handleRef} />
 		);
 	}
 }

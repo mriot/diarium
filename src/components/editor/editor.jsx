@@ -33,80 +33,94 @@ export default class Editor extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	
-		this.editorContainer = React.createRef();
-		this.markdownView = React.createRef();
-		this.markdownEditor = React.createRef();
+		this.editorContainerRef = React.createRef();
+		this.markdownViewRef = React.createRef();
+		this.markdownEditorRef = React.createRef();
 
 		this.state = {
 			markdown: "# Hello World!",
-			viewMode: false,
 			zenMode: false,
 			nodesReady: false,
-			renderSeparator: true,
+			renderPreview: true,
 			previewWidthBackup: "50%",
+			forceUpdateSeparator: 0,
 		}
 	}
 
 	componentDidMount() {
-		this.markdownContainer = ReactDOM.findDOMNode(this.editorContainer.current);
-		this.editorNode = ReactDOM.findDOMNode(this.markdownEditor.current);
-		this.viewNode = ReactDOM.findDOMNode(this.markdownView.current);
+		this.editorContainerNode = ReactDOM.findDOMNode(this.editorContainerRef.current);
+		this.editorNode = ReactDOM.findDOMNode(this.markdownEditorRef.current);
+		this.previewNode = ReactDOM.findDOMNode(this.markdownViewRef.current);
 
 		this.editorNode.style.width = "50%";
-		this.viewNode.style.width = "50%";
-
+		this.previewNode.style.width = "50%";
 		this.setState({nodesReady: true});
 	}
 
-	togglePreview(status = !this.state.renderSeparator) {
-		this.setState({renderSeparator: status})
-		if (status) {
-			this.editorNode.style.width = this.state.previewWidthBackup;
-			this.viewNode.classList.remove("hidden");
-		} else {
-			this.setState({previewWidthBackup: this.editorNode.style.width});
-			this.editorNode.style.width = "100%";
-			this.viewNode.classList.add("hidden");
-		}
+	togglePreview() {
+		this.setState({renderPreview: !this.state.renderPreview}, () => {
+			if (this.state.renderPreview) {
+				this.editorNode.style.width = this.state.previewWidthBackup;
+				this.previewNode.classList.remove("hidden");
+			} else {
+				this.setState({previewWidthBackup: this.editorNode.style.width});
+				this.editorNode.style.width = "100%";
+				this.previewNode.classList.add("hidden");
+			}
+		})
 	}
 
 	toggleZenMode() {
-		this.setState({zenMode: !this.state.zenMode}, () => 
-			this.state.zenMode && this.togglePreview(false)
-		)
+		this.setState({
+			zenMode: !this.state.zenMode,
+			forceUpdateSeparator: this.state.forceUpdateSeparator + 1,
+		})
+	}
+
+	resetLayout() {
+		this.setState({
+			zenMode: false,
+			renderPreview: true,
+			previewWidthBackup: "50%",
+			forceUpdateSeparator: this.state.forceUpdateSeparator + 1,
+		})
+		this.editorNode.style.width = "50%";
+		this.previewNode.style.width = "50%";
+		this.previewNode.classList.remove("hidden");
 	}
 
 	render() {
 		return (
-			<EditorContainer className={this.state.zenMode ? "zen-mode" : ""}>
+			<EditorContainer ref={this.editorContainerRef} className={this.state.zenMode ? "zen-mode" : ""}>
 				<Toolbar 
 					toggleZenMode={this.toggleZenMode.bind(this)}
 					togglePreview={this.togglePreview.bind(this)}
+					resetLayout={this.resetLayout.bind(this)}
 					toolbarStatus={{
 						zenModeActive: this.state.zenMode,
-						previewActive: this.state.renderSeparator,
+						previewActive: this.state.renderPreview,
 					}}
 				/>
+
 				<InnerContainer>
 					<MarkdownEditor
-						ref={this.markdownEditor}
+						ref={this.markdownEditorRef}
 						value={this.state.markdown}
 						change={markdown => {
 							this.setState({markdown})
-							console.log(markdown)
 						}}
 					/>
 
-					{/* {this.state.nodesReady &&
+					{this.state.nodesReady && this.state.renderPreview &&
 						<SeparatorHandle
-							hidden={!this.state.renderSeparator}
-							containerNode={this.markdownContainer}
+							forceUpdateSeparator={this.state.forceUpdateSeparator}
+							containerNode={this.editorContainerNode}
 							editorNode={this.editorNode}
-							viewNode={this.viewNode}
+							previewNode={this.previewNode}
 						/>
-					} */}
+					}
 
-					<MarkdownView markdown={this.state.markdown} ref={this.markdownView} />
+					<MarkdownView markdown={this.state.markdown} ref={this.markdownViewRef} />
 				</InnerContainer>
 			</EditorContainer>			
 		);
