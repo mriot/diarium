@@ -72,10 +72,14 @@ export default class MarkdownEditor extends React.PureComponent {
 
 	insertCode() {
 		this.CodeMirrorInstance.replaceSelection("```language\n\n````");
+		const cursorPos = this.CodeMirrorInstance.getCursor();
+		this.CodeMirrorInstance.setCursor({line: cursorPos.line - 1, ch: 0});
 	}
 
 	insertLink() {
-		this.CodeMirrorInstance.replaceSelection("[]()")
+		this.CodeMirrorInstance.replaceSelection("[]()");
+		const cursorPos = this.CodeMirrorInstance.getCursor();
+		this.CodeMirrorInstance.setCursor({line: cursorPos.line, ch: cursorPos.ch - 3});
 	}
 
 	render() {
