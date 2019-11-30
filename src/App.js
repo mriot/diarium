@@ -1,9 +1,9 @@
 import React from 'react';
+import styled from "styled-components";
+import { BrowserRouter } from "react-router-dom";
 import Navigation from './components/navigation/navigation';
 import Sidebar from './components/sidebar/sidebar';
-import { BrowserRouter, Route } from "react-router-dom";
-import styled from "styled-components";
-import MarkdownEditor from './components/editor/markdown-editor';
+import Editor from './components/editor/editor';
 import 'react-tippy/dist/tippy.css';
 
 const Layout = styled.div `
@@ -18,14 +18,6 @@ const Main = styled.div `
 `
 
 export default class App extends React.PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = { 
-
-     }
-  }
-
   render() { 
     return ( 
       <BrowserRouter>
@@ -33,16 +25,10 @@ export default class App extends React.PureComponent {
           <Navigation />
           <Main>
             <Sidebar />
-            <MarkdownEditor />
+            <Editor />
           </Main>
         </Layout>
       </BrowserRouter>
     )
   }
 }
-
-/**
- * dark dark = #20232a
- * lighter dark = #282c34
- * react-blue = #61dafb
- */
