@@ -49,11 +49,11 @@ export default class Toolbar extends React.PureComponent {
 			<StyledToolbar {...this.props}>
 				<LeftSide>
 
-					<IconButton title="Rückgängig">
+					<IconButton title="Rückgängig" onClick={() => this.props.editorUndo()}>
 						<FontAwesomeIcon icon={faReply} />
 					</IconButton>
 
-					<IconButton title="Wiederholen">
+					<IconButton title="Wiederholen" onClick={() => this.props.editorRedo()}>
 						<FontAwesomeIcon icon={faShare} />
 					</IconButton>
 
@@ -61,11 +61,17 @@ export default class Toolbar extends React.PureComponent {
 						<FontAwesomeIcon icon={faImage} />
 					</IconButton>
 
-					<IconButton title="Link einfügen">
+					<IconButton
+						title="Link einfügen"
+						onClick={() => this.props.insertLink()}
+					>
 						<FontAwesomeIcon icon={faLink} />
 					</IconButton>
 
-					<IconButton title="Code einfügen">
+					<IconButton
+						title="Code einfügen"
+						onClick={() => this.props.insertCode()}
+					>
 						<FontAwesomeIcon icon={faCode} />
 					</IconButton>
 

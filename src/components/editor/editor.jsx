@@ -89,10 +89,21 @@ export default class Editor extends React.PureComponent {
 		this.previewNode.classList.remove("hidden");
 	}
 
+	acceptMethods(methods) {
+    this.insertCode = methods.insertCode;
+    this.insertLink = methods.insertLink;
+    this.editorUndo = methods.editorUndo;
+    this.editorRedo = methods.editorRedo;
+  }
+
 	render() {
 		return (
 			<EditorContainer ref={this.editorContainerRef} className={this.state.zenMode ? "zen-mode" : ""}>
 				<Toolbar 
+					editorUndo={() => this.editorUndo()}
+					editorRedo={() => this.editorRedo()}
+					insertCode={() => this.insertCode()}
+					insertLink={() => this.insertLink()}
 					toggleZenMode={this.toggleZenMode.bind(this)}
 					togglePreview={this.togglePreview.bind(this)}
 					resetLayout={this.resetLayout.bind(this)}
@@ -104,6 +115,7 @@ export default class Editor extends React.PureComponent {
 
 				<InnerContainer>
 					<MarkdownEditor
+						shareMethods={this.acceptMethods.bind(this)}
 						ref={this.markdownEditorRef}
 						value={this.state.markdown}
 						change={markdown => {

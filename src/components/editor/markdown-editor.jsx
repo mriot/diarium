@@ -41,10 +41,41 @@ export default class MarkdownEditor extends React.PureComponent {
 	componentDidMount() {
 		this.CodeMirrorInstance = this.codeMirrorRef.current.getCodeMirror();
 		this.CodeMirrorInstance.execCommand("goDocEnd");
+
+		// convert tabs to spaces
+		this.CodeMirrorInstance.setOption("extraKeys", {
+			Tab: function(cm) {
+				var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+				cm.replaceSelection(spaces);
+			}
+		});
+
+		this.props.shareMethods({
+			insertCode: this.insertCode.bind(this),
+			insertLink: this.insertLink.bind(this),
+			editorUndo: this.editorUndo.bind(this),
+			editorRedo: this.editorRedo.bind(this),
+		});
 	}
 
 	componentDidUpdate(prevProps, prevState) {
 		this.CodeMirrorInstance.focus()
+	}
+
+	editorUndo() {
+		this.CodeMirrorInstance.undo()
+	}
+
+	editorRedo() {
+		this.CodeMirrorInstance.redo()
+	}
+
+	insertCode() {
+		this.CodeMirrorInstance.replaceSelection("```language\n\n````");
+	}
+
+	insertLink() {
+		this.CodeMirrorInstance.replaceSelection("[]()")
 	}
 
 	render() {
