@@ -10,12 +10,16 @@ const StyledToolbar = styled.div `
 	justify-content: space-between;
 	background-color: #efefef;
 	font-size: 14px;
-	padding: 1px 6px;
 	border-bottom: 1px solid #ddd;
 	user-select: none;
+	box-sizing: border-box;
 	border-top-left-radius: 8px;
 	border-top-right-radius: 8px;
-	box-sizing: border-box;
+	${props => props.toolbarStatus.zenModeActive && `
+		height: 35px;
+		border-radius: 0;
+		border-bottom: none;
+	`}
 `
 const LeftSide = styled.aside `
 	display: flex;
@@ -42,7 +46,7 @@ const IconButton = styled.div `
 export default class Toolbar extends React.PureComponent {
 	render() {
 		return (
-			<StyledToolbar>
+			<StyledToolbar {...this.props}>
 				<LeftSide>
 
 					<IconButton title="Rückgängig">
@@ -71,15 +75,15 @@ export default class Toolbar extends React.PureComponent {
 					<IconButton
 						title="Zen-Mode"
 						onClick={() => this.props.toggleZenMode()}
-						className={this.props.editorState.zenMode ? "active" : ""}
+						className={this.props.toolbarStatus.zenModeActive ? "active" : ""}
 					>
-						<FontAwesomeIcon icon={this.props.editorState.zenMode ? faCompress : faExpand} />
+						<FontAwesomeIcon icon={this.props.toolbarStatus.zenModeActive ? faCompress : faExpand} />
 					</IconButton>
 
 					<IconButton
 						title="Ansicht splitten"
 						onClick={() => this.props.togglePreview()}
-						className={this.props.editorState.renderSeparator ? "active" : ""}
+						className={this.props.toolbarStatus.previewActive ? "active" : ""}
 					>
 						<FontAwesomeIcon icon={faColumns} />
 					</IconButton>
