@@ -51,7 +51,7 @@ export default class MarkdownEditor extends React.PureComponent {
 		return (
 			<StyledCodeMirror
 				ref={this.codeMirrorRef}
-				value={this.props.markdown}
+				value={this.props.value}
 				onChange={markdown => {
 					this.props.change(markdown)
 				}}
