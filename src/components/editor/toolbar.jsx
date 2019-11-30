@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUndoAlt, faRedoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress } from '@fortawesome/free-solid-svg-icons';
+import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply } from '@fortawesome/free-solid-svg-icons';
 
 const StyledToolbar = styled.div `
 	width: 100%;
@@ -50,11 +50,11 @@ export default class Toolbar extends React.PureComponent {
 				<LeftSide>
 
 					<IconButton title="Rückgängig">
-						<FontAwesomeIcon icon={faUndoAlt} />
+						<FontAwesomeIcon icon={faReply} />
 					</IconButton>
 
 					<IconButton title="Wiederholen">
-						<FontAwesomeIcon icon={faRedoAlt} />
+						<FontAwesomeIcon icon={faShare} />
 					</IconButton>
 
 					<IconButton title="Bild einfügen">
@@ -86,6 +86,13 @@ export default class Toolbar extends React.PureComponent {
 						className={this.props.toolbarStatus.previewActive ? "active" : ""}
 					>
 						<FontAwesomeIcon icon={faColumns} />
+					</IconButton>
+
+					<IconButton
+						title="Layout zurücksetzen"
+						onClick={() => this.props.resetLayout()}
+					>
+						<FontAwesomeIcon icon={faUndoAlt} />
 					</IconButton>
 					
 				</RightSide>
