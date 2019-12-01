@@ -42,14 +42,6 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.CodeMirrorInstance = this.codeMirrorRef.current.getCodeMirror();
 		this.CodeMirrorInstance.execCommand("goDocEnd");
 
-		// convert tabs to spaces
-		this.CodeMirrorInstance.setOption("extraKeys", {
-			Tab: function(cm) {
-				var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
-				cm.replaceSelection(spaces);
-			}
-		});
-
 		this.props.shareMethods({
 			insertCode: this.insertCode.bind(this),
 			insertLink: this.insertLink.bind(this),
