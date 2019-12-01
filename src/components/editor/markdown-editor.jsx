@@ -55,10 +55,15 @@ export default class MarkdownEditor extends React.PureComponent {
 			insertLink: this.insertLink.bind(this),
 			editorUndo: this.editorUndo.bind(this),
 			editorRedo: this.editorRedo.bind(this),
+			editorFocus: this.editorFocus.bind(this),
 		});
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+		this.editorFocus()
+	}
+
+	editorFocus() {
 		this.CodeMirrorInstance.focus()
 	}
 
