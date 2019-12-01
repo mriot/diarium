@@ -56,6 +56,8 @@ export default class Editor extends React.PureComponent {
 		this.previewNode.style.width = "50%";
 		this.setState({nodesReady: true});
 
+		if (localStorage.getItem("preview-hidden") === "true") this.togglePreview(true);
+
 		// always focus editor on 'tab' press
 		document.addEventListener("keydown", event => {
       if (event.which === 9) {
@@ -65,15 +67,17 @@ export default class Editor extends React.PureComponent {
     })
 	}
 
-	togglePreview() {
+	togglePreview(skipStorageUpdate) {
 		this.setState({renderPreview: !this.state.renderPreview}, () => {
 			if (this.state.renderPreview) {
 				this.editorNode.style.width = this.state.previewWidthBackup;
 				this.previewNode.classList.remove("hidden");
+				!skipStorageUpdate && localStorage.setItem("preview-hidden", false)
 			} else {
 				this.setState({previewWidthBackup: this.editorNode.style.width});
 				this.editorNode.style.width = "100%";
 				this.previewNode.classList.add("hidden");
+				!skipStorageUpdate && localStorage.setItem("preview-hidden", true)
 			}
 		})
 	}
