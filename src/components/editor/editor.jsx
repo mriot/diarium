@@ -55,6 +55,14 @@ export default class Editor extends React.PureComponent {
 		this.editorNode.style.width = "50%";
 		this.previewNode.style.width = "50%";
 		this.setState({nodesReady: true});
+
+		// always focus editor on 'tab' press
+		document.addEventListener("keydown", event => {
+      if (event.which === 9) {
+				event.preventDefault();
+				this.editorFocus();
+			}
+    })
 	}
 
 	togglePreview() {
@@ -94,12 +102,14 @@ export default class Editor extends React.PureComponent {
     this.insertLink = methods.insertLink;
     this.editorUndo = methods.editorUndo;
     this.editorRedo = methods.editorRedo;
+    this.editorFocus = methods.editorFocus;
   }
 
 	render() {
 		return (
 			<EditorContainer ref={this.editorContainerRef} className={this.state.zenMode ? "zen-mode" : ""}>
 				<Toolbar 
+					editorFocus={() => this.editorFocus()}
 					editorUndo={() => this.editorUndo()}
 					editorRedo={() => this.editorRedo()}
 					insertCode={() => this.insertCode()}
