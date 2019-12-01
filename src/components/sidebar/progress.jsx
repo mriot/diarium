@@ -9,8 +9,9 @@ const ProgressContainer = styled.div `
 `
 const ProgressDescription = styled.div `
 	color: #efefef;
+	font-size: 14px;
 	font-weight: 100;
-	margin: 20px 0 5px;
+	margin: 15px 0 5px;
 `
 const TotalDescription = styled(ProgressDescription) `
 	margin: 20px 0 0;

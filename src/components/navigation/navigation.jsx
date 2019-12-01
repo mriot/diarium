@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import NavButton from "./nav-button";
 import TextInput from "../common/textinput";
-import { particleStorm } from "../../utils/particle-wave";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 const Nav = styled.nav`
   width: 100%;
@@ -18,54 +19,57 @@ const Nav = styled.nav`
   box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
   overflow: hidden;
 `
-const ButtonContainer = styled.div `
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-`
-const Canvas = styled.canvas `
-  position: absolute;
-`
 const Logo = styled.span `
   color: #fff;
   font-size: 30px;
   z-index: 1;
 `
+const RightSide = styled.div `
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+`
+const ButtonContainer = styled.div `
+  display: flex;
+  margin-right: 20px;
+`
 const Separator = styled.div `
   width: 2px;
   align-self: stretch;
-  margin: 10px 0 10px 35px;
-  background-color: #181818;
+  margin: 7px 5px 7px 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+`
+const LogoutButton = styled.div `
+  color: #459cce;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  
+  &:hover {
+    color: red;
+    /* background-color: #333; */
+  }
 `
 
 export default class Navigation extends React.PureComponent {
-  componentDidMount() {
-    // particleStorm()
-  }
-
-  toggleFullScreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen(); 
-      }
-    }
-  }
-  
   render() { 
     return (
       <Nav>
-        {/* <Canvas id="canvas"></Canvas> */}
         <Logo>DIARIUM</Logo>
-        <ButtonContainer>
-          <NavButton to="/edit" value="Bearbeiten" />
-          <NavButton to="/save" value="Speichern" />
-          <NavButton to="/favorites" value="Favoriten" />
-          <TextInput />
+        <RightSide>
+          <ButtonContainer>
+            <NavButton to="/edit" value="Bearbeiten / Speichern" />
+            <NavButton to="/favorites" value="Favoriten" />
+          </ButtonContainer>
+
+          <TextInput placeholder="Suchen..." />
+
           <Separator />
-          <NavButton to="/logout" value="Logout" />
-        </ButtonContainer>
+          
+          <LogoutButton>
+            <FontAwesomeIcon icon={faSignOutAlt} />
+          </LogoutButton>
+        </RightSide>
       </Nav>
     );
   }
