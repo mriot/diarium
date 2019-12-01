@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply } from '@fortawesome/free-solid-svg-icons';
+import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara } from '@fortawesome/free-solid-svg-icons';
 
 const StyledToolbar = styled.div `
 	width: 100%;
@@ -37,13 +37,38 @@ const IconButton = styled.div `
 	border-radius: 3px;
 	color: #1f222a;
 
-	&:hover,
-	&.active {
+	&:hover {
 		background-color: #c7c7c7;
 	}
+
+	${props => props.isActive && `
+		background-color: #c7c7c7;
+	`}
 `
 
 export default class Toolbar extends React.PureComponent {
+	constructor(props) {
+		super(props);
+	
+		this.state = {
+			inFullscreenMode: false,
+		}
+	}
+
+	toggleFullScreen() {
+		if (!document.fullscreenElement) {
+			document.documentElement.requestFullscreen().then(
+				this.setState({inFullscreenMode: true})
+			)
+		} else {
+			if (document.exitFullscreen) {
+				document.exitFullscreen().then(
+					this.setState({inFullscreenMode: false})
+				)
+			}
+		}
+	}
+
 	render() {
 		return (
 			<StyledToolbar {...this.props}>
@@ -81,22 +106,36 @@ export default class Toolbar extends React.PureComponent {
 					<IconButton
 						title="Zen-Mode"
 						onClick={() => this.props.toggleZenMode()}
-						className={this.props.toolbarStatus.zenModeActive ? "active" : ""}
+						isActive={this.props.toolbarStatus.zenModeActive}
 					>
-						<FontAwesomeIcon icon={this.props.toolbarStatus.zenModeActive ? faCompress : faExpand} />
+						<FontAwesomeIcon icon={faVihara} />
 					</IconButton>
 
 					<IconButton
 						title="Ansicht splitten"
 						onClick={() => this.props.togglePreview()}
-						className={this.props.toolbarStatus.previewActive ? "active" : ""}
+						isActive={this.props.toolbarStatus.previewActive}
 					>
 						<FontAwesomeIcon icon={faColumns} />
 					</IconButton>
 
 					<IconButton
+						title="Vollbild"
+						onClick={() => {
+							this.toggleFullScreen();
+							this.props.editorFocus();
+						}}
+						isActive={this.state.inFullscreenMode}
+					>
+						<FontAwesomeIcon icon={this.state.inFullscreenMode ? faCompress : faExpand} />
+					</IconButton>
+
+					<IconButton
 						title="Layout zurücksetzen"
-						onClick={() => this.props.resetLayout()}
+						onClick={() => {
+							this.props.resetLayout();
+							this.state.inFullscreenMode && this.toggleFullScreen();
+						}}
 					>
 						<FontAwesomeIcon icon={faUndoAlt} />
 					</IconButton>
