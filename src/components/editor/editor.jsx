@@ -99,6 +99,7 @@ export default class Editor extends React.PureComponent {
 		this.editorNode.style.width = "50%";
 		this.previewNode.style.width = "50%";
 		this.previewNode.classList.remove("hidden");
+		localStorage.setItem("preview-hidden", false)
 	}
 
 	acceptMethods(methods) {
