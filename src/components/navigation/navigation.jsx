@@ -15,7 +15,8 @@ const Nav = styled.nav`
   justify-content: space-between;
   background-color: #20232a;
   border-bottom: 1px solid #191919;
-	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 `
 const ButtonContainer = styled.div `
   display: flex;
@@ -34,12 +35,22 @@ const Separator = styled.div `
   width: 2px;
   align-self: stretch;
   margin: 10px 0 10px 35px;
-  background-color: #777;
+  background-color: #181818;
 `
 
 export default class Navigation extends React.PureComponent {
   componentDidMount() {
     // particleStorm()
+  }
+
+  toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen(); 
+      }
+    }
   }
   
   render() { 
