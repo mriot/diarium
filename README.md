@@ -21,6 +21,7 @@
 * [code-mirror-themes](https://github.com/FarhadG/code-mirror-themes)
 * [fortawesome (icons)](https://github.com/FortAwesome/react-fontawesome)
 * [react-tippy (Tooltips)](https://github.com/tvkhoa/react-tippy)
+* [react-toastify (Notifications)](https://github.com/fkhadra/react-toastify#demo)
 * [react-markdown](https://github.com/rexxars/react-markdown)
 * [react-router(-dom)](https://github.com/ReactTraining/react-router) and [docs](https://reacttraining.com/react-router/web/guides/quick-start)
 * [styled-components](https://github.com/styled-components/styled-components) and [docs](https://www.styled-components.com/docs)
