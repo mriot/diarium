@@ -147,6 +147,7 @@ See http://github.github.com/github-flavored-markdown/.
 		this.setState({
 			zenMode: false,
 			renderPreview: true,
+			scrollSync: true,
 			previewWidthBackup: "50%",
 			forceUpdateSeparator: this.state.forceUpdateSeparator + 1,
 		})
