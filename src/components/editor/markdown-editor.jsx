@@ -4,6 +4,15 @@ import CodeMirror from "react-codemirror";
 import "codemirror/lib/codemirror.css";
 import "code-mirror-themes/themes/clouds-midnight.css"
 import "codemirror/mode/markdown/markdown";
+import "codemirror/mode/gfm/gfm";
+import "codemirror/addon/edit/matchbrackets";
+import "codemirror/addon/edit/closebrackets";
+import "codemirror/addon/edit/matchtags";
+import "codemirror/addon/edit/closetag";
+import "codemirror/addon/edit/continuelist";
+import "codemirror/addon/scroll/scrollpastend";
+import "codemirror/addon/scroll/simplescrollbars";
+import "codemirror/addon/scroll/simplescrollbars.css";
 
 const StyledCodeMirror = styled(CodeMirror) `
 	width: 50%;
@@ -23,7 +32,7 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.CodeMirrorInstance = null;
 
 		this.editorConfig = {
-			mode: "markdown",
+			mode: "gfm",
 			lineNumbers: true,
 			theme: "clouds-midnight",
 			tabSize: 2,
@@ -31,16 +40,24 @@ export default class MarkdownEditor extends React.PureComponent {
 			fixedGutter: true,
 			showCursorWhenSelecting: true,
 			autofocus: true,
-		}
 
-		this.state = {
-			
+			// addon settings
+			matchBrackets: true,
+			autoCloseBrackets: true,
+			matchTags: true,
+			autoCloseTags: true,
+			scrollbarStyle: "simple",
+			scrollPastEnd: true,
 		}
 	}
 
 	componentDidMount() {
 		this.CodeMirrorInstance = this.codeMirrorRef.current.getCodeMirror();
-		this.CodeMirrorInstance.execCommand("goDocEnd");
+		this.CodeMirrorInstance.execCommand("goLineEnd");
+
+		this.CodeMirrorInstance.on("scroll", event => {
+			this.props.scrollPosChange(event.doc.scrollTop)
+		})
 
 		this.props.shareMethods({
 			insertCode: this.insertCode.bind(this),
