@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara } from '@fortawesome/free-solid-svg-icons';
+import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faPaperclip, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 
 const StyledToolbar = styled.div `
 	width: 100%;
@@ -28,6 +28,12 @@ const LeftSide = styled.aside `
 const RightSide = styled.aside `
 	display: flex;
 	align-items: center;
+`
+const ButtonSeparator = styled.div `
+	width: 2px;
+	height: 60%;
+	margin: 0 5px;
+	background-color: #c7c7c7;
 `
 const IconButton = styled.div `
 	padding: 6px 10px;
@@ -73,7 +79,6 @@ export default class Toolbar extends React.PureComponent {
 		return (
 			<StyledToolbar {...this.props}>
 				<LeftSide>
-
 					<IconButton title="Rückgängig" onClick={() => this.props.editorUndo()}>
 						<FontAwesomeIcon icon={faReply} />
 					</IconButton>
@@ -100,9 +105,18 @@ export default class Toolbar extends React.PureComponent {
 						<FontAwesomeIcon icon={faCode} />
 					</IconButton>
 
-				</LeftSide>
-				<RightSide>
+					<ButtonSeparator />
 
+					<IconButton
+						title="Scrollen synchronisieren"
+						onClick={() => this.props.toggleScrollSync()}
+						isActive={this.props.toolbarStatus.scrollSyncActive}
+					>
+						<FontAwesomeIcon icon={faArrowsAltH} />
+					</IconButton>
+				</LeftSide>
+
+				<RightSide>
 					<IconButton
 						title="Zen-Mode"
 						onClick={() => this.props.toggleZenMode()}
@@ -131,7 +145,7 @@ export default class Toolbar extends React.PureComponent {
 					</IconButton>
 
 					<IconButton
-						title="Layout zurücksetzen"
+						title="Layout des Editors zurücksetzen"
 						onClick={() => {
 							this.props.resetLayout();
 							this.state.inFullscreenMode && this.toggleFullScreen();
@@ -139,7 +153,6 @@ export default class Toolbar extends React.PureComponent {
 					>
 						<FontAwesomeIcon icon={faUndoAlt} />
 					</IconButton>
-					
 				</RightSide>
 			</StyledToolbar>
 		);

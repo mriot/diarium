@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from "react-dom";
 import styled from 'styled-components';
 import ReactMarkdown from "react-markdown";
 import "./theme/ceres.css";
@@ -16,9 +17,24 @@ const RenderedMarkdownContainer = styled.div `
 `
 
 export default class MarkdownView extends React.PureComponent {
+	constructor(props) {
+		super(props);
+	
+		this.markdownOutputRef = React.createRef();
+	}
+	
+	componentDidMount() {
+		this.markdownOutputNode = ReactDOM.findDOMNode(this.markdownOutputRef.current);
+		this.markdownOutputNode.scrollTop = this.props.scrollSync;
+	}
+
+	componentDidUpdate(prevProps, prevState) {		
+		this.markdownOutputNode.scrollTop = this.props.scrollSync;
+	}
+	
 	render() {
 		return (
-			<RenderedMarkdownContainer className="markdown-body">
+			<RenderedMarkdownContainer ref={this.markdownOutputRef} className="markdown-body">
 				<ReactMarkdown source={this.props.markdown} />
 			</RenderedMarkdownContainer>
 		);

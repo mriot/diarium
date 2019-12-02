@@ -8,9 +8,10 @@ import Toolbar from './toolbar';
 
 const EditorContainer = styled.div `
 	width: 100%;
+	display: flex;
+	max-height: 100%;
 	overflow: hidden;
   position: relative;
-	display: flex;
 	flex-direction: column;
 
 	&.zen-mode {
@@ -38,12 +39,61 @@ export default class Editor extends React.PureComponent {
 		this.markdownEditorRef = React.createRef();
 
 		this.state = {
-			markdown: "# Hello World!",
+			markdown: `GitHub Flavored Markdown
+========================
+
+Everything from markdown plus GFM features:
+
+## URL autolinking
+
+Underscores_are_allowed_between_words.
+
+## Strikethrough text
+
+GFM adds syntax to strikethrough text, which is missing from standard Markdown.
+
+~~Mistaken text.~~
+~~**works with other formatting**~~
+
+~~spans across
+lines~~
+
+## Fenced code blocks (and syntax highlighting)
+
+\`\`\`javascript
+for (var i = 0; i < items.length; i++) {
+		console.log(items[i], i); // log them
+}
+\`\`\`
+
+## Task Lists
+
+- [ ] Incomplete task list item
+- [x] **Completed** task list item
+
+## A bit of GitHub spice
+
+See http://github.github.com/github-flavored-markdown/.
+
+(Set \`gitHubSpice: false\` in mode options to disable):
+
+* SHA: be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
+* User@SHA ref: mojombo@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
+* User/Project@SHA: mojombo/god@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
+* \#Num: #1
+* User/#Num: mojombo#1
+* User/Project#Num: mojombo/god#1
+
+(Set \`emoji: false\` in mode options to disable):
+
+* emoji: :smile:`,
 			zenMode: false,
 			nodesReady: false,
 			renderPreview: true,
+			scrollSync: true,
 			previewWidthBackup: "50%",
 			forceUpdateSeparator: 0,
+			scrollSyncPosition: 0,
 		}
 	}
 
@@ -89,6 +139,10 @@ export default class Editor extends React.PureComponent {
 		})
 	}
 
+	toggleScrollSync() {
+		this.setState({scrollSync: !this.state.scrollSync})
+	}
+
 	resetLayout() {
 		this.setState({
 			zenMode: false,
@@ -121,10 +175,12 @@ export default class Editor extends React.PureComponent {
 					insertLink={() => this.insertLink()}
 					toggleZenMode={this.toggleZenMode.bind(this)}
 					togglePreview={this.togglePreview.bind(this)}
+					toggleScrollSync={this.toggleScrollSync.bind(this)}
 					resetLayout={this.resetLayout.bind(this)}
 					toolbarStatus={{
 						zenModeActive: this.state.zenMode,
 						previewActive: this.state.renderPreview,
+						scrollSyncActive: this.state.scrollSync,
 					}}
 				/>
 
@@ -133,9 +189,8 @@ export default class Editor extends React.PureComponent {
 						shareMethods={this.acceptMethods.bind(this)}
 						ref={this.markdownEditorRef}
 						value={this.state.markdown}
-						change={markdown => {
-							this.setState({markdown})
-						}}
+						scrollPosChange={scrollTop => this.setState({scrollSyncPosition: scrollTop})}
+						change={markdown => this.setState({markdown})}
 					/>
 
 					{this.state.nodesReady && this.state.renderPreview &&
@@ -147,7 +202,11 @@ export default class Editor extends React.PureComponent {
 						/>
 					}
 
-					<MarkdownView markdown={this.state.markdown} ref={this.markdownViewRef} />
+					<MarkdownView
+						scrollSync={this.state.scrollSync && this.state.scrollSyncPosition}
+						markdown={this.state.markdown}
+						ref={this.markdownViewRef}
+					/>
 				</InnerContainer>
 			</EditorContainer>			
 		);
