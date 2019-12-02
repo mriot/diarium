@@ -17,7 +17,6 @@ const Nav = styled.nav`
   background-color: #20232a;
   border-bottom: 1px solid #191919;
   box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
-  overflow: hidden;
 `
 const Logo = styled.span `
   color: #fff;

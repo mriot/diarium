@@ -10,10 +10,12 @@
 	color: #444;
 	font-size: 15px;
 	line-height: 1.7;
-	overflow: hidden;
+	overflow: auto;
 	width: 50%;
 	height: 100%;
 	tab-size: 2;
+	/* enables easy overscroll */
+	padding-bottom: 60%;
 }
 
 .markdown-body>*:first-child {

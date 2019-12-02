@@ -7,6 +7,7 @@ import FetchActions from './fetchactions';
 const StyledSidebar = styled.aside`
   position: relative;
   width: 300px;
+  max-height: 100%;
   box-sizing: border-box;
   background-color: #20232a;
 `
