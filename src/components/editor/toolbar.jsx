@@ -61,6 +61,15 @@ export default class Toolbar extends React.PureComponent {
 		}
 	}
 
+	componentDidMount() {
+		// set the correct state if the user exits fullscreen by pressing the ESC key
+		document.addEventListener("fullscreenchange", () => {
+			if (!document.fullscreenElement) {
+				this.setState({inFullscreenMode: false});
+			}
+		})
+	}
+	
 	toggleFullScreen() {
 		if (!document.fullscreenElement) {
 			document.documentElement.requestFullscreen().then(
