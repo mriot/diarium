@@ -33,20 +33,45 @@ export default class Sidebar extends React.PureComponent {
 
     this.state = {
       calendarInitDate: new Date(),
-      forceUpdateCounter: 0,
+      dateToday: new Date(),
+      forceUpdateCalendar: 0,
     }
   }
 
+  // async getHolidays() {
+  //   return fetch(`https://feiertage-api.de/api/?jahr=2019&nur_land=HE`, {
+  //     method: "GET",
+  //   }).then(response => response.json())
+  // }
+
+  componentDidMount() {
+    // this.holidays = [];
+    // this.getHolidays().then(response => {
+    //   for (const key in response) {
+    //     this.holidays.push({[response[key].datum]: key})
+    //   }
+    //   console.log(this.holidays)
+    // })
+
+    setInterval(this.updateTodaysDate.bind(this), 1000 * 60 * 5) // 5 minutes
+  }
+
+  updateTodaysDate() {
+    this.setState({dateToday: new Date()})
+  }
+  
   render() {
     return (
       <StyledSidebar>
         <Today onClick={() => {
           this.setState({
-            forceUpdateCounter: this.state.forceUpdateCounter + 1
+            dateToday: new Date(),
+            calendarInitDate: new Date(),
+            forceUpdateCalendar: this.state.forceUpdateCalendar + 1
           })
         }}>
           {
-            this.state.calendarInitDate.toLocaleDateString("de-DE", {
+            this.state.dateToday.toLocaleDateString("de-DE", {
               weekday: 'long',
               year: 'numeric',
               month: 'long',
@@ -56,7 +81,7 @@ export default class Sidebar extends React.PureComponent {
         </Today>
         <StyledCalendar
           className="calendar-dark-theme"
-          key={this.state.forceUpdateCounter}
+          key={this.state.forceUpdateCalendar}
           value={this.state.calendarInitDate}
           minDetail={"decade"}
           minDate={new Date(2019, 0, 1)}
@@ -64,7 +89,6 @@ export default class Sidebar extends React.PureComponent {
             ({activeStartDate, date, view}) => {
               if (view === "month") {
                 // console.log(date.getDate(), date.getMonth() + 1, date.getFullYear());
-                // TODO: :)
                 if (date.getDate() === 2) {
                   return "marked"
                 }
