@@ -103,6 +103,10 @@ export default class Sidebar extends React.PureComponent {
                   return "holiday"
                   case 12:
                     return "holiday"
+                  case 14:
+                    return "special"
+                  case 5:
+                    return "marked vacation sick holiday special"
                   default:
                     return ""
                 }
