@@ -89,10 +89,23 @@ export default class Sidebar extends React.PureComponent {
             ({activeStartDate, date, view}) => {
               if (view === "month") {
                 // console.log(date.getDate(), date.getMonth() + 1, date.getFullYear());
-                if (date.getDate() === 2) {
-                  return "marked"
+                // if (date.getDate() === 2) {
+                //   return "marked"
+                // }
+                switch (date.getDate()) {
+                  case 2:
+                    return "marked vacation"
+                  case 6:
+                    return "sick marked"
+                  case 10:
+                    return "holiday marked"
+                  case 11:
+                  return "holiday"
+                  case 12:
+                    return "holiday"
+                  default:
+                    return ""
                 }
-                return null
               }
             }
           }

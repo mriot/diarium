@@ -87,6 +87,10 @@ a {
 }
 
 /* TILES */
+.calendar-dark-theme .react-calendar__tile {
+  position: relative;
+}
+
 .calendar-dark-theme .react-calendar__tile:disabled {
   background-color: #2a2d38;
 }
@@ -107,7 +111,38 @@ a {
   background-color: inherit;
 }
 
+/* SPECIAL TILES STYLING */
 .calendar-dark-theme .react-calendar__tile.marked {
   box-shadow: inset 0 0 0 1px rgba(0, 255, 139, 0.3);
   color: #00ff8b !important;
+}
+
+.calendar-dark-theme .react-calendar__tile.sick::after {
+  content: "k";
+  color: #da3c10;
+  position: absolute;
+  top: 0;
+  right: 4px;
+  font-weight: normal;
+  font-variant: small-caps;
+}
+
+.calendar-dark-theme .react-calendar__tile.vacation::after {
+  content: "u";
+  color: #12d0dd;
+  position: absolute;
+  top: 0;
+  right: 4px;
+  font-weight: normal;
+  font-variant: small-caps;
+}
+
+.calendar-dark-theme .react-calendar__tile.holiday::after {
+  content: "f";
+  color: #12ddb1;
+  position: absolute;
+  top: 0;
+  right: 4px;
+  font-weight: normal;
+  font-variant: small-caps;
 }
