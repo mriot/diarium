@@ -46,7 +46,7 @@ export default class MarkdownEditor extends React.PureComponent {
 			autoCloseBrackets: true,
 			matchTags: true,
 			autoCloseTags: true,
-			scrollbarStyle: "simple",
+			scrollbarStyle: "overlay",
 			scrollPastEnd: true,
 		}
 	}

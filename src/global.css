@@ -20,6 +20,18 @@ a {
 }
 
 
+/* move overlay scrollbar to left side */
+.CodeMirror .CodeMirror-overlayscroll-vertical {
+  left: 0;
+  right: auto;
+}
+.CodeMirror .CodeMirror-overlayscroll-vertical > div {
+  right: auto;
+  width: 5px;
+  background-color: #2b2b2b;
+}
+
+
 /* REACT-CALENDAR (v. 2.19.2) - CUSTOM STYLING */
 .react-calendar {
   border: none !important;
