@@ -94,19 +94,23 @@ export default class Sidebar extends React.PureComponent {
                 // }
                 switch (date.getDate()) {
                   case 2:
-                    return "marked vacation"
-                  case 6:
-                    return "sick marked"
+                    return "marked holiday"
+                  case 4:
+                    return "marked"
                   case 10:
-                    return "holiday marked"
+                    return "vacation"
                   case 11:
-                  return "holiday"
+                  return "vacation"
                   case 12:
-                    return "holiday"
+                    return "vacation"
                   case 14:
-                    return "special"
-                  case 5:
-                    return "marked vacation sick holiday special"
+                    return "sick"
+                  case 23:
+                    return "sick"
+                  case 24:
+                    return "sick"
+                  case 25:
+                    return "sick"
                   default:
                     return ""
                 }
