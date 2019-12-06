@@ -38,6 +38,11 @@ export default class Editor extends React.PureComponent {
 		this.markdownViewRef = React.createRef();
 		this.markdownEditorRef = React.createRef();
 
+		this.backup = {
+			editorWidth: "50%",
+			scrollSyncPreference: true,
+		}
+
 		this.state = {
 			markdown: `GitHub Flavored Markdown
 ========================
@@ -118,17 +123,25 @@ See http://github.github.com/github-flavored-markdown/.
     })
 	}
 
-	togglePreview(skipStorageUpdate) {
-		this.setState({renderPreview: !this.state.renderPreview}, () => {
+	togglePreview(force) {
+		this.setState({renderPreview: force || !this.state.renderPreview}, () => {
 			if (this.state.renderPreview) {
-				this.editorNode.style.width = this.state.previewWidthBackup;
+				// SHOW/RESTORE PREVIEW
+				this.editorNode.style.width = this.backup.editorWidth || "50%";
+				this.setState({scrollSync: this.backup.scrollSyncPreference});
+
 				this.previewNode.classList.remove("hidden");
-				!skipStorageUpdate && localStorage.setItem("preview-hidden", false)
+				localStorage.setItem("preview-hidden", false);
 			} else {
-				this.setState({previewWidthBackup: this.editorNode.style.width});
+				// HIDE PREVIEW
+				this.backup.editorWidth = this.editorNode.style.width;
+				this.backup.scrollSyncPreference = this.state.scrollSync;
+
 				this.editorNode.style.width = "100%";
 				this.previewNode.classList.add("hidden");
-				!skipStorageUpdate && localStorage.setItem("preview-hidden", true)
+				localStorage.setItem("preview-hidden", true);
+				// disable scroll sync -> performance
+				this.setState({scrollSync: false})
 			}
 		})
 	}
@@ -145,18 +158,20 @@ See http://github.github.com/github-flavored-markdown/.
 	}
 
 	resetLayout() {
+		this.backup = {};
+
 		this.setState({
 			zenMode: false,
 			renderPreview: true,
 			scrollSync: true,
-			previewWidthBackup: "50%",
 			forceUpdateSeparator: this.state.forceUpdateSeparator + 1,
-		})
+		});
 
-		this.editorNode.style.width = "50%";
-		this.previewNode.style.width = "50%";
-		this.previewNode.classList.remove("hidden");
-		localStorage.setItem("preview-hidden", false);
+		this.togglePreview(true);
+		// this.editorNode.style.width = "50%";
+		// this.previewNode.style.width = "50%";
+		// this.previewNode.classList.remove("hidden");
+		// localStorage.setItem("preview-hidden", false);
 	}
 
 	acceptMethods(methods) {
