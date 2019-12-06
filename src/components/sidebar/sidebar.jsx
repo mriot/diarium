@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 import Progress from './progress';
-import DiariumCalendar from './diarium-calendar';
+import Calendar from './calendar/calendar';
 
 const StyledSidebar = styled.aside`
   position: relative;
@@ -60,7 +60,7 @@ export default class Sidebar extends React.PureComponent {
           }
         </Today>
 
-        <DiariumCalendar forceUpdateCalendar={this.state.forceUpdateCalendar} />
+        <Calendar forceUpdateCalendar={this.state.forceUpdateCalendar} />
 
         <Progress />
       </StyledSidebar>

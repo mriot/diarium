@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from "styled-components";
-import Calendar from 'react-calendar';
-import "./calendar-theme.css";
+import { Calendar as ReactCalendar } from 'react-calendar';
+import "./theme/eros.css";
 
-const StyledCalendar = styled(Calendar) `
+const StyledCalendar = styled(ReactCalendar) `
   border-bottom: 1px solid #191919;
 	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
 `
 
-export default class DiariumCalendar extends React.PureComponent {
+export default class Calendar extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	

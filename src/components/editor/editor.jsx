@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import SeparatorHandle from "./separator-handle";
-import MarkdownView from './markdown-view';
+import MarkdownView from './markdown-view/markdown-view';
 import MarkdownEditor from './markdown-editor';
 import Toolbar from './toolbar';
 
