@@ -1,0 +1,139 @@
+/*
+**************************************************** 
+            ______ _____   ____   _____ 
+          |  ____|  __ \ / __ \ / ____|
+          | |__  | |__) | |  | | (___  
+          |  __| |  _  /| |  | |\___ \ 
+          | |____| | \ \| |__| |____) |
+          |______|_|  \_\\____/|_____/ 
+****************************************************
+** CUSTOM DARK THEME - REACT-CALENDAR (v. 2.19.2) **
+****************************************************
+*/
+
+.calendar-dark-theme.react-calendar {
+	border: none !important;
+  border-bottom: 1px solid #191919 !important;
+	padding: 1px;
+  color: #efefef !important;
+  background-color: #1f222a !important;
+}
+
+.calendar-dark-theme button:enabled:focus {
+	background-color: #3C3F47 !important;
+}
+
+
+/* NAVIGATION */
+.calendar-dark-theme .react-calendar__navigation {
+  margin-bottom: 5px !important;
+  border-bottom: 1px solid #272b34;
+}
+.calendar-dark-theme .react-calendar__navigation button {
+  font-size: 14px;
+}
+.calendar-dark-theme .react-calendar__navigation button:enabled {
+	color: #efefef;
+}
+.calendar-dark-theme .react-calendar__navigation button[disabled] {
+  color: #5f5f5f;
+  background-color: #1f222a;
+}
+
+.calendar-dark-theme .react-calendar__tile:enabled:hover,
+.calendar-dark-theme .react-calendar__navigation button:enabled:hover {
+	background-color: #262931;
+}
+
+
+/* DAYS */
+.calendar-dark-theme .react-calendar__decade-view__years__year,
+.calendar-dark-theme .react-calendar__year-view__months__month,
+.calendar-dark-theme .react-calendar__tile.react-calendar__century-view__decades__decade,
+.calendar-dark-theme .react-calendar__month-view__days__day:not(.react-calendar__month-view__days__day--weekend) {
+  color: #efefef;
+}
+.calendar-dark-theme .react-calendar__month-view__days__day--weekend {
+  color: #ff5722;
+}
+
+
+/* TILES */
+.calendar-dark-theme .react-calendar__tile {
+  position: relative;
+  padding: 10px;
+}
+
+.react-calendar__month-view__weekdays abbr[title] {
+	/* remove dotted underline of "MO", "DI", "MI", etc */
+  text-decoration: none;
+}
+
+.calendar-dark-theme .react-calendar__tile:disabled {
+  background-color: #2a2d38;
+}
+
+/* currently selected */
+.calendar-dark-theme .react-calendar__tile.react-calendar__tile--active {
+  color: #fff !important;
+  background-color: #3C3F47 !important;
+}
+
+/* today */
+.calendar-dark-theme .react-calendar__tile--now {
+	outline: 1px dashed #aaa;
+	z-index: 1;
+  box-shadow: none !important;
+}
+
+/* highlights the month/year/decade/etc-tile that holds today */
+/* don't need this */
+.calendar-dark-theme .react-calendar__tile--hasActive {
+	outline: none;
+	background-color: inherit;
+}
+
+/* months / years / etc */
+.calendar-dark-theme .react-calendar__tile.react-calendar__year-view__months__month,
+.calendar-dark-theme .react-calendar__tile.react-calendar__decade-view__years__year,
+.calendar-dark-theme .react-calendar__tile.react-calendar__century-view__decades__decade {
+	font-size: 12px;
+	padding: 15px;
+}
+
+
+/* SPECIAL TILES STYLING */
+.calendar-dark-theme .react-calendar__tile.marked {
+  box-shadow: inset 0 0 0 1px rgba(0, 255, 139, 0.3);
+  color: #00ff8b !important;
+}
+
+.calendar-dark-theme .react-calendar__tile.vacation > abbr::before {
+  content: "u";
+  color: #12d0dd;
+  position: absolute;
+  top: 0;
+  right: 5px;
+  font-weight: normal;
+  font-variant: small-caps;
+}
+
+.calendar-dark-theme .react-calendar__tile.sick > abbr::after {
+  content: "k";
+  color: #da3c10;
+  position: absolute;
+  top: 0;
+  left: 5px;
+  font-weight: normal;
+  font-variant: small-caps;
+}
+
+.calendar-dark-theme .react-calendar__tile.holiday::before {
+  content: "f";
+  color: #12ddb1;
+  position: absolute;
+  bottom: 2px;
+  left: 5px;
+  font-weight: normal;
+  font-variant: small-caps;
+}
