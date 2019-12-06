@@ -20,6 +20,18 @@ const StyledCodeMirror = styled(CodeMirror) `
 
 	& .CodeMirror {
 		height: 100%;
+
+		/* move overlay scrollbar to left side */
+		& .CodeMirror-overlayscroll-vertical {
+			left: 0;
+			right: auto;
+
+			> div {
+				right: auto;
+				width: 5px;
+				background-color: #2b2b2b;
+			}
+		}
 	}
 `
 
