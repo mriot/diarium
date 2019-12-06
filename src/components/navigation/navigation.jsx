@@ -33,16 +33,6 @@ const ButtonContainer = styled.div `
   display: flex;
   margin-right: 20px;
 `
-const ActiveButtonSlider = styled.div `
-  position: absolute;
-  bottom: 10%;
-  height: 2px;
-  left: ${props => props.offsetX || 0}px;
-  width: calc(${props => props.width || 0}px / 2);
-  transform: translateX(50%);
-  background-color: #555;
-  transition: all 0.5s cubic-bezier(1, 0.01, 0, 1.22);
-`
 const Separator = styled.div `
   width: 2px;
   align-self: stretch;
@@ -61,32 +51,15 @@ const LogoutButton = styled.div `
   }
 `
 
-export default class Navigation extends React.PureComponent {
-  constructor(props) {
-    super(props);
-  
-    this.state = {
-      sliderOffsetX: 0,
-      sliderWidth: 0,
-    }
-  }
-
-  moveSliderToActiveButton(positionData) {
-    this.setState({
-      sliderOffsetX: positionData.left,
-      sliderWidth: positionData.width
-    })
-  }
-  
+export default class Navigation extends React.PureComponent {  
   render() { 
     return (
       <Nav>
         <Logo>DIARIUM</Logo>
         <RightSide>
           <ButtonContainer>
-            <NavButton to="/edit" value="Bearbeiten" click={this.moveSliderToActiveButton.bind(this)} />
-            <NavButton to="/favorites" value="Favoriten" click={this.moveSliderToActiveButton.bind(this)} />
-            <ActiveButtonSlider width={this.state.sliderWidth} offsetX={this.state.sliderOffsetX} />
+            <NavButton value="Bearbeiten" />
+            <NavButton value="Favoriten" />
           </ButtonContainer>
 
           <TextInput placeholder="Suchen..." />
