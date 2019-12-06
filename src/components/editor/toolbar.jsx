@@ -36,6 +36,7 @@ const ButtonSeparator = styled.div `
 	background-color: #c7c7c7;
 `
 const IconButton = styled.div `
+	position: relative;
 	padding: 6px 10px;
 	line-height: 1;
 	margin: 0 5px;
@@ -50,6 +51,22 @@ const IconButton = styled.div `
 	${props => props.isActive && `
 		background-color: #c7c7c7;
 	`}
+
+	${props => props.isDisabled && `
+		cursor: default;
+		color: #777;
+		background-color: inherit !important;
+	`}
+
+
+	&::before {
+		content: "${props => props.displayCounter > 0 && props.displayCounter}";
+		position: absolute;
+		top: 0;
+		right: 0;
+		font-size: 11px;
+		opacity: 0.5;
+	}
 `
 
 export default class Toolbar extends React.PureComponent {
@@ -88,11 +105,21 @@ export default class Toolbar extends React.PureComponent {
 		return (
 			<StyledToolbar {...this.props}>
 				<LeftSide>
-					<IconButton title="Rückgängig" onClick={() => this.props.editorUndo()}>
+					<IconButton
+						title="Rückgängig"
+						displayCounter={this.props.toolbarStatus.editorHistory.undo}
+						onClick={() => this.props.editorUndo()}
+						isDisabled={this.props.toolbarStatus.editorHistory.undo <= 0}
+					>
 						<FontAwesomeIcon icon={faReply} />
 					</IconButton>
 
-					<IconButton title="Wiederholen" onClick={() => this.props.editorRedo()}>
+					<IconButton
+						title="Wiederholen"
+						displayCounter={this.props.toolbarStatus.editorHistory.redo}
+						onClick={() => this.props.editorRedo()}
+						isDisabled={this.props.toolbarStatus.editorHistory.redo <= 0}
+					>
 						<FontAwesomeIcon icon={faShare} />
 					</IconButton>
 

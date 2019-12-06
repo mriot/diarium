@@ -94,6 +94,7 @@ See http://github.github.com/github-flavored-markdown/.
 			previewWidthBackup: "50%",
 			forceUpdateSeparator: 0,
 			scrollSyncPosition: 0,
+			editorHistory: {undo: 0, redo: 0},
 		}
 	}
 
@@ -151,10 +152,11 @@ See http://github.github.com/github-flavored-markdown/.
 			previewWidthBackup: "50%",
 			forceUpdateSeparator: this.state.forceUpdateSeparator + 1,
 		})
+
 		this.editorNode.style.width = "50%";
 		this.previewNode.style.width = "50%";
 		this.previewNode.classList.remove("hidden");
-		localStorage.setItem("preview-hidden", false)
+		localStorage.setItem("preview-hidden", false);
 	}
 
 	acceptMethods(methods) {
@@ -182,16 +184,18 @@ See http://github.github.com/github-flavored-markdown/.
 						zenModeActive: this.state.zenMode,
 						previewActive: this.state.renderPreview,
 						scrollSyncActive: this.state.scrollSync,
+						editorHistory: this.state.editorHistory,
 					}}
 				/>
 
 				<InnerContainer>
 					<MarkdownEditor
-						shareMethods={this.acceptMethods.bind(this)}
 						ref={this.markdownEditorRef}
 						value={this.state.markdown}
-						scrollPosChange={scrollTop => this.setState({scrollSyncPosition: scrollTop})}
+						shareMethods={this.acceptMethods.bind(this)}
+						scrollPosChange={scrollSyncPosition => this.setState({scrollSyncPosition})}
 						change={markdown => this.setState({markdown})}
+						getEditorHistory={editorHistory => this.setState({editorHistory})}
 					/>
 
 					{this.state.nodesReady && this.state.renderPreview &&

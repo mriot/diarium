@@ -103,6 +103,7 @@ export default class MarkdownEditor extends React.PureComponent {
 				value={this.props.value}
 				onChange={markdown => {
 					this.props.change(markdown)
+					this.props.getEditorHistory(this.CodeMirrorInstance.historySize())
 				}}
 				options={this.editorConfig}
 			/>
