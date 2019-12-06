@@ -3,26 +3,32 @@ import styled from 'styled-components';
 import CodeMirror from "react-codemirror";
 import "codemirror/lib/codemirror.css";
 import "code-mirror-themes/themes/clouds-midnight.css"
-import "codemirror/mode/markdown/markdown";
 import "codemirror/mode/gfm/gfm";
-import "codemirror/addon/edit/matchbrackets";
 import "codemirror/addon/edit/closebrackets";
-import "codemirror/addon/edit/matchtags";
-import "codemirror/addon/edit/closetag";
-import "codemirror/addon/edit/continuelist";
 import "codemirror/addon/scroll/scrollpastend";
+import "codemirror/addon/selection/active-line";
 import "codemirror/addon/scroll/simplescrollbars";
 import "codemirror/addon/scroll/simplescrollbars.css";
+// import "codemirror/addon/edit/matchbrackets";
+// import "codemirror/addon/edit/matchtags";
+// import "codemirror/addon/edit/closetag";
+// import "codemirror/addon/edit/continuelist";
 
 const StyledCodeMirror = styled(CodeMirror) `
 	width: 50%;
 	height: 100%;
 
-	& .CodeMirror {
+	.CodeMirror {
 		height: 100%;
 
+		.CodeMirror-activeline {
+			.CodeMirror-linenumber {
+				color: #888;
+			}
+		}
+
 		/* move overlay scrollbar to left side */
-		& .CodeMirror-overlayscroll-vertical {
+		.CodeMirror-overlayscroll-vertical {
 			left: 0;
 			right: auto;
 
@@ -52,14 +58,15 @@ export default class MarkdownEditor extends React.PureComponent {
 			fixedGutter: true,
 			showCursorWhenSelecting: true,
 			autofocus: true,
-
-			// addon settings
-			matchBrackets: true,
+			highlightFormatting: true,
+			// addons
 			autoCloseBrackets: true,
-			matchTags: true,
-			autoCloseTags: true,
 			scrollbarStyle: "overlay",
 			scrollPastEnd: true,
+			styleActiveLine: true,
+			// matchTags: true,
+			// autoCloseTags: true,
+			// matchBrackets: true,
 		}
 	}
 
