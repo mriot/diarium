@@ -98,8 +98,8 @@ export default class SeparatorHandle extends React.PureComponent {
 }
 
 SeparatorHandle.propTypes = {
-	containerNode: PropTypes.node,
-	editorNode: PropTypes.node,
-	previewNode: PropTypes.node,
+	containerNode: PropTypes.any,
+	editorNode: PropTypes.any,
+	previewNode: PropTypes.any,
 	// forceUpdateSeparator prop is only used by a parent to force a rerender of this dude
 }
