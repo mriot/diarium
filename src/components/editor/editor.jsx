@@ -137,8 +137,6 @@ export default class Editor extends React.PureComponent {
   }
 
 	render() {
-		console.log("render", this.state.scrollSync)
-		
 		return (
 			<EditorContainer ref={this.editorContainerRef} className={this.state.zenMode ? "zen-mode" : ""}>
 				<Toolbar 
