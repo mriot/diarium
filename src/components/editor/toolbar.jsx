@@ -58,7 +58,7 @@ const IconButton = styled.div `
 		background-color: inherit !important;
 	`}
 
-
+/*
 	&::before {
 		content: "${props => props.displayCounter > 0 && props.displayCounter}";
 		position: absolute;
@@ -67,6 +67,7 @@ const IconButton = styled.div `
 		font-size: 11px;
 		opacity: 0.5;
 	}
+*/
 `
 
 export default class Toolbar extends React.PureComponent {
@@ -107,7 +108,7 @@ export default class Toolbar extends React.PureComponent {
 				<LeftSide>
 					<IconButton
 						title="Rückgängig"
-						displayCounter={this.props.toolbarStatus.editorHistory.undo}
+						// displayCounter={this.props.toolbarStatus.editorHistory.undo}
 						onClick={() => this.props.editorUndo()}
 						isDisabled={this.props.toolbarStatus.editorHistory.undo <= 0}
 					>
@@ -116,7 +117,7 @@ export default class Toolbar extends React.PureComponent {
 
 					<IconButton
 						title="Wiederholen"
-						displayCounter={this.props.toolbarStatus.editorHistory.redo}
+						// displayCounter={this.props.toolbarStatus.editorHistory.redo}
 						onClick={() => this.props.editorRedo()}
 						isDisabled={this.props.toolbarStatus.editorHistory.redo <= 0}
 					>
@@ -183,7 +184,7 @@ export default class Toolbar extends React.PureComponent {
 					<IconButton
 						title="Layout des Editors zurücksetzen"
 						onClick={() => {
-							this.props.resetLayout();
+							this.props.resetEditorLayout();
 							this.state.inFullscreenMode && this.toggleFullScreen();
 						}}
 					>
