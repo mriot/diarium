@@ -40,18 +40,17 @@ const Separator = styled.div `
   background-color: rgba(255, 255, 255, 0.5);
 `
 const LogoutButton = styled.div `
-  color: #459cce;
+  color: #9e9e9e;
   padding: 10px;
   cursor: pointer;
   transition: all 0.3s;
   
   &:hover {
-    color: red;
-    /* background-color: #333; */
+    color: orangered;
   }
 `
 
-export default class Navigation extends React.PureComponent {  
+export default class Navigation extends React.PureComponent {
   render() { 
     return (
       <Nav>
@@ -59,6 +58,7 @@ export default class Navigation extends React.PureComponent {
         <RightSide>
           <ButtonContainer>
             <NavButton value="Bearbeiten" />
+            <NavButton value="Meta Daten" />
             <NavButton value="Favoriten" />
           </ButtonContainer>
 
