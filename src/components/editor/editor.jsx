@@ -39,67 +39,21 @@ export default class Editor extends React.PureComponent {
 		this.markdownEditorRef = React.createRef();
 
 		this.backup = {
-			editorWidth: "50%",
+			markdownEditorWidth: "50%",
 			scrollSyncPreference: true,
 		}
 
 		this.state = {
-			markdown: `GitHub Flavored Markdown
-========================
-
-Everything from markdown plus GFM features:
-
-## URL autolinking
-
-Underscores_are_allowed_between_words.
-
-## Strikethrough text
-
-GFM adds syntax to strikethrough text, which is missing from standard Markdown.
-
-~~Mistaken text.~~
-~~**works with other formatting**~~
-
-~~spans across
-lines~~
-
-## Fenced code blocks (and syntax highlighting)
-
-\`\`\`javascript
-for (var i = 0; i < items.length; i++) {
-		console.log(items[i], i); // log them
-}
-\`\`\`
-
-## Task Lists
-
-- [ ] Incomplete task list item
-- [x] **Completed** task list item
-
-## A bit of GitHub spice
-
-See http://github.github.com/github-flavored-markdown/.
-
-(Set \`gitHubSpice: false\` in mode options to disable):
-
-* SHA: be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
-* User@SHA ref: mojombo@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
-* User/Project@SHA: mojombo/god@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
-* \#Num: #1
-* User/#Num: mojombo#1
-* User/Project#Num: mojombo/god#1
-
-(Set \`emoji: false\` in mode options to disable):
-
-* emoji: :smile:`,
+			markdown: `# Hello World!`,
 			zenMode: false,
 			nodesReady: false,
 			renderPreview: true,
 			scrollSync: true,
-			previewWidthBackup: "50%",
 			forceUpdateSeparator: 0,
 			scrollSyncPosition: 0,
 			editorHistory: {undo: 0, redo: 0},
+			markdownViewWidth: "50%",
+			markdownEditorWidth: "50%",
 		}
 	}
 
@@ -108,8 +62,6 @@ See http://github.github.com/github-flavored-markdown/.
 		this.editorNode = ReactDOM.findDOMNode(this.markdownEditorRef.current);
 		this.previewNode = ReactDOM.findDOMNode(this.markdownViewRef.current);
 
-		this.editorNode.style.width = "50%";
-		this.previewNode.style.width = "50%";
 		this.setState({nodesReady: true});
 
 		if (localStorage.getItem("preview-hidden") === "true") this.togglePreview(true);
@@ -120,81 +72,88 @@ See http://github.github.com/github-flavored-markdown/.
 				event.preventDefault();
 				this.editorFocus();
 			}
-    })
+		});
 	}
 
 	togglePreview(force) {
-		this.setState({renderPreview: force || !this.state.renderPreview}, () => {
+		this.setState({
+			renderPreview: force === undefined ? !this.state.renderPreview : force
+		}, () => {
 			if (this.state.renderPreview) {
-				// SHOW/RESTORE PREVIEW
-				this.editorNode.style.width = this.backup.editorWidth || "50%";
-				this.setState({scrollSync: this.backup.scrollSyncPreference});
+				this.setState({
+					markdownEditorWidth: this.backup.markdownEditorWidth || "50%",
+					scrollSync: this.backup.scrollSyncPreference || true,
+				});
 
 				this.previewNode.classList.remove("hidden");
 				localStorage.setItem("preview-hidden", false);
 			} else {
-				// HIDE PREVIEW
-				this.backup.editorWidth = this.editorNode.style.width;
+				// using the node for backup cuz state doesn't know if the editor was resized
+				this.backup.markdownEditorWidth = this.editorNode.style.width || "50%";
 				this.backup.scrollSyncPreference = this.state.scrollSync;
 
-				this.editorNode.style.width = "100%";
 				this.previewNode.classList.add("hidden");
 				localStorage.setItem("preview-hidden", true);
-				// disable scroll sync -> performance
-				this.setState({scrollSync: false})
+
+				this.setState({
+					markdownEditorWidth: "100%",
+					scrollSync: false, // disable scroll sync for performance
+				});
 			}
 		})
 	}
 
-	toggleZenMode() {
+	toggleZenMode(force) {
 		this.setState({
-			zenMode: !this.state.zenMode,
+			zenMode: force === undefined ? !this.state.zenMode : force,
 			forceUpdateSeparator: this.state.forceUpdateSeparator + 1,
 		})
 	}
 
-	toggleScrollSync() {
-		this.setState({scrollSync: !this.state.scrollSync})
+	toggleScrollSync(force) {
+		this.setState({scrollSync: force === undefined ? !this.state.scrollSync : force});
 	}
 
-	resetLayout() {
+	resetEditorLayout() {
 		this.backup = {};
 
-		this.setState({
-			zenMode: false,
-			renderPreview: true,
-			scrollSync: true,
-			forceUpdateSeparator: this.state.forceUpdateSeparator + 1,
-		});
-
 		this.togglePreview(true);
-		// this.editorNode.style.width = "50%";
-		// this.previewNode.style.width = "50%";
-		// this.previewNode.classList.remove("hidden");
-		// localStorage.setItem("preview-hidden", false);
+		this.toggleScrollSync(true);
+		this.toggleZenMode(false);
+
+		this.editorNode.style.width = "";
+		this.previewNode.style.width = "";
+
+		this.setState({forceUpdateSeparator: this.state.forceUpdateSeparator + 1});
 	}
 
 	acceptMethods(methods) {
-    this.insertCode = methods.insertCode;
-    this.insertLink = methods.insertLink;
-    this.editorUndo = methods.editorUndo;
-    this.editorRedo = methods.editorRedo;
-    this.editorFocus = methods.editorFocus;
+		// method refs  	| shared methods from markdown editor
+    this.insertCode 	= methods.insertCode;
+    this.insertLink 	= methods.insertLink;
+    this.editorUndo 	= methods.editorUndo;
+    this.editorRedo 	= methods.editorRedo;
+    this.editorFocus 	= methods.editorFocus;
   }
 
 	render() {
+		console.log("render", this.state.scrollSync)
+		
 		return (
 			<EditorContainer ref={this.editorContainerRef} className={this.state.zenMode ? "zen-mode" : ""}>
 				<Toolbar 
+					// get passed to another child
 					editorFocus={() => this.editorFocus()}
 					editorUndo={() => this.editorUndo()}
 					editorRedo={() => this.editorRedo()}
 					insertCode={() => this.insertCode()}
 					insertLink={() => this.insertLink()}
+					// called directly here
 					toggleZenMode={this.toggleZenMode.bind(this)}
 					togglePreview={this.togglePreview.bind(this)}
 					toggleScrollSync={this.toggleScrollSync.bind(this)}
-					resetLayout={this.resetLayout.bind(this)}
+					resetEditorLayout={this.resetEditorLayout.bind(this)}
+					// used to highlight active buttons in toolbar
 					toolbarStatus={{
 						zenModeActive: this.state.zenMode,
 						previewActive: this.state.renderPreview,
@@ -207,6 +166,7 @@ See http://github.github.com/github-flavored-markdown/.
 					<MarkdownEditor
 						ref={this.markdownEditorRef}
 						value={this.state.markdown}
+						allocWidth={this.state.markdownEditorWidth}
 						shareMethods={this.acceptMethods.bind(this)}
 						scrollPosChange={scrollSyncPosition => this.setState({scrollSyncPosition})}
 						change={markdown => this.setState({markdown})}
@@ -223,9 +183,9 @@ See http://github.github.com/github-flavored-markdown/.
 					}
 
 					<MarkdownView
-						scrollSync={this.state.scrollSync && this.state.scrollSyncPosition}
-						markdown={this.state.markdown}
 						ref={this.markdownViewRef}
+						markdown={this.state.markdown}
+						scrollSyncPos={this.state.scrollSync && this.state.scrollSyncPosition}
 					/>
 				</InnerContainer>
 			</EditorContainer>			

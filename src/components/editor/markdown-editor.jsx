@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import CodeMirror from "react-codemirror";
 import "codemirror/lib/codemirror.css";
@@ -9,10 +10,6 @@ import "codemirror/addon/scroll/scrollpastend";
 import "codemirror/addon/selection/active-line";
 import "codemirror/addon/scroll/simplescrollbars";
 import "codemirror/addon/scroll/simplescrollbars.css";
-// import "codemirror/addon/edit/matchbrackets";
-// import "codemirror/addon/edit/matchtags";
-// import "codemirror/addon/edit/closetag";
-// import "codemirror/addon/edit/continuelist";
 
 const StyledCodeMirror = styled(CodeMirror) `
 	width: 50%;
@@ -27,7 +24,7 @@ const StyledCodeMirror = styled(CodeMirror) `
 			}
 		}
 
-		/* move overlay scrollbar to left side */
+		/* move scrollbar to left side of the editor */
 		.CodeMirror-overlayscroll-vertical {
 			left: 0;
 			right: auto;
@@ -46,37 +43,35 @@ export default class MarkdownEditor extends React.PureComponent {
 		super(props);
 
 		this.codeMirrorRef = React.createRef();
-
 		this.CodeMirrorInstance = null;
 
 		this.editorConfig = {
-			mode: "gfm",
-			lineNumbers: true,
+			mode: "gfm", // github flavored markdown
 			theme: "clouds-midnight",
 			tabSize: 2,
-			lineWrapping: true,
-			fixedGutter: true,
-			showCursorWhenSelecting: true,
 			autofocus: true,
+			fixedGutter: true,
+			lineNumbers: true,
+			lineWrapping: true,
 			highlightFormatting: true,
-			// addons
-			autoCloseBrackets: true,
-			scrollbarStyle: "overlay",
+			showCursorWhenSelecting: true,
+			// ADDONS
 			scrollPastEnd: true,
 			styleActiveLine: true,
-			// matchTags: true,
-			// autoCloseTags: true,
-			// matchBrackets: true,
+			autoCloseBrackets: true,
+			scrollbarStyle: "overlay",
 		}
 	}
 
 	componentDidMount() {
+		this.CodeMirrorNode 		= ReactDOM.findDOMNode(this.codeMirrorRef.current);
 		this.CodeMirrorInstance = this.codeMirrorRef.current.getCodeMirror();
+		
 		this.CodeMirrorInstance.execCommand("goLineEnd");
 
 		this.CodeMirrorInstance.on("scroll", event => {
 			this.props.scrollPosChange(event.doc.scrollTop)
-		})
+		});
 
 		this.props.shareMethods({
 			insertCode: this.insertCode.bind(this),
@@ -88,7 +83,13 @@ export default class MarkdownEditor extends React.PureComponent {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		this.editorFocus()
+		this.editorFocus();
+		if (prevProps.allocWidth !== this.props.allocWidth)
+			this.CodeMirrorNode.style.width = this.props.allocWidth;
+	}
+
+	getCursor() {
+		return this.CodeMirrorInstance.getCursor()
 	}
 
 	editorFocus() {
@@ -105,26 +106,32 @@ export default class MarkdownEditor extends React.PureComponent {
 
 	insertCode() {
 		this.CodeMirrorInstance.replaceSelection("```language\n\n````");
-		const cursorPos = this.CodeMirrorInstance.getCursor();
-		this.CodeMirrorInstance.setCursor({line: cursorPos.line - 1, ch: 0});
+		this.CodeMirrorInstance.setCursor({
+			line: this.getCursor().line - 1,
+			ch: 0
+		});
 	}
 
 	insertLink() {
 		this.CodeMirrorInstance.replaceSelection("[]()");
-		const cursorPos = this.CodeMirrorInstance.getCursor();
-		this.CodeMirrorInstance.setCursor({line: cursorPos.line, ch: cursorPos.ch - 3});
+		this.CodeMirrorInstance.setCursor({
+			line: this.getCursor().line,
+			ch: this.getCursor().ch - 3
+		});
 	}
 
 	render() {
+		// console.log("alloced", this.props.allocWidth)
 		return (
 			<StyledCodeMirror
+				// {...this.props}
 				ref={this.codeMirrorRef}
 				value={this.props.value}
+				options={this.editorConfig}
 				onChange={markdown => {
 					this.props.change(markdown)
 					this.props.getEditorHistory(this.CodeMirrorInstance.historySize())
 				}}
-				options={this.editorConfig}
 			/>
 		);
 	}
