@@ -52,7 +52,6 @@ export default class Editor extends React.PureComponent {
 			forceUpdateSeparator: 0,
 			scrollSyncPosition: 0,
 			editorHistory: {undo: 0, redo: 0},
-			markdownViewWidth: "50%",
 			markdownEditorWidth: "50%",
 		}
 	}
@@ -62,6 +61,7 @@ export default class Editor extends React.PureComponent {
 		this.editorNode = ReactDOM.findDOMNode(this.markdownEditorRef.current);
 		this.previewNode = ReactDOM.findDOMNode(this.markdownViewRef.current);
 
+		// render separator when all node refs are available
 		this.setState({nodesReady: true});
 
 		if (localStorage.getItem("preview-hidden") === "true") this.togglePreview(true);
