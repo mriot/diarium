@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from "prop-types";
 // import { NavLink } from "react-router-dom";
 
 const NavItem = styled.div `
@@ -66,4 +67,8 @@ export default class NavButton extends React.PureComponent {
       </NavItem>
     );
   }
+}
+
+NavButton.propTypes = {
+  // as this component is still WIP, I'll leave it like this for now.
 }

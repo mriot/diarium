@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from "react-dom";
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import ReactMarkdown from "react-markdown";
 import "./theme/ceres.css";
 
@@ -39,4 +40,9 @@ export default class MarkdownView extends React.PureComponent {
 			</RenderedMarkdownContainer>
 		);
 	}
+}
+
+MarkdownView.propTypes = {
+	markdown: PropTypes.string,
+	scrollSyncPos: PropTypes.number,
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import styled from 'styled-components';
 import "../../lib/simpledrag";
 
@@ -94,4 +95,11 @@ export default class SeparatorHandle extends React.PureComponent {
 			<StyledSeparatorHandle ref={this.handleRef} />
 		);
 	}
+}
+
+SeparatorHandle.propTypes = {
+	containerNode: PropTypes.node,
+	editorNode: PropTypes.node,
+	previewNode: PropTypes.node,
+	// forceUpdateSeparator prop is only used by a parent to force a rerender of this dude
 }

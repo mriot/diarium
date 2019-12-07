@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faPaperclip, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
@@ -194,4 +195,17 @@ export default class Toolbar extends React.PureComponent {
 			</StyledToolbar>
 		);
 	}
+}
+
+Toolbar.propTypes = {
+	editorFocus: PropTypes.func,
+  editorUndo: PropTypes.func,
+  editorRedo: PropTypes.func,
+  insertCode: PropTypes.func,
+  insertLink: PropTypes.func,
+  toggleZenMode: PropTypes.func,
+  togglePreview: PropTypes.func,
+  toggleScrollSync: PropTypes.func,
+  resetEditorLayout: PropTypes.func,
+  toolbarStatus: PropTypes.object,
 }

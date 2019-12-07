@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from "prop-types";
 import styled from 'styled-components';
 import CodeMirror from "react-codemirror";
 import "codemirror/lib/codemirror.css";
@@ -124,7 +125,6 @@ export default class MarkdownEditor extends React.PureComponent {
 		// console.log("alloced", this.props.allocWidth)
 		return (
 			<StyledCodeMirror
-				// {...this.props}
 				ref={this.codeMirrorRef}
 				value={this.props.value}
 				options={this.editorConfig}
@@ -135,4 +135,13 @@ export default class MarkdownEditor extends React.PureComponent {
 			/>
 		);
 	}
+}
+
+MarkdownEditor.propTypes = {
+	value: PropTypes.string,
+	allocWidth: PropTypes.string,
+	shareMethods: PropTypes.func,
+	scrollPosChange: PropTypes.func,
+	change: PropTypes.func,
+	getEditorHistory: PropTypes.func,
 }

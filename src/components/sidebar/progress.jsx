@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import ProgressBar from '../common/progressbar';
 
@@ -53,4 +54,8 @@ export default class Progress extends React.PureComponent {
 			</ProgressContainer>
 		);
 	}
+}
+
+Progress.propTypes = {
+	// as this component is still WIP, I'll leave it like this for now.
 }

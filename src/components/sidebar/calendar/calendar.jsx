@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Calendar as ReactCalendar } from 'react-calendar';
 import "./theme/eros.css";
@@ -92,4 +93,8 @@ export default class Calendar extends React.PureComponent {
 			/>
 		);
 	}
+}
+
+Calendar.propTypes = {
+	// as this component is still WIP, I'll leave it like this for now.
 }

@@ -9,6 +9,7 @@
     "@fortawesome/react-fontawesome": "^0.1.7",
     "code-mirror-themes": "^1.0.0",
     "codemirror": "^5.49.2",
+    "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-calendar": "^2.19.2",
     "react-codemirror": "^1.0.0",
