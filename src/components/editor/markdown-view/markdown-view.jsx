@@ -25,11 +25,11 @@ export default class MarkdownView extends React.PureComponent {
 	
 	componentDidMount() {
 		this.markdownOutputNode = ReactDOM.findDOMNode(this.markdownOutputRef.current);
-		this.markdownOutputNode.scrollTop = this.props.scrollSync;
+		this.markdownOutputNode.scrollTop = this.props.scrollSyncPos;
 	}
 
 	componentDidUpdate(prevProps, prevState) {		
-		this.markdownOutputNode.scrollTop = this.props.scrollSync;
+		this.markdownOutputNode.scrollTop = this.props.scrollSyncPos;
 	}
 	
 	render() {
