@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from "styled-components";
 import { BrowserRouter } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Navigation from './components/navigation/navigation';
 import Sidebar from './components/sidebar/sidebar';
 import Editor from './components/editor/editor';
-import 'react-tippy/dist/tippy.css';
 
 const Layout = styled.div `
   display: flex;
@@ -27,6 +28,19 @@ export default class App extends React.PureComponent {
             <Sidebar />
             <Editor />
           </Main>
+          <ToastContainer
+            position="bottom-left"
+            // hideProgressBar={true}
+            // autoClose={5000}
+            newestOnTop={true}
+            progressStyle={{
+              "background": "linear-gradient(to right, #00b7ff, #5ac8fa, #007aff, #34aadc)"
+            }}
+            style={{
+              "max-width": "300px",
+              "left": 0
+            }}
+          />
         </Layout>
       </BrowserRouter>
     )
