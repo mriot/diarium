@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import ReactMarkdown from "react-markdown";
 import "./theme/ceres.css";
+import "./theme/vesta.css";
 
 const RenderedMarkdownContainer = styled.div `
 	width: 50%;
