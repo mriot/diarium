@@ -146,6 +146,7 @@ export default class Editor extends React.PureComponent {
 					insertCode={() => this.insertCode()}
 					insertLink={() => this.insertLink()}
 					// called directly here
+					toggleZenMode={this.toggleZenMode.bind(this)}
 					togglePreview={this.state.renderPreview ? this.hidePreview.bind(this) : this.showPreview.bind(this)}
 					toggleScrollSync={this.toggleScrollSync.bind(this)}
 					resetEditorLayout={this.resetEditorLayout.bind(this)}
