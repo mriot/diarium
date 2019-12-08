@@ -2,10 +2,13 @@ import React from 'react';
 import styled from "styled-components";
 import Progress from './progress';
 import Calendar from './calendar/calendar';
+import MetaEditor from './meta-editor';
 
 const StyledSidebar = styled.aside`
   position: relative;
   width: 300px;
+  display: flex;
+  flex-direction: column;
   max-height: 100%;
   box-sizing: border-box;
   background-color: #20232a;
@@ -61,6 +64,8 @@ export default class Sidebar extends React.PureComponent {
         </Today>
 
         <Calendar forceUpdateCalendar={this.state.forceUpdateCalendar} />
+
+        <MetaEditor />
 
         <Progress />
       </StyledSidebar>
