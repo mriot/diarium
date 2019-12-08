@@ -1,65 +1,70 @@
 # Diarium
 
 ## Navigation
-* Eintrag bearbeiten / Ansicht umschalten
-* Eintrag speichern (+ auto speichern zwischendurch)
-* Zen-Mode
+
+* Bearbeiten Modus für ausgewählten Tag umschalten
+* Meta Daten Editor
 * Favoriten
 * Suche
 * Logout
 
-## Content
+---
+
+## Editor / Preview
+
 * Mit Markdown formatieren
-    * Markdown Editor und Preview
-        * Split Ansicht ist anpassbar
-* Kleine Toolbar als Header im Editor -> Formatvorlagen
-    * __Medien hochladen / einbinden__
-    * Bild einfügen
-    * Link einfügen
-    * Code Snippet einfügen
-    * __Undo / Redo__
-    * _Speichern_
-* __Fullscreen Ansicht__
-* Metadaten Editor
-    * Kategorien / Labels
-* __Ausgewählter Tag wird als Pfad in Adresszeile geschrieben__
-    * z.B. /2019/11/22  <- 22. November 2019
-* Kalender Navigation mit Pfeilen: "einen Tag vor/zurück"
+  * Markdown Editor und Preview
+    * Split Ansicht ist anpassbar
+
+### Toolbar (im Editor)
+
+* Undo / Redo
+* Medien (Bilder, etc) hochladen / einbinden
+* Link einfügen
+* Code Snippet einfügen
+* Scroll Synchonisierung (Editor -> Preview)
+* Zen-Mode
+* Split Ansicht togglen
+* Fullscreen
+* Editor Layout reset
+
+### Metadaten Editor
+
+* Kategorien / Labels
+
+---
 
 ## Sidebar
-* Toggle Sidebar?!
-* Kalender (TimeTracker style)
-    * Mit Feiertagen
-    * Tage mit Einträgen werden farblich hervorgehoben
-    * _Evtl. Google Calendar Anbindung_
-* Progress in % 
-    * Monat und Jahr (wie viele Tage abgedeckt sind)
-* Fetch actions anzeigen (wie beim TimeTracker)
+
+* Kalender
+* Progress in % (wie viele Tage abgedeckt sind)
+  * Woche, Monat und Jahr
+* "Toast notifications" (?)
+
+### Kalender
+
+* Farblich hervorgehobene Tage
+  * Tage mit Einträgen (grüne "Box")
+  * Feiertage (F)
+  * Urlaubstage (U)
+  * Krankheitstage (K)
+* Kalender Navigation mit Pfeilen: "einen Tag vor/zurück"
+* Ausgewählter Tag wird als Pfad in Adresszeile geschrieben
+  * z.B. /2019/11/22  <- 22. November 2019
 
 ---
 
 ## Datenbank
-* Inhalt sollte gecrypted sein
+
+* Inhalt sollte irgendwie geschützt sein
+  * Gecrypted (?)
 * Felder
-    * ID
-    * Timestamp (z.B UTC)
-        * Zu welchem Tag gehört der Eintrag?
-    * Markup/Content type ("markdown", ...)
-        * Falls wir evtl. mal auf was anderes umbauen wollen
-    * _SFW/NSFW Flag_
-        * NSFW -> ggf. PW geschützt
-    * _Kategorien / Labels_
-        * z.B. "bild, sfw, fun, ..."
-    * 
-
----
-
-## Verhalten
-* INIT AUFRUF
-    * App aufrufen
-    * Einloggen
-    * Aktueller Tag wird geladen bzw. angezeigt
-    * Falls aktueller Tag schon vorhanden, Lesemodus standardmäßig öffnen
-    * Edit mode via “Bearbeiten” Button starten
-    * Ansonsten direkt im Edit mode starten
-    
+  * ID
+  * Timestamp (z.B UTC)
+    * Zu welchem Tag gehört der Eintrag?
+  * Markup/Content type ("markdown", ...)
+    * Falls wir evtl. mal auf was anderes umbauen wollen
+  * SFW/NSFW Flag
+    * NSFW -> Inhalt geblurt und muss freigeschaltet werden (?)
+  * Kategorien / Labels
+    * z.B. "bild, sfw, fun, ..."
