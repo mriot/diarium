@@ -23,7 +23,7 @@ const EditorContainer = styled.div `
 		z-index: 1;
 	}
 `
-const InnerContainer = styled.div `
+const InnerEditorContainer = styled.div `
   position: relative;
 	display: flex;
 	width: 100%;
@@ -45,6 +45,7 @@ export default class Editor extends React.PureComponent {
 
 		this.state = {
 			markdown: `# Hello World!`,
+			editMode: true,
 			zenMode: false,
 			nodesReady: false,
 			renderPreview: true,
@@ -64,7 +65,8 @@ export default class Editor extends React.PureComponent {
 		// render separator when all node refs are available
 		this.setState({nodesReady: true});
 
-		if (localStorage.getItem("preview-hidden") === "true") this.togglePreview(true);
+		if (this.state.editMode && localStorage.getItem("preview-hidden") === "true") 
+			this.hidePreview();
 
 		// always focus editor on 'tab' press
 		document.addEventListener("keydown", event => {
@@ -75,32 +77,29 @@ export default class Editor extends React.PureComponent {
 		});
 	}
 
-	togglePreview(force) {
+	showPreview() {
 		this.setState({
-			renderPreview: force === undefined ? !this.state.renderPreview : force
-		}, () => {
-			if (this.state.renderPreview) {
-				this.setState({
-					markdownEditorWidth: this.backup.markdownEditorWidth || "50%",
-					scrollSync: this.backup.scrollSyncPreference || true,
-				});
+			renderPreview: true,
+			markdownEditorWidth: this.backup.markdownEditorWidth || "50%",
+			scrollSync: this.backup.scrollSyncPreference || true,
+		});
 
-				this.previewNode.classList.remove("hidden");
-				localStorage.setItem("preview-hidden", false);
-			} else {
-				// using the node for backup cuz state doesn't know if the editor was resized
-				this.backup.markdownEditorWidth = this.editorNode.style.width || "50%";
-				this.backup.scrollSyncPreference = this.state.scrollSync;
+		this.previewNode.classList.remove("hidden");
+		localStorage.setItem("preview-hidden", false);
+	}
 
-				this.previewNode.classList.add("hidden");
-				localStorage.setItem("preview-hidden", true);
+	hidePreview() {
+		this.backup.markdownEditorWidth = this.editorNode.style.width || "50%"; // node is more likely to be up to date than state
+		this.backup.scrollSyncPreference = this.state.scrollSync;
 
-				this.setState({
-					markdownEditorWidth: "100%",
-					scrollSync: false, // disable scroll sync for performance
-				});
-			}
-		})
+		this.setState({
+			renderPreview: false,
+			markdownEditorWidth: "100%",
+			scrollSync: false,
+		});
+
+		this.previewNode.classList.add("hidden");
+		localStorage.setItem("preview-hidden", true);
 	}
 
 	toggleZenMode(force) {
@@ -117,7 +116,7 @@ export default class Editor extends React.PureComponent {
 	resetEditorLayout() {
 		this.backup = {};
 
-		this.togglePreview(true);
+		this.showPreview();
 		this.toggleScrollSync(true);
 		this.toggleZenMode(false);
 
@@ -147,8 +146,7 @@ export default class Editor extends React.PureComponent {
 					insertCode={() => this.insertCode()}
 					insertLink={() => this.insertLink()}
 					// called directly here
-					toggleZenMode={this.toggleZenMode.bind(this)}
-					togglePreview={this.togglePreview.bind(this)}
+					togglePreview={this.state.renderPreview ? this.hidePreview.bind(this) : this.showPreview.bind(this)}
 					toggleScrollSync={this.toggleScrollSync.bind(this)}
 					resetEditorLayout={this.resetEditorLayout.bind(this)}
 					// used to highlight active buttons in toolbar
@@ -160,7 +158,7 @@ export default class Editor extends React.PureComponent {
 					}}
 				/>
 
-				<InnerContainer>
+				<InnerEditorContainer>
 					<MarkdownEditor
 						ref={this.markdownEditorRef}
 						value={this.state.markdown}
@@ -185,7 +183,7 @@ export default class Editor extends React.PureComponent {
 						markdown={this.state.markdown}
 						scrollSyncPos={this.state.scrollSync && this.state.scrollSyncPosition}
 					/>
-				</InnerContainer>
+				</InnerEditorContainer>
 			</EditorContainer>			
 		);
 	}
