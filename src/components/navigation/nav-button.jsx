@@ -13,6 +13,7 @@ const NavItem = styled.div `
   border-bottom: 1px solid transparent;
 	perspective: 1000;
   backface-visibility: hidden;
+  user-select: none;
   transition: all 0.2s;
 
   > span {
