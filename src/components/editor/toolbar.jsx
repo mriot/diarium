@@ -16,6 +16,7 @@ const StyledToolbar = styled.div `
 	box-sizing: border-box;
 	border-top-left-radius: 8px;
 	border-top-right-radius: 8px;
+	
 	${props => props.toolbarStatus.zenModeActive && `
 		height: 35px;
 		border-radius: 0;
@@ -54,9 +55,8 @@ const IconButton = styled.div `
 	`}
 
 	${props => props.isDisabled && `
-		cursor: default;
 		color: #777;
-		background-color: inherit !important;
+		pointer-events: none;
 	`}
 
 /*
