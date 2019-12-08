@@ -16,6 +16,7 @@
 	width: 50%;
 	height: 100%;
 	tab-size: 2;
+	background-color: #fff;
 	/* enables easy overscroll */
 	padding-bottom: 60%;
 }
