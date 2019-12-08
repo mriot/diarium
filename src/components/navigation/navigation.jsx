@@ -20,7 +20,7 @@ const Nav = styled.nav`
 `
 const Logo = styled.span `
   color: #fff;
-  font-size: 30px;
+  font-size: 24px;
   z-index: 1;
 `
 const RightSide = styled.div `
