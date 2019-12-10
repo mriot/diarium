@@ -11,6 +11,11 @@ const RenderedMarkdownContainer = styled.div `
 	padding: 0 5px;
 	box-sizing: border-box;
 
+	${props => props.isReadModeActive && `
+		width: 100% !important;
+	`}
+	
+	/* toggled in Editor -> showPreview() and hidePreview() */
 	&.hidden {
 		width: 0 !important;
 		padding: 0;
@@ -35,7 +40,11 @@ export default class MarkdownView extends React.PureComponent {
 	
 	render() {
 		return (
-			<RenderedMarkdownContainer ref={this.markdownOutputRef} className="markdown-body">
+			<RenderedMarkdownContainer
+				ref={this.markdownOutputRef}
+				className="markdown-body"
+				isReadModeActive={this.props.isReadModeActive}	
+			>
 				<ReactMarkdown source={this.props.markdown} />
 			</RenderedMarkdownContainer>
 		);
@@ -45,4 +54,5 @@ export default class MarkdownView extends React.PureComponent {
 MarkdownView.propTypes = {
 	markdown: PropTypes.string,
 	scrollSyncPos: PropTypes.number,
+	isReadModeActive: PropTypes.bool,
 }

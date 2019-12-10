@@ -57,7 +57,13 @@ export default class Navigation extends React.PureComponent {
         <Logo>DIARIUM</Logo>
         <RightSide>
           <ButtonContainer>
-            <NavButton value="Bearbeiten" />
+            <NavButton 
+              value="Bearbeiten"
+              active={!this.props.isReadModeActive}
+              onClick={() => {
+                this.props.setReadMode(!this.props.isReadModeActive);
+              }}
+            />
             <NavButton value="Meta Daten" />
             <NavButton value="Favoriten" />
           </ButtonContainer>

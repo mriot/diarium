@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import PropTypes from "prop-types";
 // import { NavLink } from "react-router-dom";
@@ -31,21 +30,9 @@ const NavItem = styled.div `
 `
 
 export default class NavButton extends React.PureComponent {
-  constructor(props) {
-    super(props);
-  
-    this.state = {
-      active: false,
-    }
-  }
-  
   render() {
     return (
-      <NavItem 
-        active={this.state.active}
-        onClick={() => {
-          this.setState({active: !this.state.active});
-        }}>
+      <NavItem active={this.props.active} {...this.props}>
         <span>{this.props.value}</span>
       </NavItem>
     );
