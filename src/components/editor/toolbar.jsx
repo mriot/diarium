@@ -35,7 +35,7 @@ const RightSide = styled.aside `
 `
 const ButtonSeparator = styled.div `
 	width: 2px;
-	height: 20px;
+	height: 60%;
 	margin: 0 5px;
 	background-color: #c7c7c7;
 `
@@ -161,21 +161,22 @@ export default class Toolbar extends React.PureComponent {
 								{50: "transform: scale(1.1)"},
 								{100: "transform: scale(1)"},
 							]}
-						>
-							{!item.separator && 
-								<IconButton
-									key={uuid4()}
-									title={item.title}
-									onClick={item.onClick}
-									isActive={item.isActive}
-									isDisabled={item.isDisabled}
-								>
-									<FontAwesomeIcon icon={item.icon} />
-								</IconButton>
-							}
-							
-							{item.separator && <ButtonSeparator />}
-						</AnimateKeyframes>
+							render={({ style }) => ([
+								!item.separator && 
+									<IconButton
+										style={style}
+										key={uuid4()}
+										title={item.title}
+										onClick={item.onClick}
+										isActive={item.isActive}
+										isDisabled={item.isDisabled}
+									>
+										<FontAwesomeIcon icon={item.icon} />
+									</IconButton>,
+
+								item.separator && <ButtonSeparator style={style} />
+							])}
+						/>
 					)}
 				</LeftSide>
 
