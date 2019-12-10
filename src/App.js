@@ -19,14 +19,27 @@ const Main = styled.div `
 `
 
 export default class App extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      readMode: true,
+    }
+  }
+
   render() { 
     return ( 
       <BrowserRouter>
         <Layout>
-          <Navigation />
+          <Navigation
+            isReadModeActive={this.state.readMode}
+            setReadMode={bool => this.setState({readMode: bool})}
+          />
           <Main>
             <Sidebar />
-            <Editor />
+            <Editor 
+              isReadModeActive={this.state.readMode}
+            />
           </Main>
           <ToastContainer
             position="bottom-left"
