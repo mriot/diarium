@@ -45,7 +45,7 @@ export default class Editor extends React.PureComponent {
 
 		this.state = {
 			markdown: `# Hello World!`,
-			editMode: true,
+			readMode: this.props.isReadModeActive,
 			zenMode: false,
 			nodesReady: false,
 			renderPreview: true,
@@ -58,15 +58,11 @@ export default class Editor extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		this.editorContainerNode = ReactDOM.findDOMNode(this.editorContainerRef.current);
-		this.editorNode = ReactDOM.findDOMNode(this.markdownEditorRef.current);
-		this.previewNode = ReactDOM.findDOMNode(this.markdownViewRef.current);
-
-		// render separator when all node refs are available
-		this.setState({nodesReady: true});
-
-		if (this.state.editMode && localStorage.getItem("preview-hidden") === "true") 
+		if (!this.state.readMode && localStorage.getItem("preview-hidden") === "true") 
 			this.hidePreview();
+		
+		// collects DOM nodes
+		this.setUpSeparator();
 
 		// always focus editor on 'tab' press
 		document.addEventListener("keydown", event => {
@@ -75,6 +71,27 @@ export default class Editor extends React.PureComponent {
 				this.editorFocus();
 			}
 		});
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		this.setUpSeparator();
+
+		if (prevProps.readMode !== this.props.isReadModeActive) {
+			this.setState({
+				readMode: this.props.isReadModeActive,
+			})
+		}
+	}
+
+	setUpSeparator() {
+		if (!this.state.nodesReady) {
+			this.editorContainerNode = ReactDOM.findDOMNode(this.editorContainerRef.current);
+			this.editorNode = ReactDOM.findDOMNode(this.markdownEditorRef.current);
+			this.previewNode = ReactDOM.findDOMNode(this.markdownViewRef.current);
+			// render separator when all node refs are available
+			if (this.editorContainerNode && this.editorNode && this.previewNode)
+				this.setState({nodesReady: true});
+		}
 	}
 
 	showPreview() {
@@ -89,7 +106,7 @@ export default class Editor extends React.PureComponent {
 	}
 
 	hidePreview() {
-		this.backup.markdownEditorWidth = this.editorNode.style.width || "50%"; // node is more likely to be up to date than state
+		this.backup.markdownEditorWidth = this.editorNode.style.width || "50%";
 		this.backup.scrollSyncPreference = this.state.scrollSync;
 
 		this.setState({
@@ -126,8 +143,8 @@ export default class Editor extends React.PureComponent {
 		this.setState({forceUpdateSeparator: this.state.forceUpdateSeparator + 1});
 	}
 
+	// shared methods from markdown editor
 	acceptMethods(methods) {
-		// method refs  	| shared methods from markdown editor
     this.insertCode 	= methods.insertCode;
     this.insertLink 	= methods.insertLink;
     this.editorUndo 	= methods.editorUndo;
@@ -139,7 +156,7 @@ export default class Editor extends React.PureComponent {
 		return (
 			<EditorContainer ref={this.editorContainerRef} className={this.state.zenMode ? "zen-mode" : ""}>
 				<Toolbar 
-					// get passed to another child
+					// these methods call methods from the editor (check acceptMethods())
 					editorFocus={() => this.editorFocus()}
 					editorUndo={() => this.editorUndo()}
 					editorRedo={() => this.editorRedo()}
@@ -150,27 +167,30 @@ export default class Editor extends React.PureComponent {
 					togglePreview={this.state.renderPreview ? this.hidePreview.bind(this) : this.showPreview.bind(this)}
 					toggleScrollSync={this.toggleScrollSync.bind(this)}
 					resetEditorLayout={this.resetEditorLayout.bind(this)}
-					// used to highlight active buttons in toolbar
+					// provides everything the Toolbar needs to know
 					toolbarStatus={{
+						readModeActive: this.state.readMode,
 						zenModeActive: this.state.zenMode,
 						previewActive: this.state.renderPreview,
 						scrollSyncActive: this.state.scrollSync,
-						editorHistory: this.state.editorHistory,
+						editorHistory: this.state.editorHistory, // for redo/undo buttons
 					}}
 				/>
 
 				<InnerEditorContainer>
-					<MarkdownEditor
-						ref={this.markdownEditorRef}
-						value={this.state.markdown}
-						allocWidth={this.state.markdownEditorWidth}
-						shareMethods={this.acceptMethods.bind(this)}
-						scrollPosChange={scrollSyncPosition => this.setState({scrollSyncPosition})}
-						change={markdown => this.setState({markdown})}
-						getEditorHistory={editorHistory => this.setState({editorHistory})}
-					/>
+					{!this.state.readMode && 
+						<MarkdownEditor
+							ref={this.markdownEditorRef}
+							value={this.state.markdown}
+							allocWidth={this.state.markdownEditorWidth}
+							shareMethods={this.acceptMethods.bind(this)}
+							scrollPosChange={scrollSyncPosition => this.setState({scrollSyncPosition})}
+							change={markdown => this.setState({markdown})}
+							getEditorHistory={editorHistory => this.setState({editorHistory})}
+						/>
+					}
 
-					{this.state.nodesReady && this.state.renderPreview &&
+					{!this.state.readMode && this.state.nodesReady && this.state.renderPreview &&
 						<SeparatorHandle
 							forceUpdateSeparator={this.state.forceUpdateSeparator}
 							containerNode={this.editorContainerNode}
@@ -182,6 +202,7 @@ export default class Editor extends React.PureComponent {
 					<MarkdownView
 						ref={this.markdownViewRef}
 						markdown={this.state.markdown}
+						isReadModeActive={this.state.readMode}
 						scrollSyncPos={this.state.scrollSync && this.state.scrollSyncPosition}
 					/>
 				</InnerEditorContainer>
