@@ -36,10 +36,8 @@ export default class Editor extends React.PureComponent {
 	
 		this.editorContainerRef = React.createRef();
 		this.markdownViewRef = React.createRef();
-		this.markdownEditorRef = React.createRef();
 
 		this.backup = {
-			markdownEditorWidth: "50%",
 			scrollSyncPreference: true,
 		}
 
@@ -53,7 +51,6 @@ export default class Editor extends React.PureComponent {
 			forceUpdateSeparator: 0,
 			scrollSyncPosition: 0,
 			editorHistory: {undo: 0, redo: 0},
-			markdownEditorWidth: "50%",
 		}
 	}
 
@@ -78,7 +75,7 @@ export default class Editor extends React.PureComponent {
 
 		if (prevProps.readMode !== this.props.isReadModeActive) {
 			this.setState({
-				readMode: this.props.isReadModeActive,
+				readMode: this.props.isReadModeActive
 			})
 		}
 	}
@@ -86,10 +83,9 @@ export default class Editor extends React.PureComponent {
 	setUpSeparator() {
 		if (!this.state.nodesReady) {
 			this.editorContainerNode = ReactDOM.findDOMNode(this.editorContainerRef.current);
-			this.editorNode = ReactDOM.findDOMNode(this.markdownEditorRef.current);
 			this.previewNode = ReactDOM.findDOMNode(this.markdownViewRef.current);
 			// render separator when all node refs are available
-			if (this.editorContainerNode && this.editorNode && this.previewNode)
+			if (this.editorContainerNode && this.previewNode)
 				this.setState({nodesReady: true});
 		}
 	}
@@ -97,7 +93,6 @@ export default class Editor extends React.PureComponent {
 	showPreview() {
 		this.setState({
 			preview: true,
-			markdownEditorWidth: this.backup.markdownEditorWidth || "50%",
 			scrollSync: this.backup.scrollSyncPreference || true,
 		});
 
@@ -106,12 +101,10 @@ export default class Editor extends React.PureComponent {
 	}
 
 	hidePreview() {
-		this.backup.markdownEditorWidth = this.editorNode.style.width || "50%";
 		this.backup.scrollSyncPreference = this.state.scrollSync;
 
 		this.setState({
 			preview: false,
-			markdownEditorWidth: "100%",
 			scrollSync: false,
 		});
 
@@ -137,7 +130,6 @@ export default class Editor extends React.PureComponent {
 		this.toggleScrollSync(true);
 		this.toggleZenMode(false);
 
-		this.editorNode.style.width = "";
 		this.previewNode.style.width = "";
 
 		this.setState({forceUpdateSeparator: this.state.forceUpdateSeparator + 1});
@@ -180,7 +172,6 @@ export default class Editor extends React.PureComponent {
 				<InnerEditorContainer>
 					{!this.state.readMode && 
 						<MarkdownEditor
-							ref={this.markdownEditorRef}
 							value={this.state.markdown}
 							allocWidth={this.state.markdownEditorWidth}
 							shareMethods={this.acceptMethods.bind(this)}
@@ -190,15 +181,13 @@ export default class Editor extends React.PureComponent {
 						/>
 					}
 
-					{!this.state.readMode && this.state.nodesReady && this.state.preview && [
-						console.log(this.editorNode, this.markdownEditorRef), 
+					{!this.state.readMode && this.state.nodesReady && this.state.preview &&
 						<SeparatorHandle
 							forceUpdateSeparator={this.state.forceUpdateSeparator}
 							containerNode={this.editorContainerNode}
-							editorNode={this.editorNode}
 							previewNode={this.previewNode}
 						/>
-					]}
+					}
 
 					<MarkdownView
 						ref={this.markdownViewRef}

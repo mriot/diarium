@@ -23,7 +23,7 @@ export default class App extends React.PureComponent {
     super(props);
 
     this.state = {
-      readMode: true,
+      readMode: false,
     }
   }
 

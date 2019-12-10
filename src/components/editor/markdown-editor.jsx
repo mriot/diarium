@@ -13,8 +13,9 @@ import "codemirror/addon/scroll/simplescrollbars";
 import "codemirror/addon/scroll/simplescrollbars.css";
 
 const StyledCodeMirror = styled(CodeMirror) `
-	width: 50%;
+	flex: 1;
 	height: 100%;
+	overflow: hidden;
 
 	.CodeMirror {
 		height: 100%;

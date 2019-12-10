@@ -28,21 +28,20 @@ export default class SeparatorHandle extends React.PureComponent {
 		this.handleNode = null;
 		this.containerRect = null;
 	}
-	
-	setCorrectSeparatorPosition() {
-		this.handleNode.style.left = getComputedStyle(this.props.editorNode).width
-	}
 
 	componentDidUpdate(prevProps, prevState) {
 		this.containerRect = this.props.containerNode.getBoundingClientRect();
 		this.setCorrectSeparatorPosition();
+	}
+	
+	setCorrectSeparatorPosition() {
+		this.handleNode.style.left = this.props.previewNode.offsetLeft + "px";
 	}
 
 	componentDidMount() {
 		this.handleNode = ReactDOM.findDOMNode(this.handleRef.current);
 		this.containerRect = this.props.containerNode.getBoundingClientRect();
 
-		let leftPaneWidth = 0;
 		let rightPaneWidth = 0;
 
 		this.setCorrectSeparatorPosition();
@@ -64,11 +63,7 @@ export default class SeparatorHandle extends React.PureComponent {
 				handle.style.display = "block";
 			}
 
-			// calcs percentage values for both views
-			leftPaneWidth 	= handle.offsetLeft * 100 / this.containerRect.width;
-			rightPaneWidth 	= 100 - leftPaneWidth;
-
-			this.props.editorNode.style.width = leftPaneWidth + "%";
+			rightPaneWidth 	= 100 - handle.offsetLeft * 100 / this.containerRect.width;
 			this.props.previewNode.style.width = rightPaneWidth + "%";
 		}, handle => {
 			/**
@@ -76,16 +71,14 @@ export default class SeparatorHandle extends React.PureComponent {
 			 * this fixes the problem with not perfectly aligned separator and panes
 			 	 if the user is dragging very fast
 			 */
+
 			// if handle dropped outside of editor area, move it back to 0
 			if (handle.style.left.replace("px", "") <= 0) {
 				handle.style.left = 0;
 				handle.style.display = "block";
 			}
 
-			leftPaneWidth 	= handle.offsetLeft * 100 / this.containerRect.width;
-			rightPaneWidth 	= 100 - leftPaneWidth;
-
-			this.props.editorNode.style.width = leftPaneWidth + "%";
+			rightPaneWidth 	= 100 - handle.offsetLeft * 100 / this.containerRect.width;
 			this.props.previewNode.style.width = rightPaneWidth + "%";
 		}, 'horizontal');
 	}
@@ -99,7 +92,7 @@ export default class SeparatorHandle extends React.PureComponent {
 
 SeparatorHandle.propTypes = {
 	containerNode: PropTypes.any,
-	editorNode: PropTypes.any,
 	previewNode: PropTypes.any,
 	// forceUpdateSeparator prop is only used by a parent to force a rerender
+	forceUpdateSeparator: PropTypes.number,
 }
