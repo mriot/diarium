@@ -16,7 +16,7 @@ export default class MetaEditor extends React.PureComponent {
 	render() {
 		return (
 			<MetaEditorContainer>
-				Hello World!
+				Meta Editor
 			</MetaEditorContainer>
 		);
 	}

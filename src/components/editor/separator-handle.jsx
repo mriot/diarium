@@ -10,8 +10,8 @@ const StyledSeparatorHandle = styled.div `
 	height: 100%;
 	width: ${handleWidth};
 	background-color: #808080;
-	cursor: col-resize;
 	z-index: 10;
+	cursor: col-resize;
 	transform: translateX(calc(${handleWidth} / 2 * -1));
 
 	&:hover {
@@ -101,5 +101,5 @@ SeparatorHandle.propTypes = {
 	containerNode: PropTypes.any,
 	editorNode: PropTypes.any,
 	previewNode: PropTypes.any,
-	// forceUpdateSeparator prop is only used by a parent to force a rerender of this dude
+	// forceUpdateSeparator prop is only used by a parent to force a rerender
 }

@@ -122,7 +122,6 @@ export default class MarkdownEditor extends React.PureComponent {
 	}
 
 	render() {
-		// console.log("alloced", this.props.allocWidth)
 		return (
 			<StyledCodeMirror
 				ref={this.codeMirrorRef}

@@ -48,7 +48,7 @@ export default class Editor extends React.PureComponent {
 			readMode: this.props.isReadModeActive,
 			zenMode: false,
 			nodesReady: false,
-			renderPreview: true,
+			preview: true,
 			scrollSync: true,
 			forceUpdateSeparator: 0,
 			scrollSyncPosition: 0,
@@ -96,7 +96,7 @@ export default class Editor extends React.PureComponent {
 
 	showPreview() {
 		this.setState({
-			renderPreview: true,
+			preview: true,
 			markdownEditorWidth: this.backup.markdownEditorWidth || "50%",
 			scrollSync: this.backup.scrollSyncPreference || true,
 		});
@@ -110,7 +110,7 @@ export default class Editor extends React.PureComponent {
 		this.backup.scrollSyncPreference = this.state.scrollSync;
 
 		this.setState({
-			renderPreview: false,
+			preview: false,
 			markdownEditorWidth: "100%",
 			scrollSync: false,
 		});
@@ -164,14 +164,14 @@ export default class Editor extends React.PureComponent {
 					insertLink={() => this.insertLink()}
 					// called directly here
 					toggleZenMode={this.toggleZenMode.bind(this)}
-					togglePreview={this.state.renderPreview ? this.hidePreview.bind(this) : this.showPreview.bind(this)}
+					togglePreview={this.state.preview ? this.hidePreview.bind(this) : this.showPreview.bind(this)}
 					toggleScrollSync={this.toggleScrollSync.bind(this)}
 					resetEditorLayout={this.resetEditorLayout.bind(this)}
 					// provides everything the Toolbar needs to know
 					toolbarStatus={{
 						readModeActive: this.state.readMode,
 						zenModeActive: this.state.zenMode,
-						previewActive: this.state.renderPreview,
+						previewActive: this.state.preview,
 						scrollSyncActive: this.state.scrollSync,
 						editorHistory: this.state.editorHistory, // for redo/undo buttons
 					}}
@@ -190,14 +190,15 @@ export default class Editor extends React.PureComponent {
 						/>
 					}
 
-					{!this.state.readMode && this.state.nodesReady && this.state.renderPreview &&
+					{!this.state.readMode && this.state.nodesReady && this.state.preview && [
+						console.log(this.editorNode, this.markdownEditorRef), 
 						<SeparatorHandle
 							forceUpdateSeparator={this.state.forceUpdateSeparator}
 							containerNode={this.editorContainerNode}
 							editorNode={this.editorNode}
 							previewNode={this.previewNode}
 						/>
-					}
+					]}
 
 					<MarkdownView
 						ref={this.markdownViewRef}
