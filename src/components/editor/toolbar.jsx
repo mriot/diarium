@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import styled from 'styled-components';
+import uuid4 from "uuid/v4";
+import { AnimateKeyframes } from "react-simple-animate";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faPaperclip, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
+import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faPaperclip, faArrowsAltH, faAnchor } from '@fortawesome/free-solid-svg-icons';
 
 const StyledToolbar = styled.div `
 	width: 100%;
@@ -33,7 +35,7 @@ const RightSide = styled.aside `
 `
 const ButtonSeparator = styled.div `
 	width: 2px;
-	height: 60%;
+	height: 20px;
 	margin: 0 5px;
 	background-color: #c7c7c7;
 `
@@ -77,10 +79,49 @@ export default class Toolbar extends React.PureComponent {
 	
 		this.state = {
 			inFullscreenMode: false,
+			visible: true,
+		}
+		
+		this.toolbarItems = {
+			left: [
+				{
+					title: "Rückgängig",
+					onClick: () => this.props.editorUndo(),
+					isDisabled: this.props.toolbarStatus.editorHistory.undo <= 0,
+					icon: faReply,
+				}, {
+					title: "Wiederholen",
+					onClick: () => this.props.editorRedo(),
+					isDisabled: this.props.toolbarStatus.editorHistory.redo <= 0,
+					icon: faShare,
+				}, {
+					title: "Bild einfügen",
+					onClick: null,
+					icon: faImage,
+				}, {
+					title: "Link einfügen",
+					onClick: () => this.props.insertLink(),
+					icon: faLink,
+				}, {
+					title: "Code einfügen",
+					onClick: () => this.props.insertCode(),
+					icon: faCode,
+				}, {
+					separator: true,
+				}, {
+					title: "Scrollen synchronisieren",
+					onClick: () => this.props.toggleScrollSync(),
+					isActive: this.props.toolbarStatus.scrollSyncActive,
+					icon: faArrowsAltH
+				},
+			],
+			right: []
 		}
 	}
 
 	componentDidMount() {
+		setTimeout(() => this.animationDuration = 0.4, 0)
+
 		// set the correct state if the user exits fullscreen by pressing the ESC key
 		document.addEventListener("fullscreenchange", () => {
 			if (!document.fullscreenElement) {
@@ -107,54 +148,45 @@ export default class Toolbar extends React.PureComponent {
 		return (
 			<StyledToolbar {...this.props}>
 				<LeftSide>
-					<IconButton
-						title="Rückgängig"
-						// displayCounter={this.props.toolbarStatus.editorHistory.undo}
-						onClick={() => this.props.editorUndo()}
-						isDisabled={this.props.toolbarStatus.editorHistory.undo <= 0}
-					>
-						<FontAwesomeIcon icon={faReply} />
-					</IconButton>
-
-					<IconButton
-						title="Wiederholen"
-						// displayCounter={this.props.toolbarStatus.editorHistory.redo}
-						onClick={() => this.props.editorRedo()}
-						isDisabled={this.props.toolbarStatus.editorHistory.redo <= 0}
-					>
-						<FontAwesomeIcon icon={faShare} />
-					</IconButton>
-
-					<IconButton title="Bild einfügen">
-						<FontAwesomeIcon icon={faImage} />
-					</IconButton>
-
-					<IconButton
-						title="Link einfügen"
-						onClick={() => this.props.insertLink()}
-					>
-						<FontAwesomeIcon icon={faLink} />
-					</IconButton>
-
-					<IconButton
-						title="Code einfügen"
-						onClick={() => this.props.insertCode()}
-					>
-						<FontAwesomeIcon icon={faCode} />
-					</IconButton>
-
-					<ButtonSeparator />
-
-					<IconButton
-						title="Scrollen synchronisieren"
-						onClick={() => this.props.toggleScrollSync()}
-						isActive={this.props.toolbarStatus.scrollSyncActive}
-					>
-						<FontAwesomeIcon icon={faArrowsAltH} />
-					</IconButton>
+					{this.toolbarItems.left.map((item, index) => 
+						<AnimateKeyframes
+							key={index}
+							play={this.state.visible}
+							duration={this.animationDuration || 0}
+							iterationCount={1}
+							fillMode="forwards"
+							direction={this.state.visible ? "normal" : "reverse"}
+							keyframes={[
+								{0: "transform: scale(0)"},
+								{50: "transform: scale(1.1)"},
+								{100: "transform: scale(1)"},
+							]}
+						>
+							{!item.separator && 
+								<IconButton
+									key={uuid4()}
+									title={item.title}
+									onClick={item.onClick}
+									isActive={item.isActive}
+									isDisabled={item.isDisabled}
+								>
+									<FontAwesomeIcon icon={item.icon} />
+								</IconButton>
+							}
+							
+							{item.separator && <ButtonSeparator />}
+						</AnimateKeyframes>
+					)}
 				</LeftSide>
 
 				<RightSide>
+				<IconButton
+						title="TOGGELELE"
+						onClick={() => this.setState({visible: !this.state.visible})}
+					>
+						<FontAwesomeIcon icon={faAnchor} />
+					</IconButton>
+
 					<IconButton
 						title="Zen-Mode"
 						onClick={() => this.props.toggleZenMode()}
