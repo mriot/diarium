@@ -64,7 +64,6 @@ export default class Navigation extends React.PureComponent {
                 this.props.setReadMode(!this.props.isReadModeActive);
               }}
             />
-            <NavButton value="Meta Daten" />
             <NavButton value="Favoriten" />
           </ButtonContainer>
 
