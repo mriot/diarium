@@ -4,13 +4,13 @@ import styled from "styled-components";
 import ProgressBar from '../common/progressbar';
 
 const ProgressContainer = styled.div `
-	padding: 0 0 20px 5px;
+	padding: 0 0 5px 5px;
 	border-bottom: 1px solid #191919;
 	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
 `
 const ProgressDescription = styled.div `
 	color: #efefef;
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: 100;
 	margin: 15px 0 5px;
 `
