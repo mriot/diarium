@@ -173,7 +173,6 @@ export default class Editor extends React.PureComponent {
 					{!this.state.readMode && 
 						<MarkdownEditor
 							value={this.state.markdown}
-							allocWidth={this.state.markdownEditorWidth}
 							shareMethods={this.acceptMethods.bind(this)}
 							scrollPosChange={scrollSyncPosition => this.setState({scrollSyncPosition})}
 							change={markdown => this.setState({markdown})}
