@@ -36,7 +36,9 @@ export default class App extends React.PureComponent {
             setReadMode={bool => this.setState({readMode: bool})}
           />
           <Main>
-            <Sidebar />
+            <Sidebar
+              isReadModeActive={this.state.readMode}
+            />
             <Editor 
               isReadModeActive={this.state.readMode}
             />

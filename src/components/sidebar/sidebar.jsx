@@ -65,7 +65,7 @@ export default class Sidebar extends React.PureComponent {
 
         <Calendar forceUpdateCalendar={this.state.forceUpdateCalendar} />
 
-        <MetaEditor />
+        <MetaEditor isReadModeActive={this.props.isReadModeActive} />
 
         <Progress />
       </StyledSidebar>
