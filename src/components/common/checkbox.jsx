@@ -8,42 +8,40 @@ const StyledLabel = styled.label `
 	position: relative;
 	user-select: none;
 	display: flex;
-	padding-left: 5px;
 	align-items: center;
-	${props => !props.disabled && "cursor: pointer"};
+	color: ${props => (props.checked && "#00ff8b") || (props.disabled && "#aaa")};
+	cursor: ${props => props.disabled ? "default" : "pointer"};
 	font-size: 15px;
 	transform-origin: left;
 	transition: all 200ms;
 
-	${props => props.checked && `
-		color: #00ff8b;
-	`}
-
-	&:hover {
-		${props => !props.disabled && "transform: scale(1.1)"};
+	&:${props => !props.disabled && "hover"} {
 		background-color: rgba(0, 0, 0, 0.2);
+
+		svg, span {
+			${props => !props.disabled && "transform: scale(1.15)"};
+		}
 	}
 
-	&::before {
+	&::after {
 		content: "";
-		display: block;
+		position: relative;
 		width: 20px;
 		height: 20px;
-		border: 1px solid #6cc0e5;
-		margin-right: 10px;
-		position: relative;
-		left: 0;
-		top: 0;
+		display: block;
 		opacity: 0.6;
+		margin-left: 10px;
+		${props => !props.disabled && "border: 1px solid #6cc0e5;"};
 		transition: all 200ms, border-color 100ms;
 
 		${props => !props.checked} {
 			width: 8px;
-			top: -5px;
-			left: 5px;
+			top: -3px;
+			left: -3px;
 			opacity: 1;
+			margin-left: 22px;
 			border-radius: 0;
-			margin-right: 22px;
+			border: 1px solid #6cc0e5;
 			border-top-color: transparent;
 			border-left-color: transparent;
 			transform: rotate(45deg);
@@ -54,21 +52,32 @@ const Input = styled.input `
 	display: none;
 `
 const Icon = styled(FontAwesomeIcon) `
-	margin-left: 10px;
+	width: 10% !important;
+	margin-right: 5px;
+	transform-origin: left;
+	transition: all 100ms;
+`
+const Text = styled.span `
+	width: 25%;
+	transform-origin: left;
+	transition: all 100ms;
 `
 
 export default class Checkbox extends React.PureComponent {
 	render() {
-		console.log(this.props.checked)
 		return (
 			<StyledLabel {...this.props}>
-				<Input type="checkbox" checked={this.props.checked} {...this.props} /> {this.props.label} 
 				<Icon icon={this.props.icon} />
+				<Text>{this.props.label}</Text>
+				<Input type="checkbox" checked={this.props.checked} {...this.props} /> 
 			</StyledLabel>
 		);
 	}
 }
 
 Checkbox.propTypes = {
-	value: PropTypes.any,
+	label: PropTypes.any,
+	checked: PropTypes.bool,
+	disabled: PropTypes.bool,
+	icon: PropTypes.object,
 }
