@@ -135,25 +135,16 @@ export default class Editor extends React.PureComponent {
 		this.setState({forceUpdateSeparator: this.state.forceUpdateSeparator + 1});
 	}
 
-	// shared methods from markdown editor
-	acceptMethods(methods) {
-    this.insertCode 	= methods.insertCode;
-    this.insertLink 	= methods.insertLink;
-    this.editorUndo 	= methods.editorUndo;
-    this.editorRedo 	= methods.editorRedo;
-    this.editorFocus 	= methods.editorFocus;
-  }
-
 	render() {
 		return (
 			<EditorContainer ref={this.editorContainerRef} className={this.state.zenMode ? "zen-mode" : ""}>
 				<Toolbar 
-					// these methods call methods from the editor (check acceptMethods())
-					editorFocus={() => this.editorFocus()}
-					editorUndo={() => this.editorUndo()}
-					editorRedo={() => this.editorRedo()}
-					insertCode={() => this.insertCode()}
-					insertLink={() => this.insertLink()}
+					// call markdown-editor methods
+					editorFocus={() => this.markdownEditorRef.editorFocus()}
+					editorUndo={() => this.markdownEditorRef.editorUndo()}
+					editorRedo={() => this.markdownEditorRef.editorRedo()}
+					insertCode={() => this.markdownEditorRef.insertCode()}
+					insertLink={() => this.markdownEditorRef.insertLink()}
 					// called directly here
 					toggleZenMode={this.toggleZenMode.bind(this)}
 					togglePreview={this.state.preview ? this.hidePreview.bind(this) : this.showPreview.bind(this)}
@@ -172,8 +163,8 @@ export default class Editor extends React.PureComponent {
 				<InnerEditorContainer>
 					{!this.state.readMode && 
 						<MarkdownEditor
+							ref={ref => this.markdownEditorRef = ref}
 							value={this.state.markdown}
-							shareMethods={this.acceptMethods.bind(this)}
 							scrollPosChange={scrollSyncPosition => this.setState({scrollSyncPosition})}
 							change={markdown => this.setState({markdown})}
 							getEditorHistory={editorHistory => this.setState({editorHistory})}
@@ -192,7 +183,8 @@ export default class Editor extends React.PureComponent {
 						ref={this.markdownViewRef}
 						markdown={this.state.markdown}
 						isReadModeActive={this.state.readMode}
-						scrollSyncPos={this.state.scrollSync && this.state.scrollSyncPosition}
+						isScrollSyncActive={this.state.scrollSync}
+						scrollSyncPos={this.state.scrollSyncPosition}
 					/>
 				</InnerEditorContainer>
 			</EditorContainer>			

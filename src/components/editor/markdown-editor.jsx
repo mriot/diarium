@@ -66,7 +66,7 @@ export default class MarkdownEditor extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		this.CodeMirrorNode 		= ReactDOM.findDOMNode(this.codeMirrorRef.current);
+		this.CodeMirrorNode = ReactDOM.findDOMNode(this.codeMirrorRef.current);
 		this.CodeMirrorInstance = this.codeMirrorRef.current.getCodeMirror();
 		
 		this.CodeMirrorInstance.execCommand("goLineEnd");
@@ -74,20 +74,10 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.CodeMirrorInstance.on("scroll", event => {
 			this.props.scrollPosChange(event.doc.scrollTop)
 		});
-
-		this.props.shareMethods({
-			insertCode: this.insertCode.bind(this),
-			insertLink: this.insertLink.bind(this),
-			editorUndo: this.editorUndo.bind(this),
-			editorRedo: this.editorRedo.bind(this),
-			editorFocus: this.editorFocus.bind(this),
-		});
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		this.editorFocus();
-		if (prevProps.allocWidth !== this.props.allocWidth)
-			this.CodeMirrorNode.style.width = this.props.allocWidth;
+		this.editorFocus()
 	}
 
 	getCursor() {
@@ -139,8 +129,6 @@ export default class MarkdownEditor extends React.PureComponent {
 
 MarkdownEditor.propTypes = {
 	value: PropTypes.string,
-	allocWidth: PropTypes.string,
-	shareMethods: PropTypes.func,
 	scrollPosChange: PropTypes.func,
 	change: PropTypes.func,
 	getEditorHistory: PropTypes.func,
