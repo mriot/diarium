@@ -37,9 +37,15 @@ export default class MetaEditor extends React.PureComponent {
 			vacation: false,
 			sickness: false,
 			nsfw: false,
+			checkboxDisabled: this.props.isReadModeActive,
 		}
-	}
+	}	
 
+	componentDidUpdate(prevProps, prevState) {
+		if (prevProps.isReadModeActive !== this.props.isReadModeActive)
+			this.setState({checkboxDisabled: this.props.isReadModeActive})
+	}
+	
 	handleCheckboxClick(stuff) {
 		console.log(stuff)
 	}
@@ -50,18 +56,22 @@ export default class MetaEditor extends React.PureComponent {
 				<Heading>Labels</Heading>
 				<MetaFields>
 					<Checkbox label="Favorit" icon={faStar} 
+						disabled={this.state.checkboxDisabled}
 						checked={this.state.favorite}
 						onChange={() => this.setState({favorite: !this.state.favorite})}
 					/>
 					<Checkbox label="Urlaub" icon={faMapMarkerAlt}
+						disabled={this.state.checkboxDisabled}
 						checked={this.state.vacation}
 						onChange={() => this.setState({vacation: !this.state.vacation})}
 					/>
 					<Checkbox label="Krank" icon={faBiohazard}
+						disabled={this.state.checkboxDisabled}
 						checked={this.state.sickness}
 						onChange={() => this.setState({sickness: !this.state.sickness})}
 					/>
 					<Checkbox label="NSFW" icon={faLock}
+						disabled={this.state.checkboxDisabled}
 						checked={this.state.nsfw}
 						onChange={() => this.setState({nsfw: !this.state.nsfw})}
 					/>
