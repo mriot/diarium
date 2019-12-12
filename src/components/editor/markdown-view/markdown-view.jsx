@@ -34,8 +34,9 @@ export default class MarkdownView extends React.PureComponent {
 		this.markdownOutputNode.scrollTop = this.props.scrollSyncPos;
 	}
 
-	componentDidUpdate(prevProps, prevState) {		
-		this.markdownOutputNode.scrollTop = this.props.scrollSyncPos;
+	componentDidUpdate(prevProps, prevState) {
+		if (this.props.isScrollSyncActive)
+			this.markdownOutputNode.scrollTop = this.props.scrollSyncPos;
 	}
 	
 	render() {
@@ -55,4 +56,5 @@ MarkdownView.propTypes = {
 	markdown: PropTypes.string,
 	scrollSyncPos: PropTypes.number,
 	isReadModeActive: PropTypes.bool,
+	isScrollSyncActive: PropTypes.bool,
 }
