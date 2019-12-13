@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Navigation from './components/navigation/navigation';
 import Sidebar from './components/sidebar/sidebar';
 import Editor from './components/editor/editor';
+import Favorites from './components/favorites';
+import { AnimateKeyframes, Animate } from 'react-simple-animate';
 
 const Layout = styled.div `
   display: flex;
@@ -24,6 +26,7 @@ export default class App extends React.PureComponent {
 
     this.state = {
       readMode: false,
+      showFavorites: true,
     }
   }
 
@@ -34,14 +37,22 @@ export default class App extends React.PureComponent {
           <Navigation
             isReadModeActive={this.state.readMode}
             setReadMode={bool => this.setState({readMode: bool})}
+            isFavoriteViewActive={this.state.showFavorites}
+            setFavoriteView={bool => this.setState({showFavorites: bool})}
           />
           <Main>
             <Sidebar
               isReadModeActive={this.state.readMode}
             />
-            <Editor 
-              isReadModeActive={this.state.readMode}
-            />
+            {!this.state.showFavorites && 
+              <Editor 
+                isReadModeActive={this.state.readMode}
+              />
+            }
+
+            {this.state.showFavorites && 
+              <Favorites /> 
+            }
           </Main>
           <ToastContainer
             position="bottom-left"
