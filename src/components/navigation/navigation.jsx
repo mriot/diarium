@@ -64,7 +64,13 @@ export default class Navigation extends React.PureComponent {
                 this.props.setReadMode(!this.props.isReadModeActive);
               }}
             />
-            <NavButton value="Favoriten" />
+            <NavButton
+              value="Favoriten"
+              active={this.props.isFavoriteViewActive}
+              onClick={() => {
+                this.props.setFavoriteView(!this.props.isFavoriteViewActive);
+              }}
+            />
           </ButtonContainer>
 
           <TextInput placeholder="Suchen..." />
