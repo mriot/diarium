@@ -5,24 +5,56 @@ import SeparatorHandle from "./separator-handle";
 import MarkdownView from './markdown-view/markdown-view';
 import MarkdownEditor from './markdown-editor';
 import Toolbar from './toolbar';
+import posed from 'react-pose';
 
-const EditorContainer = styled.div `
-	width: 100%;
+const editorAnimation = {
+	visible: {
+		opacity: 1,
+		scaleX: 1,
+		transition: {
+			duration: 300,
+			ease: "anticipate",
+		},
+		applyAtStart: { 
+			display: "flex",
+			position: "relative", 
+		},
+	},
+	hidden: {
+		opacity: 0,
+		scaleX: 0,
+		// transition: {
+		// 	duration: 3000,
+		// },
+		applyAtStart: {
+			position: "absolute",
+		},
+		applyAtEnd: { 
+			display: "none"
+		},
+	},
+}
+
+const PosedEditorContainer = posed.div(editorAnimation);
+const EditorContainer = styled(PosedEditorContainer) `
 	display: flex;
+	width: 100%;
 	max-height: 100%;
 	overflow: hidden;
   position: relative;
 	flex-direction: column;
+	transform-origin: right;
 
-	&.zen-mode {
+	${props => props.isZenModeActive && `
 		position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
 		z-index: 1;
-	}
+	`}
 `
+
 const InnerEditorContainer = styled.div `
   position: relative;
 	display: flex;
@@ -137,7 +169,11 @@ export default class Editor extends React.PureComponent {
 
 	render() {
 		return (
-			<EditorContainer ref={this.editorContainerRef} className={this.state.zenMode ? "zen-mode" : ""}>
+			<EditorContainer
+				ref={this.editorContainerRef}
+				isZenModeActive={this.state.isZenModeActive}
+				pose={this.props.pose}
+			>
 				<Toolbar 
 					// call markdown-editor methods
 					editorFocus={() => this.markdownEditorRef.editorFocus()}

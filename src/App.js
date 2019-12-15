@@ -7,14 +7,17 @@ import Navigation from './components/navigation/navigation';
 import Sidebar from './components/sidebar/sidebar';
 import Editor from './components/editor/editor';
 import Favorites from './components/favorites';
-import { AnimateKeyframes, Animate } from 'react-simple-animate';
+import posed, { PoseGroup } from "react-pose";
+import uuid4 from "uuid/v4";
 
 const Layout = styled.div `
+  position: relative;
   display: flex;
   flex-flow: column;
   height: 100vh;
 `
 const Main = styled.div `
+  position: relative;
   display: flex;
   align-items: stretch;
   height: 100%;
@@ -26,11 +29,11 @@ export default class App extends React.PureComponent {
 
     this.state = {
       readMode: false,
-      showFavorites: true,
+      showFavorites: false,
     }
   }
-
-  render() { 
+  
+  render() {
     return ( 
       <BrowserRouter>
         <Layout>
@@ -44,15 +47,17 @@ export default class App extends React.PureComponent {
             <Sidebar
               isReadModeActive={this.state.readMode}
             />
-            {!this.state.showFavorites && 
-              <Editor 
-                isReadModeActive={this.state.readMode}
-              />
-            }
 
-            {this.state.showFavorites && 
-              <Favorites /> 
-            }
+            <PoseGroup>
+              {this.state.showFavorites && 
+                <Favorites key={uuid4()}  />
+              }
+            </PoseGroup>
+
+            <Editor
+              isReadModeActive={this.state.readMode}
+              pose={this.state.showFavorites ? "hidden" : "visible"}
+            />
           </Main>
           <ToastContainer
             position="bottom-left"
