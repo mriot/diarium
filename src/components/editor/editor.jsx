@@ -6,29 +6,7 @@ import MarkdownView from './markdown-view/markdown-view';
 import MarkdownEditor from './markdown-editor';
 import Toolbar from './toolbar';
 import posed from 'react-pose';
-
-const editorAnimation = {
-	visible: {
-		opacity: 1,
-		scaleX: 1,
-		applyAtStart: {display: "flex"},
-		transition: {
-			delay: 700,
-			duration: 1000,
-			ease: "anticipate",
-		},
-	},
-
-	hidden: {
-		opacity: 0,
-		scaleX: 0,
-		applyAtEnd: {display: "none"},
-		transition: {
-			duration: 1000,
-			ease: "anticipate",
-		}
-	},
-}
+import { editorAnimation } from '../../lib/animations';
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer) `

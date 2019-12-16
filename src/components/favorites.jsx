@@ -2,41 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
+import { favoritesAnimation } from "../lib/animations";
 
-const animation = {
-	enter: {
-		opacity: 1,
-		scaleX: 1,
-		applyAtStart: {position: "absolute"},
-		applyAtEnd: {position: "relative"},
-		transition: {
-			delay: 700,
-			duration: 1000,
-			ease: "anticipate",
-		},
-	},
-	exit: {
-		applyAtStart: {position: "absolute"},
-		applyAtEnd: {position: "relative"},
-		transition: {
-			duration: 1000,
-			ease: "anticipate",
-		},
-		opacity: 0,
-		scaleX: 0
-	},
-}
-
-const PosedDiv = posed.div(animation);
-const FavoritesContainer = styled(PosedDiv) `
+const PosedFavoritesContainer = posed.div(favoritesAnimation);
+const FavoritesContainer = styled(PosedFavoritesContainer) `
 	display: flex;
 	width: 100%;
-	max-height: 100%;
-	overflow: hidden;
+	height: 100%;
 	position: relative;
 	flex-direction: column;
-	background-color: red;
 	transform-origin: right;
+	background-color: darkred;
 `
 
 
