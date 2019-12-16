@@ -7,7 +7,8 @@ import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, fa
 
 const StyledToolbar = styled.div `
 	width: 100%;
-	height: 40px;
+	height: 35px;
+	flex-shrink: 0;
 	display: flex;
 	justify-content: space-between;
 	background-color: #efefef;
