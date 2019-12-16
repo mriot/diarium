@@ -35,8 +35,6 @@ const EditorContainer = styled(PosedEditorContainer) `
 	display: flex;
 	width: 100%;
 	height: 100%;
-	flex-shrink: 1;
-	overflow: hidden;
   position: relative;
 	flex-direction: column;
 	transform-origin: right;
@@ -54,6 +52,7 @@ const EditorContainer = styled(PosedEditorContainer) `
 const InnerEditorContainer = styled.div `
   position: relative;
 	display: flex;
+	overflow: auto;
 	width: 100%;
 	height: 100%;
 `
