@@ -17,8 +17,6 @@
 	height: 100%;
 	tab-size: 2;
 	background-color: #fff;
-	/* enables easy overscroll */
-	padding-bottom: 60%;
 }
 
 .markdown-body>*:first-child {
