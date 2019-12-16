@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import posed from 'react-pose';
-import { favoritesAnimation } from "../lib/animations";
+import { favoritesAnimation } from "./animations";
 
 const PosedFavoritesContainer = posed.div(favoritesAnimation);
 const FavoritesContainer = styled(PosedFavoritesContainer) `

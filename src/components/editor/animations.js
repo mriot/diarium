@@ -1,6 +1,6 @@
 /**
- * Pose animations for DIARIUM
- * ***************************
+ * Pose animations for editor
+ * **************************
 **/
 
 export const editorAnimation = {
@@ -37,39 +37,5 @@ export const editorAnimation = {
 			duration: 1000,
 			ease: "anticipate",
 		}
-	},
-}
-
-
-export const favoritesAnimation = {
-	enter: {
-		opacity: 1,
-		scaleX: 1,
-
-		applyAtStart: {position: "absolute"},
-		applyAtEnd: {
-			position: "relative",
-			opacity: 1,
-			scaleX: 1,
-		},
-
-		transition: {
-			delay: 700,
-			duration: 1000,
-			ease: "anticipate",
-		},
-	},
-
-	exit: {
-		opacity: 0,
-		scaleX: 0,
-
-		applyAtStart: {position: "absolute"},
-		applyAtEnd: {position: "relative"},
-
-		transition: {
-			duration: 1000,
-			ease: "anticipate",
-		},
 	},
 }

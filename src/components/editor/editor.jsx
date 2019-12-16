@@ -6,7 +6,7 @@ import MarkdownView from './markdown-view/markdown-view';
 import MarkdownEditor from './markdown-editor';
 import Toolbar from './toolbar';
 import posed from 'react-pose';
-import { editorAnimation } from '../../lib/animations';
+import { editorAnimation } from "./animations";
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer) `
