@@ -167,7 +167,7 @@ export default class Editor extends React.PureComponent {
 		return (
 			<EditorContainer
 				ref={this.editorContainerRef}
-				isZenModeActive={this.state.isZenModeActive}
+				isZenModeActive={this.state.zenMode}
 				pose={this.props.pose}
 			>
 				<Toolbar 
