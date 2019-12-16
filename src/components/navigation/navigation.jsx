@@ -17,6 +17,7 @@ const Nav = styled.nav`
   background-color: #20232a;
   border-bottom: 1px solid #191919;
   box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
+  grid-column: 1/3;
 `
 const Logo = styled.span `
   color: #fff;

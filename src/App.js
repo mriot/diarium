@@ -12,14 +12,17 @@ import uuid4 from "uuid/v4";
 
 const Layout = styled.div `
   position: relative;
-  display: flex;
-  flex-flow: column;
+  max-height: 100vh;
   height: 100vh;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
 `
-const Main = styled.div `
+const Main = styled.main `
   position: relative;
-  display: flex;
-  align-items: stretch;
+  overflow-x: hidden;
   height: 100%;
 `
 
@@ -43,11 +46,12 @@ export default class App extends React.PureComponent {
             isFavoriteViewActive={this.state.showFavorites}
             setFavoriteView={bool => this.setState({showFavorites: bool})}
           />
-          <Main>
-            <Sidebar
-              isReadModeActive={this.state.readMode}
-            />
 
+          <Sidebar
+            isReadModeActive={this.state.readMode}
+          />
+
+          <Main>
             <PoseGroup>
               {this.state.showFavorites && 
                 <Favorites key={uuid4()}  />
@@ -59,20 +63,20 @@ export default class App extends React.PureComponent {
               pose={this.state.showFavorites ? "hidden" : "visible"}
             />
           </Main>
-          <ToastContainer
-            position="bottom-left"
-            // hideProgressBar={true}
-            // autoClose={5000}
-            newestOnTop={true}
-            progressStyle={{
-              "background": "linear-gradient(to right, #00b7ff, #5ac8fa, #007aff, #34aadc)"
-            }}
-            style={{
-              "max-width": "300px",
-              "left": 0
-            }}
-          />
         </Layout>
+        <ToastContainer
+          position="bottom-left"
+          // hideProgressBar={true}
+          // autoClose={5000}
+          newestOnTop={true}
+          progressStyle={{
+            "background": "linear-gradient(to right, #00b7ff, #5ac8fa, #007aff, #34aadc)"
+          }}
+          style={{
+            "max-width": "300px",
+            "left": 0
+          }}
+        />
       </BrowserRouter>
     )
   }

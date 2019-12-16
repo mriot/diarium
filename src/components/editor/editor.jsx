@@ -11,27 +11,22 @@ const editorAnimation = {
 	visible: {
 		opacity: 1,
 		scaleX: 1,
+		applyAtStart: {display: "flex"},
 		transition: {
-			duration: 300,
+			delay: 700,
+			duration: 1000,
 			ease: "anticipate",
 		},
-		applyAtStart: { 
-			display: "flex",
-			position: "relative", 
-		},
 	},
+
 	hidden: {
 		opacity: 0,
 		scaleX: 0,
-		// transition: {
-		// 	duration: 3000,
-		// },
-		applyAtStart: {
-			position: "absolute",
-		},
-		applyAtEnd: { 
-			display: "none"
-		},
+		applyAtEnd: {display: "none"},
+		transition: {
+			duration: 1000,
+			ease: "anticipate",
+		}
 	},
 }
 
@@ -39,7 +34,8 @@ const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer) `
 	display: flex;
 	width: 100%;
-	max-height: 100%;
+	height: 100%;
+	flex-shrink: 1;
 	overflow: hidden;
   position: relative;
 	flex-direction: column;

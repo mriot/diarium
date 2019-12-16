@@ -7,12 +7,21 @@ const animation = {
 	enter: {
 		opacity: 1,
 		scaleX: 1,
+		applyAtStart: {position: "absolute"},
+		applyAtEnd: {position: "relative"},
 		transition: {
-			duration: 300,
+			delay: 700,
+			duration: 1000,
 			ease: "anticipate",
 		},
 	},
 	exit: {
+		applyAtStart: {position: "absolute"},
+		applyAtEnd: {position: "relative"},
+		transition: {
+			duration: 1000,
+			ease: "anticipate",
+		},
 		opacity: 0,
 		scaleX: 0
 	},
@@ -27,7 +36,7 @@ const FavoritesContainer = styled(PosedDiv) `
 	position: relative;
 	flex-direction: column;
 	background-color: red;
-	transform-origin: left;
+	transform-origin: right;
 `
 
 
