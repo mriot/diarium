@@ -9,18 +9,19 @@ const FavoritesContainer = styled(PosedFavoritesContainer) `
 	display: flex;
 	width: 100%;
 	height: 100%;
+	color: #fff;
 	position: relative;
 	flex-direction: column;
-	transform-origin: right;
-	background-color: darkred;
+	background-color: #191919;
+	transform-origin: center;
+	backface-visibility: hidden;
 `
-
 
 export default class Favorites extends React.PureComponent {
 	render() {
 		return (
 			<FavoritesContainer pose={this.props.pose} {...this.props}>
-				LOREM IPSUM
+				LOREM IPSUM {this.props.pose}
 			</FavoritesContainer>
 		);
 	}

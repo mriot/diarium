@@ -15,7 +15,8 @@ const EditorContainer = styled(PosedEditorContainer) `
 	height: 100%;
   position: relative;
 	flex-direction: column;
-	transform-origin: right;
+	transform-origin: center;
+	backface-visibility: hidden;
 
 	${props => props.isZenModeActive && `
 		position: fixed;

@@ -24,6 +24,7 @@ const Main = styled.main `
   position: relative;
   overflow-x: hidden;
   height: 100%;
+  perspective: 1000px;
 `
 
 export default class App extends React.PureComponent {
@@ -54,7 +55,7 @@ export default class App extends React.PureComponent {
           <Main>
             <PoseGroup>
               {this.state.showFavorites && 
-                <Favorites key={uuid4()}  />
+                <Favorites key={uuid4()} />
               }
             </PoseGroup>
 

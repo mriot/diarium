@@ -5,8 +5,8 @@
 
 export const editorAnimation = {
 	visible: {
-		opacity: 1,
-		scaleX: 1,
+		scale: 1,
+		rotateX: 0,
 
 		applyAtStart: {display: "flex"},
 		/** 
@@ -16,26 +16,36 @@ export const editorAnimation = {
 		 * and not just here - it does so everywhere...
 		 */ 
 		applyAtEnd: {
-			opacity: 1,
-			scaleX: 1,
+			scale: 1,
+			rotateX: 0,
 		},
 
 		transition: {
-			delay: 700,
+			delay: 1000,
 			duration: 1000,
 			ease: "anticipate",
+	
+			rotateX: {
+				duration: 400,
+				delay: 900,
+			}
 		},
 	},
 
 	hidden: {
-		opacity: 0,
-		scaleX: 0,
+		scale: 0.75,
+		rotateX: 180,
 
 		applyAtEnd: {display: "none"},
 		
 		transition: {
 			duration: 1000,
-			ease: "anticipate",
-		}
+			ease: "easeOut",
+	
+			rotateX: {
+				duration: 400,
+				delay: 900,
+			}
+		},
 	},
 }

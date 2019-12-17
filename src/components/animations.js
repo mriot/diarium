@@ -5,39 +5,52 @@
 
 export const favoritesAnimation = {
 	enter: {
-		opacity: 1,
-		scaleX: 1,
+		scale: 1,
+		rotateX: 0,
 
-		applyAtStart: {position: "absolute"},
-		/** 
-		 * NOTE: explicitly setting our 'visible' values here using 'applyAtEnd',
-		 * because 'pose' does not end the animation with e.g: opacity: 1;
-		 * - instead it ends with something like: opacity: 0.987634761; 
-		 * and not just here - it does so everywhere...
-		 */ 
+		applyAtStart: {
+			display: "flex",
+			position: "absolute"
+		},
 		applyAtEnd: {
 			position: "relative",
-			opacity: 1,
-			scaleX: 1,
+			scale: 1,
+			rotateX: 0,
+			zIndex: 1,
 		},
 
 		transition: {
-			delay: 700,
+			delay: 1000,
 			duration: 1000,
 			ease: "anticipate",
+
+			rotateX: {
+				duration: 400,
+				delay: 900,
+			}
 		},
 	},
 
+
 	exit: {
-		opacity: 0,
-		scaleX: 0,
+		scale: 0.75,
+		rotateX: -180,
 
 		applyAtStart: {position: "absolute"},
-		applyAtEnd: {position: "relative"},
+		applyAtEnd: {
+			position: "relative",
+			display: "none",
+		},
 
 		transition: {
 			duration: 1000,
-			ease: "anticipate",
+			ease: "easeOut",
+
+			rotateX: {
+				duration: 400,
+				delay: 900,
+			}
 		},
 	},
 }
+
