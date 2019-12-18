@@ -9,12 +9,14 @@ import moment from 'moment';
 const PosedFavoritesContainer = posed.div(favoritesAnimation);
 const FavoritesContainer = styled(PosedFavoritesContainer) `
 	width: 100%;
-	/* height: 100%; */
+	height: 100%;
 	color: #fff;
 	position: relative;
 	z-index: 1; /* place on top of editor */
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-rows: repeat(auto, fit-content);
+	grid-template-columns: repeat(3, 1fr);
+	gap: 10px;
 	background-color: #191919;
 	transform-origin: center;
 	backface-visibility: hidden;

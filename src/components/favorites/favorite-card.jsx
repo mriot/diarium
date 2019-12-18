@@ -8,14 +8,16 @@ const PosedFavoriteCard = pose.div();
 const StyledFavoriteCard = styled(PosedFavoriteCard) `
 	color: #222;
 	display: flex;
+	align-items: center;
 	justify-content: space-between;
+	border-radius: 10px;
 	background-color: rgba(255, 255, 255, 0.5);
 `
 const DateDisplay = styled.div `
 	padding: 10px 20px;
 	display: flex;
 	justify-content: center;
-	align-content: center;
+	align-items: center;
 	flex-direction: column;
 	text-align: center;
 	border-radius: 10px;
@@ -30,8 +32,12 @@ const DateDisplay = styled.div `
 		font-size: 14px;
 	}
 `
-const Description = styled.div ``
-const TagDisplay = styled.div ``
+const Description = styled.div `
+
+`
+const TagDisplay = styled.div `
+
+`
 
 export default class FavoriteCard extends React.PureComponent {
 	render() {
@@ -40,14 +46,14 @@ export default class FavoriteCard extends React.PureComponent {
 				<DateDisplay>
 					<div>{moment(this.props.date).format("DD")}</div>
 					<span>
-						{moment(this.props.date).format("MMMM").substr(0, 3) + "."}
+						{moment(this.props.date).format("MMMM").substr(0, 3)}
 					</span>
 				</DateDisplay>
 				<Description>
-					{/* {this.props.description} */}
+					{this.props.desc}
 				</Description>
 				<TagDisplay>
-					{/* {this.props.tags} */}
+					{this.props.tags}
 				</TagDisplay>
 			</StyledFavoriteCard>
 		);
@@ -55,7 +61,7 @@ export default class FavoriteCard extends React.PureComponent {
 }
 
 FavoriteCard.propTypes = {
-	date: PropTypes.string.isRequired,
-	description: PropTypes.string,
+	date: PropTypes.objectOf(moment).isRequired,
+	desc: PropTypes.string,
 	tags: PropTypes.array,
 }
