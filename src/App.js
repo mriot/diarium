@@ -6,9 +6,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import Navigation from './components/navigation/navigation';
 import Sidebar from './components/sidebar/sidebar';
 import Editor from './components/editor/editor';
-import Favorites from './components/favorites';
+import Favorites from './components/favorites/favorites';
 import posed, { PoseGroup } from "react-pose";
 import uuid4 from "uuid/v4";
+import moment from 'moment';
+import "moment/locale/de";
 
 const Layout = styled.div `
   position: relative;
@@ -30,6 +32,8 @@ const Main = styled.main `
 export default class App extends React.PureComponent {
   constructor(props) {
     super(props);
+
+    moment().locale("de")
 
     this.state = {
       readMode: false,
