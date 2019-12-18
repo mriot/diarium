@@ -8,15 +8,11 @@ export const favoritesAnimation = {
 		scale: 1,
 		rotateX: 0,
 
-		applyAtStart: {
-			display: "flex",
-			position: "absolute"
-		},
+		applyAtStart: {position: "absolute"},
 		applyAtEnd: {
 			position: "relative",
 			scale: 1,
 			rotateX: 0,
-			zIndex: 1,
 		},
 
 		transition: {
@@ -37,10 +33,7 @@ export const favoritesAnimation = {
 		rotateX: -180,
 
 		applyAtStart: {position: "absolute"},
-		applyAtEnd: {
-			position: "relative",
-			display: "none",
-		},
+		applyAtEnd: {position: "relative"},
 
 		transition: {
 			duration: 1000,
