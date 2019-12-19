@@ -47,3 +47,40 @@ export const favoritesAnimation = {
 	},
 }
 
+
+export const accordionAnimation = {
+	visible: {
+		opacity: 1,
+		y: 0,
+		delayChildren: 200,
+    staggerChildren: 50,
+	},
+
+	hidden: {
+		opacity: 0,
+		delayChildren: 200,
+    staggerChildren: 50,
+
+		applyAtEnd: {
+			y: -100,
+		}
+	}
+}
+
+
+export const favoriteCardAnimation = {
+	enter: {
+		scale: 1,
+		rotateX: 0,
+
+		applyAtEnd: {
+			scale: 1,
+			rotateX: 0,
+		},
+	},
+
+	exit: {
+		scale: 0.75,
+		rotateX: -180,
+	},
+}

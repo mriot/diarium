@@ -3,15 +3,15 @@ import styled from 'styled-components';
 import pose from "react-pose";
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import { favoriteCardAnimation } from './animations';
 
-const PosedFavoriteCard = pose.div();
+const PosedFavoriteCard = pose.div(favoriteCardAnimation);
 const StyledFavoriteCard = styled(PosedFavoriteCard) `
 	color: #222;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	border-radius: 10px;
-	background-color: rgba(255, 255, 255, 0.5);
+	background-color: rgba(255, 255, 255, 0.9);
 `
 const DateDisplay = styled.div `
 	padding: 10px 20px;
@@ -20,7 +20,7 @@ const DateDisplay = styled.div `
 	align-items: center;
 	flex-direction: column;
 	text-align: center;
-	border-radius: 10px;
+	border-radius: 10px 0 0 10px;
 	background-color: #fff;
 
 	div {
@@ -32,10 +32,15 @@ const DateDisplay = styled.div `
 		font-size: 14px;
 	}
 `
-const Description = styled.div `
+const CardBody = styled.div `
+	display: flex;
+	flex-direction: column;
+	margin-left: 10px;
+`
+const Desc = styled.div `
 
 `
-const TagDisplay = styled.div `
+const Tags = styled.div `
 
 `
 
@@ -49,15 +54,17 @@ export default class FavoriteCard extends React.PureComponent {
 						{moment(this.props.date).format("MMMM").substr(0, 3)}
 					</span>
 				</DateDisplay>
-				<Description>
-					{this.props.desc}
-				</Description>
-				<TagDisplay>
-					{this.props.tags}
-				</TagDisplay>
+				<CardBody>
+					<Desc>{this.props.desc}</Desc>
+					<Tags>{this.props.tags}</Tags>
+				</CardBody>
 			</StyledFavoriteCard>
 		);
 	}
+}
+
+FavoriteCard.defaultProps = {
+	desc: "Keine Beschreibung... 🙉",
 }
 
 FavoriteCard.propTypes = {
