@@ -1,47 +1,45 @@
 import React from 'react';
 import styled from 'styled-components';
-import pose, { PoseGroup } from "react-pose";
 import PropTypes from 'prop-types';
-import { accordionAnimation } from './animations';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
 
 const StyledYearAccordion = styled.div `
 	display: flex;
 	flex-direction: column;
 `
 const Header = styled.div `
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 	font-size: 20px;
 	padding: 10px 15px;
 	cursor: pointer;
 	border-radius: 10px;
-	background-color: darkred;
+	background-color: #607d8b;
 `
-const PosedBody = pose.div(accordionAnimation);
-const Body = styled(PosedBody) `
+const Body = styled.div `
 	display: flex;
 	flex-direction: column;
 `
+const Icon = styled(FontAwesomeIcon) `
+	transition: all 0.3s;
+
+	${props => props.open && `
+		transform: rotateX(180deg)
+	`}
+`
 
 export default class YearAccordion extends React.PureComponent {
-	constructor(props) {
-		super(props);
-	
-		this.state = {
-			accordionOpen: false,
-		}
-	}
-
-	toggleAccordion() {
-		this.setState({accordionOpen: !this.state.accordionOpen})
-	}
-
 	render() {
 		return (
-			<StyledYearAccordion onClick={() => this.toggleAccordion()}>
-				<Header>{this.props.year}</Header>
+			<StyledYearAccordion>
+				<Header onClick={() => this.props.toggleAccordion()}>
+					{this.props.year}
+					<Icon icon={faCaretUp} open={this.props.accordionOpen} />
+				</Header>
 				<Body>
-					<PoseGroup>
-						{this.props.children}
-					</PoseGroup>
+					{this.props.children}
 				</Body>
 			</StyledYearAccordion>
 		);
@@ -49,6 +47,8 @@ export default class YearAccordion extends React.PureComponent {
 }
 
 YearAccordion.propTypes = {
-	year: PropTypes.string.isRequired,
-
+	year: PropTypes.number.isRequired,
+	toggleAccordion: PropTypes.func.isRequired,
+	accordionOpen: PropTypes.bool.isRequired,
+	children: PropTypes.array,
 }

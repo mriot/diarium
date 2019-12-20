@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import posed from 'react-pose';
+import posed, { PoseGroup } from 'react-pose';
 import { favoritesAnimation } from "./animations";
 import FavoriteCard from './favorite-card';
 import moment from 'moment';
@@ -26,21 +26,58 @@ const FavoritesContainer = styled(PosedFavoritesContainer) `
 `
 
 export default class Favorites extends React.PureComponent {
+	constructor(props) {
+		super(props);
+		
+		this.state = {
+			ready: false,
+			accordionOpen: false,
+		}
+	}
+	
+	toggleAccordion() {
+		this.setState({accordionOpen: !this.state.accordionOpen})
+	}
+	
 	render() {
+		const cards = [
+			{
+				date: moment("2010-12-12"),
+				desc: "Hello World",
+				tags: ["lorem", "ipsum"]
+			},
+			{
+				date: moment("2010-11-11"),
+				desc: "Hello World 2",
+				tags: ["lorem", "ipsum"]
+			},
+			{
+				date: moment("2010-08-08"),
+				desc: "Hello World 3",
+				tags: ["lorem", "ipsum"]
+			},
+			{
+				date: moment("2010-01-01"),
+				tags: ["lorem", "ipsum"]
+			},
+		];
+
 		return (
 			<FavoritesContainer {...this.props}>
-				<YearAccordion year={2020}>
-					<FavoriteCard key={uuid4()} date={moment().add(1, "day")} tags={["lorem", "ipsum"]} desc={"My first favorite!"} />
-					<FavoriteCard key={uuid4()} date={moment().add(1, "day")} tags={["lorem", "ipsum"]} desc={"My first favorite!"} />
-				</YearAccordion>
-				<YearAccordion year={2019}>
-					<FavoriteCard key={uuid4()} date={moment()} tags={["lorem", "ipsum"]} desc={"My first favorite!"} />
-					<FavoriteCard key={uuid4()} date={moment()} tags={["lorem", "ipsum"]} />
-					<FavoriteCard key={uuid4()} date={moment()} tags={["lorem", "ipsum"]} desc={"My first favorite!"} />
-					<FavoriteCard key={uuid4()} date={moment()} tags={["lorem", "ipsum"]} desc={"My first favorite!"} />
-				</YearAccordion>
-				<YearAccordion year={2018}>
-					<FavoriteCard key={uuid4()} date={moment()} tags={["lorem", "ipsum"]} desc={"My first favorite!"} />
+				<YearAccordion year={2020}
+					toggleAccordion={() => this.toggleAccordion()}
+					accordionOpen={this.state.accordionOpen}
+				>
+						{cards.map((item, index) => 
+							<FavoriteCard
+								key={index}
+								index={index}
+								date={item.date}
+								tags={item.tags} 
+								desc={item.desc} 
+								pose={this.state.accordionOpen ? "show" : "hide"}
+							/>
+						)}
 				</YearAccordion>
 			</FavoritesContainer>
 		);

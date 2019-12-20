@@ -69,18 +69,28 @@ export const accordionAnimation = {
 
 
 export const favoriteCardAnimation = {
-	enter: {
-		scale: 1,
-		rotateX: 0,
+	show: {
+		scaleY: 1,
+		opacity: 1,
+
+		applyAtStart: {
+			display: "flex",
+		},
 
 		applyAtEnd: {
-			scale: 1,
-			rotateX: 0,
+			scaleY: 1,
+			opacity: 1,
 		},
+
+		delay: ({index}) => index * 200,
 	},
 
-	exit: {
-		scale: 0.75,
-		rotateX: -180,
+	hide: {
+		scaleY: 0,
+		opacity: 0,
+
+		applyAtEnd: {
+			display: "none",
+		},
 	},
 }

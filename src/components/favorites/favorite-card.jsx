@@ -1,17 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
-import pose from "react-pose";
+import posed from 'react-pose';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { favoriteCardAnimation } from './animations';
 
-const PosedFavoriteCard = pose.div(favoriteCardAnimation);
+const PosedFavoriteCard = posed.div(favoriteCardAnimation);
 const StyledFavoriteCard = styled(PosedFavoriteCard) `
 	color: #222;
 	display: flex;
 	align-items: center;
+	margin-top: 5px;
 	border-radius: 10px;
+	transform-origin: top;
+	cursor: pointer;
 	background-color: rgba(255, 255, 255, 0.9);
+	transition: background-color 0.2s;
+
+	&:hover {
+		background-color: rgb(255, 255, 255);
+	}
 `
 const DateDisplay = styled.div `
 	padding: 10px 20px;
@@ -47,7 +55,7 @@ const Tags = styled.div `
 export default class FavoriteCard extends React.PureComponent {
 	render() {
 		return (
-			<StyledFavoriteCard>
+			<StyledFavoriteCard {...this.props}>
 				<DateDisplay>
 					<div>{moment(this.props.date).format("DD")}</div>
 					<span>
