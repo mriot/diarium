@@ -13,6 +13,7 @@ const RenderedMarkdownContainer = styled.div `
 
 	${props => props.isReadModeActive && `
 		width: 100% !important;
+		padding: 0 50px;
 	`}
 	
 	/* toggled in Editor -> showPreview() and hidePreview() */
