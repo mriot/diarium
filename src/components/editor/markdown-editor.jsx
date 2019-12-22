@@ -51,7 +51,7 @@ export default class MarkdownEditor extends React.PureComponent {
 			mode: "gfm", // github flavored markdown
 			theme: "clouds-midnight",
 			tabSize: 2,
-			autofocus: true,
+			// autofocus: true,
 			fixedGutter: true,
 			lineNumbers: true,
 			lineWrapping: true,
