@@ -40,5 +40,6 @@ export default class NavButton extends React.PureComponent {
 }
 
 NavButton.propTypes = {
+  active: PropTypes.bool,
   value: PropTypes.string.isRequired,
 }

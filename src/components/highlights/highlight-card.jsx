@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import posed from 'react-pose';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { favoriteCardAnimation } from './animations';
+import { highlightCardAnimation } from './animations';
 
-const PosedFavoriteCard = posed.div(favoriteCardAnimation);
-const StyledFavoriteCard = styled(PosedFavoriteCard) `
+const PosedHighlightCard = posed.div(highlightCardAnimation);
+const StyledHighlightCard = styled(PosedHighlightCard) `
 	color: #222;
 	display: flex;
 	align-items: center;
@@ -52,10 +52,10 @@ const Tags = styled.div `
 
 `
 
-export default class FavoriteCard extends React.PureComponent {
+export default class HighlightCard extends React.PureComponent {
 	render() {
 		return (
-			<StyledFavoriteCard {...this.props}>
+			<StyledHighlightCard {...this.props}>
 				<DateDisplay>
 					<div>{moment(this.props.date).format("DD")}</div>
 					<span>
@@ -66,16 +66,16 @@ export default class FavoriteCard extends React.PureComponent {
 					<Desc>{this.props.desc}</Desc>
 					<Tags>{this.props.tags}</Tags>
 				</CardBody>
-			</StyledFavoriteCard>
+			</StyledHighlightCard>
 		);
 	}
 }
 
-FavoriteCard.defaultProps = {
+HighlightCard.defaultProps = {
 	desc: "Keine Beschreibung... 🙉",
 }
 
-FavoriteCard.propTypes = {
+HighlightCard.propTypes = {
 	date: PropTypes.objectOf(moment).isRequired,
 	desc: PropTypes.string,
 	tags: PropTypes.array,

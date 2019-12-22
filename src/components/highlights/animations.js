@@ -3,7 +3,8 @@
  * ***************
 **/
 
-export const favoritesAnimation = {
+// main screen enter and exit animation
+export const highlightsAnimation = {
 	enter: {
 		scale: 1,
 		rotateX: 0,
@@ -48,49 +49,31 @@ export const favoritesAnimation = {
 }
 
 
-export const accordionAnimation = {
-	visible: {
-		opacity: 1,
-		y: 0,
-		delayChildren: 200,
-    staggerChildren: 50,
-	},
-
-	hidden: {
-		opacity: 0,
-		delayChildren: 200,
-    staggerChildren: 50,
-
-		applyAtEnd: {
-			y: -100,
-		}
-	}
-}
-
-
-export const favoriteCardAnimation = {
+export const highlightCardAnimation = {
 	show: {
 		scaleY: 1,
 		opacity: 1,
 
 		applyAtStart: {
 			display: "flex",
+			scaleY: 0,
 		},
-
+		
 		applyAtEnd: {
 			scaleY: 1,
 			opacity: 1,
 		},
-
-		delay: ({index}) => index * 200,
 	},
-
+	
 	hide: {
-		scaleY: 0,
 		opacity: 0,
-
+		
 		applyAtEnd: {
 			display: "none",
 		},
+
+		transition: {
+			duration: 200
+		}
 	},
 }

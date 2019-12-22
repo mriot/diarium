@@ -31,15 +31,27 @@ const Icon = styled(FontAwesomeIcon) `
 `
 
 export default class YearAccordion extends React.PureComponent {
+	constructor(props) {
+		super(props);
+	
+		this.state = {
+			accordionOpen: false,
+		}
+	}
+
+	toggleAccordion() {
+		this.setState({accordionOpen: !this.state.accordionOpen})
+	}
+
 	render() {
 		return (
 			<StyledYearAccordion>
-				<Header onClick={() => this.props.toggleAccordion()}>
+				<Header onClick={() => this.toggleAccordion()}>
 					{this.props.year}
-					<Icon icon={faCaretUp} open={this.props.accordionOpen} />
+					<Icon icon={faCaretUp} open={this.state.accordionOpen} />
 				</Header>
 				<Body>
-					{this.props.children}
+					{this.props.render(this.state.accordionOpen)}
 				</Body>
 			</StyledYearAccordion>
 		);
@@ -48,7 +60,6 @@ export default class YearAccordion extends React.PureComponent {
 
 YearAccordion.propTypes = {
 	year: PropTypes.number.isRequired,
-	toggleAccordion: PropTypes.func.isRequired,
-	accordionOpen: PropTypes.bool.isRequired,
-	children: PropTypes.array,
+	render: PropTypes.func.isRequired,
+
 }

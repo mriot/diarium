@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from 'prop-types';
 import NavButton from "./nav-button";
 import TextInput from "../common/textinput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -66,10 +67,10 @@ export default class Navigation extends React.PureComponent {
               }}
             />
             <NavButton
-              value="Favoriten"
-              active={this.props.isFavoriteViewActive}
+              value="Highlights"
+              active={this.props.isHighlightsViewActive}
               onClick={() => {
-                this.props.setFavoriteView(!this.props.isFavoriteViewActive);
+                this.props.setHighlightsView(!this.props.isHighlightsViewActive);
               }}
             />
           </ButtonContainer>
@@ -85,4 +86,11 @@ export default class Navigation extends React.PureComponent {
       </Nav>
     );
   }
+}
+
+Navigation.propTypes = {
+  isReadModeActive: PropTypes.bool,
+  setReadMode: PropTypes.func,
+  isHighlightsViewActive: PropTypes.bool,
+  setHighlightsView: PropTypes.func,
 }

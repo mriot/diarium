@@ -6,8 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Navigation from './components/navigation/navigation';
 import Sidebar from './components/sidebar/sidebar';
 import Editor from './components/editor/editor';
-import Favorites from './components/favorites/favorites';
-import posed, { PoseGroup } from "react-pose";
+import Highlights from './components/highlights/highlights';
+import { PoseGroup } from "react-pose";
 import uuid4 from "uuid/v4";
 import moment from 'moment';
 import "moment/locale/de";
@@ -37,7 +37,7 @@ export default class App extends React.PureComponent {
 
     this.state = {
       readMode: false,
-      showFavorites: false,
+      showHighlights: false,
     }
   }
   
@@ -48,8 +48,8 @@ export default class App extends React.PureComponent {
           <Navigation
             isReadModeActive={this.state.readMode}
             setReadMode={bool => this.setState({readMode: bool})}
-            isFavoriteViewActive={this.state.showFavorites}
-            setFavoriteView={bool => this.setState({showFavorites: bool})}
+            isHighlightsViewActive={this.state.showHighlights}
+            setHighlightsView={bool => this.setState({showHighlights: bool})}
           />
 
           <Sidebar
@@ -58,14 +58,14 @@ export default class App extends React.PureComponent {
 
           <Main>
             <PoseGroup>
-              {this.state.showFavorites && 
-                <Favorites key={uuid4()} />
+              {this.state.showHighlights && 
+                <Highlights key={uuid4()} />
               }
             </PoseGroup>
 
             <Editor
               isReadModeActive={this.state.readMode}
-              pose={this.state.showFavorites ? "hidden" : "visible"}
+              pose={this.state.showHighlights ? "hidden" : "visible"}
             />
           </Main>
         </Layout>
