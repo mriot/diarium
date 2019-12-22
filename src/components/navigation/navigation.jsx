@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import NavButton from "./nav-button";
 import TextInput from "../common/textinput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faStarAndCrescent, faStar, faPen } from "@fortawesome/free-solid-svg-icons";
 
 const Nav = styled.nav`
   width: 100%;
@@ -61,6 +61,7 @@ export default class Navigation extends React.PureComponent {
           <ButtonContainer>
             <NavButton 
               value="Bearbeiten"
+              icon={faPen}
               active={!this.props.isReadModeActive}
               onClick={() => {
                 this.props.setReadMode(!this.props.isReadModeActive);
@@ -68,6 +69,7 @@ export default class Navigation extends React.PureComponent {
             />
             <NavButton
               value="Highlights"
+              icon={faStar}
               active={this.props.isHighlightsViewActive}
               onClick={() => {
                 this.props.setHighlightsView(!this.props.isHighlightsViewActive);
