@@ -61,11 +61,11 @@ export default class Editor extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		if (!this.state.readMode && localStorage.getItem("preview-hidden") === "true") 
-			this.hidePreview();
-		
 		// collects DOM nodes
 		this.setUpSeparator();
+		
+		if (!this.state.readMode && localStorage.getItem("preview-hidden") === "true") 
+			this.hidePreview();
 
 		// always focus editor on 'tab' press
 		document.addEventListener("keydown", event => {
