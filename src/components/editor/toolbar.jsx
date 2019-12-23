@@ -60,6 +60,10 @@ const IconButton = styled.div `
 		pointer-events: none;
 	`}
 `
+const SaveStatusText = styled.div `
+	margin-left: 5px;
+	color: #777;
+`
 
 export default class Toolbar extends React.PureComponent {
 	constructor(props) {
@@ -68,6 +72,7 @@ export default class Toolbar extends React.PureComponent {
 		this.state = {
 			inFullscreenMode: false,
 			readMode: this.props.toolbarStatus.readModeActive,
+			saveStatusText: "Speichern...",
 		}
 		
 		this.toolbarItems = {
@@ -209,7 +214,14 @@ export default class Toolbar extends React.PureComponent {
 							])}
 						/>
 					)}
+					
+					<ButtonSeparator />
+
+					<SaveStatusText>
+						{this.state.saveStatusText}
+					</SaveStatusText>
 				</LeftSide>
+
 
 				<RightSide>
 					{this.toolbarItems.right.map((item, index) => 
