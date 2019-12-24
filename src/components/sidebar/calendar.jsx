@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Calendar as ReactCalendar } from 'react-calendar';
-import "./theme/eros.css";
+import "../../themes/caledar-eros.css";
 
 const StyledCalendar = styled(ReactCalendar) `
   border-bottom: 1px solid #191919;

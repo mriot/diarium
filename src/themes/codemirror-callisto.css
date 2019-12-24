@@ -1,0 +1,78 @@
+/*
+	Name:       Callisto
+	Author:     Unknown / FarhadG (?) / MRIOT
+	Type:				DARK
+
+	Based on: https://github.com/FarhadG/code-mirror-themes/blob/master/themes/clouds-midnight.css
+	Name: https://en.wikipedia.org/wiki/Callisto_(moon)
+*/
+
+.cm-s-callisto {
+	font-size: 1em;
+	line-height: 1.5em;
+	font-family: 'Source Code Pro', Menlo, Monaco, Consolas, monospace;
+	letter-spacing: 0.3px;
+	word-spacing: 1px;
+	background: #191919;
+	color: #aaa;
+}
+
+.cm-s-callisto .CodeMirror-lines {
+	padding: 8px 0;
+}
+
+.cm-s-callisto .CodeMirror-gutters {
+	box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.5);
+	background-color: #191919;
+	padding-right: 10px;
+	border: none;
+	z-index: 1;
+}
+
+.cm-s-callisto div.CodeMirror-cursor {
+	border-left: 3px solid #929292;
+}
+
+.cm-s-callisto .CodeMirror-activeline-background {
+	background: #D7D7D708;
+}
+
+.cm-s-callisto .CodeMirror-selected {
+	background: #777;
+}
+
+.cm-s-callisto .cm-comment {
+	color: #777;
+}
+
+.cm-s-callisto .cm-string {
+	color: #5D90CD;
+}
+
+.cm-s-callisto .cm-number {
+	color: #E92E2E;
+}
+
+.cm-s-callisto .cm-atom {
+	color: #E92E2E;
+}
+
+.cm-s-callisto .cm-variable-2 {
+	color: #606060;
+}
+
+.cm-s-callisto .cm-property {
+	color: #E92E2E;
+}
+
+.cm-s-callisto .cm-keyword {
+	color: null;
+}
+
+.cm-s-callisto .cm-operator {
+	color: null;
+}
+
+.cm-s-callisto .CodeMirror-linenumber {
+	color: #3C403B;
+}

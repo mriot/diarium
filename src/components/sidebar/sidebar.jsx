@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 import Progress from './progress';
-import Calendar from './calendar/calendar';
+import Calendar from './calendar';
 import MetaEditor from './meta-editor';
 
 const StyledSidebar = styled.aside`
