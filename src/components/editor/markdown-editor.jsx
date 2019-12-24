@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import styled from 'styled-components';
 import CodeMirror from "react-codemirror";
 import "codemirror/lib/codemirror.css";
-import "code-mirror-themes/themes/clouds-midnight.css"
+import "../../themes/codemirror-callisto.css";
 import "codemirror/mode/gfm/gfm";
 import "codemirror/addon/edit/closebrackets";
 import "codemirror/addon/scroll/scrollpastend";
@@ -49,7 +49,7 @@ export default class MarkdownEditor extends React.PureComponent {
 
 		this.editorConfig = {
 			mode: "gfm", // github flavored markdown
-			theme: "clouds-midnight",
+			theme: "callisto",
 			tabSize: 2,
 			// autofocus: true,
 			fixedGutter: true,
