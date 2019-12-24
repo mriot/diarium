@@ -49,3 +49,18 @@ export const editorAnimation = {
 		},
 	},
 }
+
+
+export const toolbarItemsAnimation = {
+	show: {
+		scale: 1,
+
+		applyAtStart: {display: "block"},
+	},
+
+	hide: {
+		scale: 0,
+
+		applyAtEnd: {display: "none"},
+	}
+}

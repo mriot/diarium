@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import styled from 'styled-components';
-import { AnimateKeyframes } from "react-simple-animate";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faPaperclip, faArrowsAltH, faAnchor } from '@fortawesome/free-solid-svg-icons';
+import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
+import posed from 'react-pose';
+import { toolbarItemsAnimation } from './animations';
 
 const StyledToolbar = styled.div `
 	width: 100%;
@@ -32,13 +33,15 @@ const RightSide = styled.aside `
 	display: flex;
 	align-items: center;
 `
-const ButtonSeparator = styled.div `
+const PosedButtonSeparator = posed.div(toolbarItemsAnimation);
+const ButtonSeparator = styled(PosedButtonSeparator) `
 	width: 2px;
 	height: 60%;
 	margin: 0 5px;
 	background-color: #c7c7c7;
 `
-const IconButton = styled.div `
+const PosedIconButton = posed.div(toolbarItemsAnimation);
+const IconButton = styled(PosedIconButton) `
 	position: relative;
 	padding: 6px 10px;
 	line-height: 1;
@@ -152,8 +155,6 @@ export default class Toolbar extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		setTimeout(() => this.animationDuration = 0.4, 0)
-
 		// set the correct state if the user exits fullscreen by pressing the ESC key
 		document.addEventListener("fullscreenchange", () => {
 			if (!document.fullscreenElement) {
@@ -184,69 +185,40 @@ export default class Toolbar extends React.PureComponent {
 		return (
 			<StyledToolbar {...this.props}>
 				<LeftSide>
-					{this.toolbarItems.left.map((item, index) => 
-						<AnimateKeyframes
-							key={index}
-							play={this.state.readMode}
-							duration={this.animationDuration || 0}
-							iterationCount={1}
-							fillMode="forwards"
-							direction={this.state.readMode ? "normal" : "reverse"}
-							keyframes={[
-								{0: "transform: scale(1)"},
-								{50: "transform: scale(1.1)"},
-								{100: "transform: scale(0)"},
-							]}
-							render={({ style }) => ([
-								!item.separator && 
-									<IconButton
-										key={index}
-										style={style}
-										title={item.title}
-										onClick={item.onClick}
-										isActive={item.isActive && item.isActive()}
-										isDisabled={item.isDisabled && item.isDisabled()}
-									>
-										<FontAwesomeIcon icon={item.icon} />
-									</IconButton>,
+					{this.toolbarItems.left.map((item, index) => [
+						!item.separator && 
+							<IconButton
+								key={index}
+								pose={this.state.readMode ? "hide" : "show"}
+								title={item.title}
+								onClick={item.onClick}
+								isActive={item.isActive && item.isActive()}
+								isDisabled={item.isDisabled && item.isDisabled()}
+							>
+								<FontAwesomeIcon icon={item.icon} />
+							</IconButton>,// <- we're in an array
 
-								item.separator && <ButtonSeparator style={style} key={index} />
-							])}
-						/>
-					)}
-					
-					<ButtonSeparator />
+							item.separator && <ButtonSeparator key={index} pose={this.state.readMode ? "hide" : "show"} />
+						])}
+
+					<ButtonSeparator pose={this.state.readMode ? "hide" : "show"} />
 
 					<SaveStatusText>
 						{this.state.saveStatusText}
 					</SaveStatusText>
 				</LeftSide>
 
-
 				<RightSide>
 					{this.toolbarItems.right.map((item, index) => 
-						<AnimateKeyframes
+						<IconButton
 							key={index}
-							play={this.state.readMode}
-							duration={this.animationDuration || 0}
-							iterationCount={1}
-							fillMode="forwards"
-							direction={this.state.readMode ? "normal" : "reverse"}
-							keyframes={[
-								{100: "width: 0; padding: 0; margin: 0; overflow: hidden;"},
-							]}
-							render={({ style }) => (
-								<IconButton
-									key={index}
-									style={item.hiddenInReadMode && style}
-									title={item.title}
-									onClick={item.onClick}
-									isActive={item.isActive && item.isActive()}
-								>
-									<FontAwesomeIcon icon={item.icon} />
-								</IconButton>
-							)}
-						/>
+							pose={item.hiddenInReadMode && this.state.readMode ? "hide" : "show"}
+							title={item.title}
+							onClick={item.onClick}
+							isActive={item.isActive && item.isActive()}
+						>
+							<FontAwesomeIcon icon={item.icon} />
+						</IconButton>
 					)}
 				</RightSide>
 			</StyledToolbar>
