@@ -8,13 +8,13 @@ export const editorAnimation = {
 		scale: 1,
 		rotateX: 0,
 
-		applyAtStart: {display: "flex"},
+		applyAtStart: { display: "flex" },
 		/** 
 		 * NOTE: explicitly setting our 'visible' values here using 'applyAtEnd',
 		 * because 'pose' does not end the animation with e.g: opacity: 1;
 		 * - instead it ends with something like: opacity: 0.987634761; 
 		 * and not just here - it does so everywhere...
-		 */ 
+		 */
 		applyAtEnd: {
 			scale: 1,
 			rotateX: 0,
@@ -36,7 +36,7 @@ export const editorAnimation = {
 		scale: 0.75,
 		rotateX: 180,
 
-		applyAtEnd: {display: "none"},
+		applyAtEnd: { display: "none" },
 		
 		transition: {
 			duration: 1000,
@@ -48,19 +48,19 @@ export const editorAnimation = {
 			}
 		},
 	},
-}
+};
 
 
 export const toolbarItemsAnimation = {
 	show: {
 		scale: 1,
 
-		applyAtStart: {display: "block"},
+		applyAtStart: { display: "block" },
 	},
 
 	hide: {
 		scale: 0,
 
-		applyAtEnd: {display: "none"},
+		applyAtEnd: { display: "none" },
 	}
-}
+};

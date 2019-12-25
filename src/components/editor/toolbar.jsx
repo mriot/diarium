@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 import PropTypes from "prop-types";
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
-import posed from 'react-pose';
-import { toolbarItemsAnimation } from './animations';
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faArrowsAltH } from "@fortawesome/free-solid-svg-icons";
+import posed from "react-pose";
+import { toolbarItemsAnimation } from "./animations";
 
 const StyledToolbar = styled.div `
 	width: 100%;
@@ -24,22 +24,22 @@ const StyledToolbar = styled.div `
 		border-radius: 0;
 		border-bottom: none;
 	`}
-`
+`;
 const LeftSide = styled.aside `
 	display: flex;
 	align-items: center;
-`
+`;
 const RightSide = styled.aside `
 	display: flex;
 	align-items: center;
-`
+`;
 const PosedButtonSeparator = posed.div(toolbarItemsAnimation);
 const ButtonSeparator = styled(PosedButtonSeparator) `
 	width: 2px;
 	height: 60%;
 	margin: 0 5px;
 	background-color: #c7c7c7;
-`
+`;
 const PosedIconButton = posed.div(toolbarItemsAnimation);
 const IconButton = styled(PosedIconButton) `
 	position: relative;
@@ -62,21 +62,21 @@ const IconButton = styled(PosedIconButton) `
 		color: #777;
 		pointer-events: none;
 	`}
-`
+`;
 const SaveStatusText = styled.div `
 	margin-left: 5px;
 	color: #777;
-`
+`;
 
 export default class Toolbar extends React.PureComponent {
 	constructor(props) {
 		super(props);
-	
+
 		this.state = {
 			inFullscreenMode: false,
 			readMode: this.props.toolbarStatus.readModeActive,
 			saveStatusText: "Speichern...",
-		}
+		};
 		
 		this.toolbarItems = {
 			left: [
@@ -107,9 +107,7 @@ export default class Toolbar extends React.PureComponent {
 					onClick: () => this.props.insertCode(),
 					icon: faCode,
 				},
-				{
-					separator: true,
-				},
+				{ separator: true, },
 				{
 					title: "Scrollen synchronisieren",
 					onClick: () => this.props.toggleScrollSync(),
@@ -145,39 +143,37 @@ export default class Toolbar extends React.PureComponent {
 					title: "Layout des Editors zurücksetzen",
 					onClick: () => {
 						this.props.resetEditorLayout();
-						this.state.inFullscreenMode && this.toggleFullScreen();
+						if (this.state.inFullscreenMode) this.toggleFullScreen();
 					},
 					icon: faUndoAlt,
 					hiddenInReadMode: true,
 				},
 			],
-		}
+		};
 	}
 
 	componentDidMount() {
 		// set the correct state if the user exits fullscreen by pressing the ESC key
 		document.addEventListener("fullscreenchange", () => {
 			if (!document.fullscreenElement) {
-				this.setState({inFullscreenMode: false});
+				this.setState({ inFullscreenMode: false });
 			}
-		})
+		});
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		this.setState({readMode: this.props.toolbarStatus.readModeActive})
+	componentDidUpdate() {
+		this.setState({ readMode: this.props.toolbarStatus.readModeActive });
 	}
 	
 	toggleFullScreen() {
 		if (!document.fullscreenElement) {
 			document.documentElement.requestFullscreen().then(
-				this.setState({inFullscreenMode: true})
-			)
-		} else {
-			if (document.exitFullscreen) {
-				document.exitFullscreen().then(
-					this.setState({inFullscreenMode: false})
-				)
-			}
+				this.setState({ inFullscreenMode: true })
+			);
+		} else if (document.exitFullscreen) {
+			document.exitFullscreen().then(
+				this.setState({ inFullscreenMode: false })
+			);
 		}
 	}
 
@@ -186,7 +182,7 @@ export default class Toolbar extends React.PureComponent {
 			<StyledToolbar {...this.props}>
 				<LeftSide>
 					{this.toolbarItems.left.map((item, index) => [
-						!item.separator && 
+						!item.separator && (
 							<IconButton
 								key={index}
 								pose={this.state.readMode ? "hide" : "show"}
@@ -196,10 +192,11 @@ export default class Toolbar extends React.PureComponent {
 								isDisabled={item.isDisabled && item.isDisabled()}
 							>
 								<FontAwesomeIcon icon={item.icon} />
-							</IconButton>,// <- we're in an array
+							</IconButton>
+						), // <- we're in an array
 
-							item.separator && <ButtonSeparator key={index} pose={this.state.readMode ? "hide" : "show"} />
-						])}
+						item.separator && <ButtonSeparator key={index} pose={this.state.readMode ? "hide" : "show"} />
+					])}
 
 					<ButtonSeparator pose={this.state.readMode ? "hide" : "show"} />
 
@@ -209,7 +206,7 @@ export default class Toolbar extends React.PureComponent {
 				</LeftSide>
 
 				<RightSide>
-					{this.toolbarItems.right.map((item, index) => 
+					{this.toolbarItems.right.map((item, index) => (
 						<IconButton
 							key={index}
 							pose={item.hiddenInReadMode && this.state.readMode ? "hide" : "show"}
@@ -219,7 +216,7 @@ export default class Toolbar extends React.PureComponent {
 						>
 							<FontAwesomeIcon icon={item.icon} />
 						</IconButton>
-					)}
+					))}
 				</RightSide>
 			</StyledToolbar>
 		);
@@ -227,14 +224,14 @@ export default class Toolbar extends React.PureComponent {
 }
 
 Toolbar.propTypes = {
-	editorFocus: PropTypes.func,
-  editorUndo: PropTypes.func,
-  editorRedo: PropTypes.func,
-  insertCode: PropTypes.func,
-  insertLink: PropTypes.func,
-  toggleZenMode: PropTypes.func,
-  togglePreview: PropTypes.func,
-  toggleScrollSync: PropTypes.func,
-  resetEditorLayout: PropTypes.func,
-  toolbarStatus: PropTypes.object,
-}
+	editorFocus: PropTypes.func.isRequired,
+	editorUndo: PropTypes.func.isRequired,
+	editorRedo: PropTypes.func.isRequired,
+	insertCode: PropTypes.func.isRequired,
+	insertLink: PropTypes.func.isRequired,
+	toggleZenMode: PropTypes.func.isRequired,
+	togglePreview: PropTypes.func.isRequired,
+	toggleScrollSync: PropTypes.func.isRequired,
+	resetEditorLayout: PropTypes.func.isRequired,
+	toolbarStatus: PropTypes.object.isRequired,
+};
