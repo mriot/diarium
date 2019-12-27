@@ -34,6 +34,7 @@ module.exports = {
     }],
     "comma-dangle": ["off"],
     "spaced-comment": ["off"],
+    "no-unused-vars": ["warn"],
 
     "react/jsx-filename-extension": ["off"],
     "react/destructuring-assignment": ["off"],
