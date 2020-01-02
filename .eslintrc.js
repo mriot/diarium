@@ -22,8 +22,8 @@ module.exports = {
   ],
   rules: {
     quotes: ["warn", "double"],
-    "no-tabs": ["error", { allowIndentationTabs: true }],
-    "object-curly-newline": ["error", { "multiline": true }],
+    "no-tabs": ["off"],
+    "object-curly-newline": ["off"],
     "template-tag-spacing": ["error", "always"],
     "arrow-parens": ["error", "as-needed"],
     "indent": ["error", "tab"],
@@ -34,7 +34,12 @@ module.exports = {
     }],
     "comma-dangle": ["off"],
     "spaced-comment": ["off"],
+    "no-console": ["off"],
     "no-unused-vars": ["warn"],
+    "space-unary-ops": ["off"],
+    "import/newline-after-import": ["off"],
+    "arrow-body-style": ["off", "as-needed"],
+    "import/prefer-default-export": ["off"],
 
     "react/jsx-filename-extension": ["off"],
     "react/destructuring-assignment": ["off"],
