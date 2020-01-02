@@ -44,5 +44,7 @@ module.exports = {
     "react/jsx-indent": ["error", "tab"],
     "react/no-array-index-key": ["warn"],
     "react/forbid-prop-types": ["warn"],
+    "react/jsx-one-expression-per-line": ["off"],
+    
   },
 };
