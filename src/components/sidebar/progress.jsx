@@ -1,22 +1,22 @@
-import React from 'react';
+import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import ProgressBar from '../common/progressbar';
+import ProgressBar from "../common/progressbar";
 
 const ProgressContainer = styled.div `
 	padding: 0 0 5px 5px;
 	border-bottom: 1px solid #191919;
 	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
-`
+`;
 const ProgressDescription = styled.div `
 	color: #efefef;
 	font-size: 15px;
 	font-weight: 100;
 	margin: 15px 0 5px;
-`
+`;
 const TotalDescription = styled(ProgressDescription) `
 	margin: 20px 0 0;
-`
+`;
 
 export default class Progress extends React.PureComponent {
 	constructor(props) {
@@ -27,7 +27,7 @@ export default class Progress extends React.PureComponent {
 			progressMonth: 15,
 			progressYear: 11,
 			progressTotal: 123,
-		}
+		};
 	}
 
 	render() {
@@ -56,6 +56,5 @@ export default class Progress extends React.PureComponent {
 	}
 }
 
-Progress.propTypes = {
-	// as this component is still WIP, I'll leave it like this for now.
-}
+// as this component is still WIP, I'll leave it like this for now.
+Progress.propTypes = {};
