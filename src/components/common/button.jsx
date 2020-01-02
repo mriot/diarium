@@ -1,13 +1,12 @@
-import React from 'react';
+import React from "react";
 import styled from "styled-components";
-
+import PropTypes from "prop-types";
 
 const StyledButton = styled.div `
   position: relative;
   color: #fff;
-  background-color: ${props => props.backgroundColor || "#434343"};
+  background-color: #363b47;
   cursor: pointer;
-  text-transform: uppercase;
   text-decoration: none;
   padding: 7px 10px;
   border-radius: 5px;
@@ -15,49 +14,44 @@ const StyledButton = styled.div `
   border: none;
   user-select: none;
   transition: all 0.2s linear;
-  /* background-color: ${props => 
-    props.primary ? "green" : "palevioletred"
-  }; */
 
-  &:hover {
-    background-color: ${props => props.hoverBackgroundColor || "#009283"};
-    ${props => 
-      props.withArrow ? {"padding-right": "25px"} : {"transform": "scale(1.1)"}
-    }
-    box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
-    transition: all 0.4s ease 0s;
-
-    &::after {
-      opacity: 1;
-      right: 5px;
-    }
+  &::after {
+    content: ">";
+    position: absolute;
+    top: 50%;
+    right: 33%;
+    opacity: 0;
+    transform: translateY(-50%);
+    transition: all 0.2s;
   }
 
   &:active {
     box-shadow: inset 0 0px 0 -5px rgba(0, 0, 0, 0.17);
   }
 
-  &::after {
-    content: ">";
-    line-height: 1;
-    position: absolute;
-    right: 25%;
-    opacity: 0;
-    transition: all 0.2s;
+  &:hover {
+    padding-right: 25px;
+    box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
+    transition: all 0.4s ease 0s;
 
-    ${props =>
-      !props.withArrow &&
-      {"display": "none"}
+    &::after {
+      opacity: 1;
+      right: 10px;
     }
   }
-`
+`;
 
 export default class Button extends React.PureComponent {
-  render() {
-    return (
-      <StyledButton {...this.props}>
-        {this.props.children}
-      </StyledButton>
-    );
-  }
+	render() {
+		return (
+			<StyledButton {...this.props}>
+				{this.props.children}
+			</StyledButton>
+		);
+	}
 }
+
+Button.propTypes = {
+	children: PropTypes.any,
+  
+};
