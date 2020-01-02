@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import ProgressBar from "../common/progressbar";
+import { countAllEntries } from "../../lib/backend";
 
 const ProgressContainer = styled.div `
 	padding: 0 0 5px 5px;
@@ -23,11 +24,21 @@ export default class Progress extends React.PureComponent {
 		super(props);
 
 		this.state = {
-			progressWeek: 45,
-			progressMonth: 15,
-			progressYear: 11,
-			progressTotal: 123,
+			progressWeek: 0,
+			progressMonth: 0,
+			progressYear: 0,
+			progressTotal: 0,
 		};
+	}
+
+	componentDidMount() {
+		this.countAllEntries();
+	}
+	
+	countAllEntries() {
+		countAllEntries().then(response => {
+			this.setState({ progressTotal: response.all_records });
+		});
 	}
 
 	render() {
