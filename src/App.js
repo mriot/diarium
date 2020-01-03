@@ -11,6 +11,7 @@ import Editor from "./components/editor/editor";
 import Highlights from "./components/highlights/highlights";
 import "moment/locale/de";
 import Login from "./components/login/login";
+import { isLoggedIn } from "./lib/backend";
 
 const Layout = styled.div `
   position: relative;
@@ -39,17 +40,29 @@ export default class App extends React.PureComponent {
 			readMode: false,
 			showHighlights: false,
 			isLoggedIn: false,
+			tokenChecked: false,
 		};
+	}
+
+	componentDidMount() {
+		this.setLoggedIn(isLoggedIn());
+	}
+
+	setLoggedIn(status) {
+		this.setState({ isLoggedIn: status, tokenChecked: true });
 	}
   
 	render() {
+		// prevent flashing '/login' in URL on page load when user is logged in
+		if (!this.state.tokenChecked) return null;
+
 		return (
 			<BrowserRouter>
 				{!this.state.isLoggedIn && (
 					<>
 						<Redirect to="/login" />
 						<Route path="/login" exact render={() => (
-							<Login setLoggedIn={value => this.setState({ isLoggedIn: value })} />
+							<Login setLoggedIn={status => this.setLoggedIn(status)} />
 						)}
 						/>
 					</>
@@ -62,6 +75,7 @@ export default class App extends React.PureComponent {
 							setReadMode={bool => this.setState({ readMode: bool })}
 							isHighlightsViewActive={this.state.showHighlights}
 							setHighlightsView={bool => this.setState({ showHighlights: bool })}
+							setLoggedIn={bool => this.setLoggedIn(bool)}
 						/>
 
 						<Sidebar
