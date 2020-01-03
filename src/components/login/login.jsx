@@ -1,7 +1,6 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
 import PropTypes from "prop-types";
-// import { auth } from "../../lib/backend";
 import TextInput from "../common/textinput";
 import Button from "../common/button";
 import { auth } from "../../lib/backend";
@@ -107,10 +106,7 @@ export default class Login extends React.PureComponent {
 		return (
 			<LoginMaskWrapper>
 				<LoginMask>
-					<Row style={{
-						margin: "0 auto 30px"
-					}}
-					>
+					<Row style={{ margin: "0 auto 30px" }}>
 						<Heading>DIARIUM</Heading>
 					</Row>
 					<Row>
@@ -121,10 +117,7 @@ export default class Login extends React.PureComponent {
 							onKeyPress={event => this.handleKeyStrokes(event.nativeEvent)}
 						/>
 					</Row>
-					<Row style={{
-						marginBottom: "25px"
-					}}
-					>
+					<Row style={{ marginBottom: "25px" }}>
 						<Label>Passwort:</Label>
 						<TextInput
 							light
