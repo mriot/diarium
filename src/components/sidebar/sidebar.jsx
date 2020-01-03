@@ -5,6 +5,7 @@ import moment from "moment";
 import Progress from "./progress";
 import Calendar from "./calendar";
 import MetaEditor from "./meta-editor";
+import { getAllEntriesForYearMonth } from "../../lib/backend";
 
 const StyledSidebar = styled.aside `
   position: relative;
@@ -39,6 +40,9 @@ export default class Sidebar extends React.PureComponent {
 
 	componentDidMount() {
 		setInterval(this.updateTodaysDate.bind(this), 1000 * 60 * 5); // 5 minutes
+    
+		getAllEntriesForYearMonth(this.state.dateToday.year(), this.state.dateToday.format("MM"))
+			.then(response => console.log(response));
 	}
 
 	updateTodaysDate() {
