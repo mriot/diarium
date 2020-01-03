@@ -1,10 +1,12 @@
-import React from 'react';
+import React from "react";
 import styled from "styled-components";
-import Progress from './progress';
-import Calendar from './calendar';
-import MetaEditor from './meta-editor';
+import PropTypes from "prop-types";
+import moment from "moment";
+import Progress from "./progress";
+import Calendar from "./calendar";
+import MetaEditor from "./meta-editor";
 
-const StyledSidebar = styled.aside`
+const StyledSidebar = styled.aside `
   position: relative;
   width: 300px;
   display: flex;
@@ -12,7 +14,7 @@ const StyledSidebar = styled.aside`
   max-height: 100%;
   box-sizing: border-box;
   background-color: #20232a;
-`
+`;
 const Today = styled.div `
   color: #fff;
   font-size: 18px;
@@ -23,52 +25,50 @@ const Today = styled.div `
   &:hover {
     text-decoration: underline;
   }
-`
+`;
 
 export default class Sidebar extends React.PureComponent {
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
-    this.state = {
-      dateToday: new Date(),
-      forceUpdateCalendar: 0,
-    }
-  }
+		this.state = {
+			dateToday: moment(),
+			forceUpdateCalendar: 0,
+		};
+	}
 
-  componentDidMount() {
-    setInterval(this.updateTodaysDate.bind(this), 1000 * 60 * 5) // 5 minutes
-  }
+	componentDidMount() {
+		setInterval(this.updateTodaysDate.bind(this), 1000 * 60 * 5); // 5 minutes
+	}
 
-  updateTodaysDate() {
-    this.setState({dateToday: new Date()})
-  }
+	updateTodaysDate() {
+		this.setState({ dateToday: moment() });
+	}
   
-  render() {
-    return (
-      <StyledSidebar>
-        <Today onClick={() => {
-          this.setState({
-            dateToday: new Date(),
-            calendarInitDate: new Date(),
-            forceUpdateCalendar: this.state.forceUpdateCalendar + 1
-          })
-        }}>
-          {
-            this.state.dateToday.toLocaleDateString("de-DE", {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })
-          }
-        </Today>
+	render() {
+		return (
+			<StyledSidebar>
+				<Today onClick={() => {
+					this.setState(prevState => ({
+						dateToday: moment(),
+						forceUpdateCalendar: prevState.forceUpdateCalendar + 1
+					}));
+				}}
+				>
+					{moment(this.state.dateToday).format("dddd, D. MMMM YYYY")}
+				</Today>
 
-        <Calendar forceUpdateCalendar={this.state.forceUpdateCalendar} />
+				<Calendar forceUpdateCalendar={this.state.forceUpdateCalendar} />
 
-        <MetaEditor isReadModeActive={this.props.isReadModeActive} />
+				<MetaEditor isReadModeActive={this.props.isReadModeActive} />
 
-        <Progress />
-      </StyledSidebar>
-    );
-  }
+				<Progress />
+			</StyledSidebar>
+		);
+	}
 }
+
+Sidebar.propTypes = {
+	isReadModeActive: PropTypes.bool.isRequired,
+  
+};
