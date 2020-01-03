@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PoseGroup } from "react-pose";
@@ -10,6 +10,7 @@ import Sidebar from "./components/sidebar/sidebar";
 import Editor from "./components/editor/editor";
 import Highlights from "./components/highlights/highlights";
 import "moment/locale/de";
+import Login from "./components/login/login";
 
 const Layout = styled.div `
   position: relative;
@@ -37,36 +38,56 @@ export default class App extends React.PureComponent {
 		this.state = {
 			readMode: false,
 			showHighlights: false,
+			isLoggedIn: false,
 		};
 	}
   
 	render() {
 		return (
 			<BrowserRouter>
-				<Layout>
-					<Navigation
-						isReadModeActive={this.state.readMode}
-						setReadMode={bool => this.setState({ readMode: bool })}
-						isHighlightsViewActive={this.state.showHighlights}
-						setHighlightsView={bool => this.setState({ showHighlights: bool })}
-					/>
-
-					<Sidebar
-						isReadModeActive={this.state.readMode}
-					/>
-
-					<Main>
-						<PoseGroup>
-							{this.state.showHighlights &&
-							<Highlights key="highlights" />}
-						</PoseGroup>
-
-						<Editor
-							isReadModeActive={this.state.readMode}
-							pose={this.state.showHighlights ? "hidden" : "visible"}
+				{!this.state.isLoggedIn && (
+					<>
+						<Redirect to="/login" />
+						<Route path="/login" exact render={() => (
+							<Login setLoggedIn={value => this.setState({ isLoggedIn: value })} />
+						)}
 						/>
-					</Main>
-				</Layout>
+					</>
+				)}
+
+				{this.state.isLoggedIn && (
+					<Layout>
+						<Navigation
+							isReadModeActive={this.state.readMode}
+							setReadMode={bool => this.setState({ readMode: bool })}
+							isHighlightsViewActive={this.state.showHighlights}
+							setHighlightsView={bool => this.setState({ showHighlights: bool })}
+						/>
+
+						<Sidebar
+							isReadModeActive={this.state.readMode}
+						/>
+
+						<Main>
+							<PoseGroup>
+								{this.state.showHighlights &&
+								<Highlights key="highlights" />}
+							</PoseGroup>
+
+							<Editor
+								isReadModeActive={this.state.readMode}
+								pose={this.state.showHighlights ? "hidden" : "visible"}
+							/>
+						</Main>
+					</Layout>
+				)}
+
+				{this.state.isLoggedIn && (
+					<Switch>
+						<Redirect from="/login" to="/" exact />
+					</Switch>
+				)}
+
 				<ToastContainer
 					position="bottom-left"
 					// hideProgressBar={true}
