@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt, faStarAndCrescent, faStar, faPen } from "@fortawesome/free-solid-svg-icons";
 import NavButton from "./nav-button";
 import TextInput from "../common/textinput";
+import { isLoggedIn } from "../../lib/backend";
 
 const Nav = styled.nav `
   width: 100%;
@@ -53,7 +54,14 @@ const LogoutButton = styled.div `
 `;
 
 export default class Navigation extends React.PureComponent {
+	logout() {
+		localStorage.removeItem("token");
+		this.forceUpdate();
+	}
+
 	render() {
+		if (!isLoggedIn()) this.props.setLoggedIn(false);
+
 		return (
 			<Nav>
 				<Logo>DIARIUM</Logo>
@@ -83,7 +91,7 @@ export default class Navigation extends React.PureComponent {
 
 					<Separator />
           
-					<LogoutButton>
+					<LogoutButton onClick={() => this.logout()}>
 						<FontAwesomeIcon icon={faSignOutAlt} />
 					</LogoutButton>
 				</RightSide>
@@ -93,8 +101,9 @@ export default class Navigation extends React.PureComponent {
 }
 
 Navigation.propTypes = {
-	isReadModeActive: PropTypes.bool,
-	setReadMode: PropTypes.func,
-	isHighlightsViewActive: PropTypes.bool,
-	setHighlightsView: PropTypes.func,
+	isReadModeActive: PropTypes.bool.isRequired,
+	setReadMode: PropTypes.func.isRequired,
+	isHighlightsViewActive: PropTypes.bool.isRequired,
+	setHighlightsView: PropTypes.func.isRequired,
+	setLoggedIn: PropTypes.func.isRequired,
 };
