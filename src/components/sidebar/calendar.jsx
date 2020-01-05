@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Calendar as ReactCalendar } from "react-calendar";
 import "../../themes/caledar-eros.css";
+import moment from "moment";
 
 const StyledCalendar = styled(ReactCalendar) `
   border-bottom: 1px solid #191919;
@@ -10,11 +11,28 @@ const StyledCalendar = styled(ReactCalendar) `
 `;
 
 export default class Calendar extends React.PureComponent {
+	static dayMarker(date, entry) {
+		let classList = [];
+
+		if (moment(date).isSame(entry.assignedDay)) {
+			classList.push("marked");
+
+			if (entry.tags) {
+				try {
+					classList = classList.concat(JSON.parse(entry.tags));
+				} catch (error) {
+					console.log(error);
+				}
+			}
+		}
+		return classList.join(" ");
+	}
+
 	constructor(props) {
 		super(props);
 	
 		this.state = {
-			calendarInitDate: new Date(),
+			calendarInitDate: moment().toDate(),
 		};
 	}
 
@@ -33,7 +51,6 @@ export default class Calendar extends React.PureComponent {
 		//   console.log(this.holidays)
 		// })
 	}
-	
 
 	render() {
 		return (
@@ -42,44 +59,24 @@ export default class Calendar extends React.PureComponent {
 				key={this.props.forceUpdateCalendar}
 				value={this.state.calendarInitDate}
 				minDetail="decade"
-				minDate={new Date(2019, 0, 1)}
-				tileClassName={
-					({ activeStartDate, date, view }) => {
-						if (view === "month") {
-							// console.log(date.getDate(), date.getMonth() + 1, date.getFullYear());
-							// if (date.getDate() === 2) {
-							//   return "marked"
-							// }
+				minDate={moment("2019-01-01").toDate()}
+				tileClassName={({ activeStartDate, date, view }) => {
+					if (view === "month") {
+						if (!this.props.fetchedEntries) return;
 
-							// EXAMPLE DATA
-							switch (date.getDate()) {
-							case 2:
-								return "marked holiday";
-							case 4:
-								return "marked";
-							case 10:
-								return "vacation";
-							case 11:
-								return "vacation";
-							case 12:
-								return "vacation";
-							case 14:
-								return "sick";
-							case 23:
-								return "sick";
-							case 24:
-								return "sick";
-							case 25:
-								return "sick";
-							default:
-								return "";
-							}
-						}
+						const currentDate = moment(date).format("YYYY-MM-DD");
+						const entries = this.props.fetchedEntries;
+
+						// eslint-disable-next-line consistent-return
+						return entries.map(entry => Calendar.dayMarker(currentDate, entry));
 					}
-				}
+				}}
 
 				// arrow navigation (view = month => fetch overview)
-				onActiveDateChange={(...args) => console.log("onActiveDateChange", ...args)}
+				onActiveDateChange={changeObj => {
+					const { activeStartDate, view } = changeObj;
+					console.log("onActiveDateChange", changeObj);
+				}}
 				// month selector (fetch overview)
 				onClickMonth={(...args) => console.log("onClickMonth:", ...args)}
 				// date/day changed (fetch selected day -> all data)
@@ -97,5 +94,6 @@ export default class Calendar extends React.PureComponent {
 
 Calendar.propTypes = {
 	forceUpdateCalendar: PropTypes.number.isRequired,
-	
+	fetchedEntries: PropTypes.array.isRequired,
+
 };
