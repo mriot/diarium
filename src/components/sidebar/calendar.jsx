@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { Calendar as ReactCalendar } from "react-calendar";
 import "../../themes/caledar-eros.css";
 import moment from "moment";
+import { toast } from "react-toastify";
+import { fetchHolidays } from "../../lib/external";
 
 const StyledCalendar = styled(ReactCalendar) `
   border-bottom: 1px solid #191919;
@@ -11,8 +13,12 @@ const StyledCalendar = styled(ReactCalendar) `
 `;
 
 export default class Calendar extends React.PureComponent {
-	static dayMarker(date, entry) {
+	static dayMarker(date, entry, holidays) {
 		let classList = [];
+
+		if (holidays[moment(date).format("YYYY-MM-DD")]) {
+			classList.push("holiday");
+		}
 
 		if (moment(date).isSame(entry.assignedDay)) {
 			classList.push("marked");
@@ -33,23 +39,18 @@ export default class Calendar extends React.PureComponent {
 	
 		this.state = {
 			calendarInitDate: moment().toDate(),
+			fetchedHolidays: null,
 		};
 	}
-
-	// async getHolidays() {
-	//   return fetch(`https://feiertage-api.de/api/?jahr=2019&nur_land=HE`, {
-	//     method: "GET",
-	//   }).then(response => response.json())
-	// }
 	
 	componentDidMount() {
-		// this.holidays = [];
-		// this.getHolidays().then(response => {
-		//   for (const key in response) {
-		//     this.holidays.push({[response[key].datum]: key})
-		//   }
-		//   console.log(this.holidays)
-		// })
+		fetchHolidays()
+			.then(result => this.setState({ fetchedHolidays: result }))
+			.catch(error => {
+				console.error(error);
+				toast.error("Whoops! 😱 An error occured while processing the holidays!", { autoClose: 10000 });
+				this.setState({ fetchedHolidays: {} });
+			});
 	}
 
 	render() {
@@ -62,13 +63,14 @@ export default class Calendar extends React.PureComponent {
 				minDate={moment("2019-01-01").toDate()}
 				tileClassName={({ activeStartDate, date, view }) => {
 					if (view === "month") {
-						if (!this.props.fetchedEntries) return;
+						if (!this.props.fetchedEntries || !this.state.fetchedHolidays) return;
 
 						const currentDate = moment(date).format("YYYY-MM-DD");
 						const entries = this.props.fetchedEntries;
+						const holidays = this.state.fetchedHolidays;
 
 						// eslint-disable-next-line consistent-return
-						return entries.map(entry => Calendar.dayMarker(currentDate, entry));
+						return entries.map(entry => Calendar.dayMarker(currentDate, entry, holidays));
 					}
 				}}
 
@@ -94,6 +96,6 @@ export default class Calendar extends React.PureComponent {
 
 Calendar.propTypes = {
 	forceUpdateCalendar: PropTypes.number.isRequired,
-	fetchedEntries: PropTypes.array.isRequired,
+	fetchedEntries: PropTypes.array,
 
 };
