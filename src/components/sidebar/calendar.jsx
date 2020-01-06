@@ -6,6 +6,7 @@ import "../../themes/caledar-eros.css";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { fetchHolidays } from "../../lib/external";
+import { getAllEntriesForYearMonth, getAllEntriesForYear } from "../../lib/backend";
 
 const StyledCalendar = styled(ReactCalendar) `
   border-bottom: 1px solid #191919;
@@ -21,6 +22,7 @@ export default class Calendar extends React.PureComponent {
 		}
 
 		if (moment(date).isSame(entry.assignedDay)) {
+			// TODO: REMOVE ITEM FROM ARRAY TO SPEED UP THE REST
 			classList.push("marked");
 
 			if (entry.tags) {
@@ -38,12 +40,24 @@ export default class Calendar extends React.PureComponent {
 		super(props);
 	
 		this.state = {
-			calendarInitDate: moment().toDate(),
+			calendarInitDate: moment("2019-12").toDate(),
+			selectedDate: moment(),
+			fetchedEntries: null,
 			fetchedHolidays: null,
 		};
 	}
 	
 	componentDidMount() {
+		getAllEntriesForYearMonth(this.state.selectedDate.year(), this.state.selectedDate.format("MM"))
+			.then(fetchedEntries => {
+				this.setState({ fetchedEntries });
+			})
+			.catch(error => {
+				console.error(error);
+				toast.error("Whoops! 😱 An error occured while processing the entries!", { autoClose: false });
+				this.setState({ fetchedEntries: {} });
+			});
+
 		fetchHolidays()
 			.then(result => this.setState({ fetchedHolidays: result }))
 			.catch(error => {
@@ -62,25 +76,30 @@ export default class Calendar extends React.PureComponent {
 				minDetail="decade"
 				minDate={moment("2019-01-01").toDate()}
 				tileClassName={({ activeStartDate, date, view }) => {
-					if (view === "month") {
-						if (!this.props.fetchedEntries || !this.state.fetchedHolidays) return;
-
-						const currentDate = moment(date).format("YYYY-MM-DD");
-						const entries = this.props.fetchedEntries;
-						const holidays = this.state.fetchedHolidays;
-
-						// eslint-disable-next-line consistent-return
-						return entries.map(entry => Calendar.dayMarker(currentDate, entry, holidays));
-					}
+					if (view !== "month") return;
+					if (!this.state.fetchedEntries || !this.state.fetchedHolidays) return;
+					
+					const currentTilesDate = moment(date).format("YYYY-MM-DD");
+					const entries = this.state.fetchedEntries;
+					const holidays = this.state.fetchedHolidays;
+					
+					// eslint-disable-next-line consistent-return
+					return entries.map(entry => Calendar.dayMarker(currentTilesDate, entry, holidays));
 				}}
 
 				// arrow navigation (view = month => fetch overview)
 				onActiveDateChange={changeObj => {
 					const { activeStartDate, view } = changeObj;
-					console.log("onActiveDateChange", changeObj);
+					if (view !== "month") return;
+
+					// TODO: Offset (5 days +-)
+					getAllEntriesForYear(moment(activeStartDate).year())
+						.then(fetchedEntries => this.setState({ fetchedEntries }));
 				}}
+
 				// month selector (fetch overview)
 				onClickMonth={(...args) => console.log("onClickMonth:", ...args)}
+
 				// date/day changed (fetch selected day -> all data)
 				onClickDay={(...args) => console.log("onClickDay", ...args)}
 				
@@ -96,6 +115,5 @@ export default class Calendar extends React.PureComponent {
 
 Calendar.propTypes = {
 	forceUpdateCalendar: PropTypes.number.isRequired,
-	fetchedEntries: PropTypes.array,
 
 };
