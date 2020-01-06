@@ -5,7 +5,6 @@ import moment from "moment";
 import Progress from "./progress";
 import Calendar from "./calendar";
 import MetaEditor from "./meta-editor";
-import { getAllEntriesForYearMonth } from "../../lib/backend";
 
 const StyledSidebar = styled.aside `
   position: relative;
