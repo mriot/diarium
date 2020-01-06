@@ -40,11 +40,6 @@ export default class Sidebar extends React.PureComponent {
 
 	componentDidMount() {
 		setInterval(this.updateTodaysDate.bind(this), 1000 * 60 * 5); // 5 minutes
-    
-		getAllEntriesForYearMonth(this.state.dateToday.year(), this.state.dateToday.format("MM"))
-			.then(entries => {
-				this.setState({ entries });
-			});
 	}
 
 	updateTodaysDate() {
@@ -65,7 +60,6 @@ export default class Sidebar extends React.PureComponent {
 				</Today>
 
 				<Calendar
-					fetchedEntries={this.state.entries}
 					forceUpdateCalendar={this.state.forceUpdateCalendar}
 				/>
 
