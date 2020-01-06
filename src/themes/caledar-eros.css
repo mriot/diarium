@@ -57,6 +57,11 @@
   color: #ff5722;
 }
 
+/* other month */
+.calendar-dark-theme .react-calendar__month-view__days__day--neighboringMonth {
+  opacity: 0.3;
+}
+
 
 /* TILES */
 .calendar-dark-theme .react-calendar__tile {
