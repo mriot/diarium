@@ -6,7 +6,7 @@ import "../../themes/caledar-eros.css";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { fetchHolidays } from "../../lib/external";
-import { getAllEntriesForYearMonth, getAllEntriesForYear } from "../../lib/backend";
+import { getRecordsInRange, getRecordForDay } from "../../lib/backend";
 
 const StyledCalendar = styled(ReactCalendar) `
   border-bottom: 1px solid #191919;
@@ -48,13 +48,14 @@ export default class Calendar extends React.PureComponent {
 	}
 	
 	componentDidMount() {
-		getAllEntriesForYearMonth(this.state.selectedDate.year(), this.state.selectedDate.format("MM"))
-			.then(fetchedEntries => {
-				this.setState({ fetchedEntries });
-			})
+		const start = moment(this.state.calendarInitDate).subtract(7, "days").format("YYYY-MM-DD");
+		const end = moment(this.state.calendarInitDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
+
+		getRecordsInRange(start, end, ["assignedDay", "tags"])
+			.then(fetchedEntries => this.setState({ fetchedEntries }))
 			.catch(error => {
 				console.error(error);
-				toast.error("Whoops! 😱 An error occured while processing the entries!", { autoClose: false });
+				toast.error("Whoops! 😱 An error occured while processing the entries!", { autoClose: 10000 });
 				this.setState({ fetchedEntries: {} });
 			});
 
@@ -87,26 +88,39 @@ export default class Calendar extends React.PureComponent {
 					return entries.map(entry => Calendar.dayMarker(currentTilesDate, entry, holidays));
 				}}
 
-				// arrow navigation (view = month => fetch overview)
+				// arrow navigation
 				onActiveDateChange={changeObj => {
 					const { activeStartDate, view } = changeObj;
 					if (view !== "month") return;
 
-					// TODO: Offset (5 days +-)
-					getAllEntriesForYear(moment(activeStartDate).year())
+					const start = moment(activeStartDate).subtract(7, "days").format("YYYY-MM-DD");
+					const end = moment(activeStartDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
+
+					getRecordsInRange(start, end, ["assignedDay", "tags"])
 						.then(fetchedEntries => this.setState({ fetchedEntries }));
 				}}
 
-				// month selector (fetch overview)
-				onClickMonth={(...args) => console.log("onClickMonth:", ...args)}
+				// month selected
+				onClickMonth={activeStartDate => {
+					const start = moment(activeStartDate).subtract(7, "days").format("YYYY-MM-DD");
+					const end = moment(activeStartDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
 
-				// date/day changed (fetch selected day -> all data)
-				onClickDay={(...args) => console.log("onClickDay", ...args)}
+					getRecordsInRange(start, end, ["assignedDay", "tags"])
+						.then(fetchedEntries => this.setState({ fetchedEntries }));
+				}}
+
+				// date/day selected (fetch selected day -> all data)
+				onClickDay={activeStartDate => {
+					const date = moment(activeStartDate);
+
+					getRecordForDay(date.format("YYYY"), date.format(("MM")), date.format("DD"))
+						.then(result => console.log(result.content));
+				}}
 				
-				// > year selector (don't need fetch imo)
+				// year selector (maybe pre-fetch (?))
 				// onClickYear={(...args) => console.log("onClickYear", ...args)}
 
-				// > general listener
+				// general listener
 				// onChange={value => console.log("onChange:", value)}
 			/>
 		);
