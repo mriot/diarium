@@ -1,11 +1,14 @@
 import moment from "moment";
 
 export const fetchHolidays = (year = moment().year(), countryCode = "HE") => {
-	if (localStorage.getItem(`holidays_${year}`)) {
+	const NAME_TEMPLATE = `holidays_${countryCode}_${year}`;
+
+	if (localStorage.getItem(NAME_TEMPLATE)) {
 		return new Promise((resolve, reject) => {
 			try {
-				resolve(JSON.parse(localStorage.getItem(`holidays_${year}`)));
+				resolve(JSON.parse(localStorage.getItem(NAME_TEMPLATE)));
 			} catch (error) {
+				localStorage.removeItem(NAME_TEMPLATE);
 				reject(error);
 			}
 		});
@@ -24,7 +27,7 @@ export const fetchHolidays = (year = moment().year(), countryCode = "HE") => {
 				}
 			}
 
-			localStorage.setItem(`holidays_${year}`, JSON.stringify(holidays));
+			localStorage.setItem(NAME_TEMPLATE, JSON.stringify(holidays));
 
 			return holidays;
 		});
