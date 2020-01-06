@@ -14,18 +14,20 @@ export const auth = (username, password) => {
 			"Content-Type": "application/json"
 		},
 		body: JSON.stringify({ username, password })
-	}).then(response => {
-		if (!response.ok) {
-			throw new Error(`${response.status} (${response.statusText})`);
-		}
-		return response.json();
 	})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error(`${response.status} (${response.statusText})`);
+			}
+			return response.json();
+		})
 		.then(response => {
 			// console.log(jwt.decode(response.token, { complete: true }));
 			localStorage.setItem("token", response.token);
 			GLOBAL_TOKEN = response.token;
 			return response;
-		});
+		})
+		.catch(error => console.error(error));
 };
 
 export const isLoggedIn = () => {
@@ -46,7 +48,8 @@ export const countAllEntries = () => {
 	return fetch(`${BACKEND_URL}/entries/count/`, {
 		method: "GET"
 	})
-		.then(response => response.json());
+		.then(response => response.json())
+		.catch(error => console.error(error));
 };
 
 
@@ -59,7 +62,8 @@ export const getAllEntriesForYear = year => {
 			Authorization: `Bearer ${GLOBAL_TOKEN}`
 		},
 	})
-		.then(response => response.json());
+		.then(response => response.json())
+		.catch(error => console.error(error));
 };
 
 export const getAllEntriesForYearMonth = (year, month) => {
@@ -70,5 +74,6 @@ export const getAllEntriesForYearMonth = (year, month) => {
 			Authorization: `Bearer ${GLOBAL_TOKEN}`
 		},
 	})
-		.then(response => response.json());
+		.then(response => response.json())
+		.catch(error => console.error(error));
 };
