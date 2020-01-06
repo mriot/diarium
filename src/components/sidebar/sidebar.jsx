@@ -33,7 +33,6 @@ export default class Sidebar extends React.PureComponent {
 
 		this.state = {
 			dateToday: moment(),
-			forceUpdateCalendar: 0,
 		};
 	}
 
@@ -49,18 +48,14 @@ export default class Sidebar extends React.PureComponent {
 		return (
 			<StyledSidebar>
 				<Today onClick={() => {
-					this.setState(prevState => ({
-						dateToday: moment(),
-						forceUpdateCalendar: prevState.forceUpdateCalendar + 1
-					}));
+					this.calendarRef.resetCalendarToInitDate();
+					this.updateTodaysDate();
 				}}
 				>
 					{moment(this.state.dateToday).format("dddd, D. MMMM YYYY")}
 				</Today>
 
-				<Calendar
-					forceUpdateCalendar={this.state.forceUpdateCalendar}
-				/>
+				<Calendar ref={ref => (this.calendarRef = ref)} />
 
 				<MetaEditor isReadModeActive={this.props.isReadModeActive} />
 
