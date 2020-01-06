@@ -20,7 +20,7 @@
 }
 
 .calendar-dark-theme button:enabled:focus {
-	background-color: #3C3F47 !important;
+  background-color: inherit;
 }
 
 
