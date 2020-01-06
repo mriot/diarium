@@ -46,6 +46,7 @@ module.exports = {
     "react/require-default-props": ["warn"],
     "react/no-array-index-key": ["warn"],
     "react/forbid-prop-types": ["warn"],
+    "react/no-unused-state": ["warn"],
     "react/jsx-filename-extension": ["off"],
     "react/destructuring-assignment": ["off"],
     "react/no-did-update-set-state": ["off"],
@@ -54,6 +55,5 @@ module.exports = {
     "react/jsx-one-expression-per-line": ["off"],
     "react/jsx-first-prop-new-line": ["off"],
     "react/jsx-max-props-per-line": ["off"],
-    
   },
 };
