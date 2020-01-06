@@ -40,8 +40,8 @@ export default class Calendar extends React.PureComponent {
 		super(props);
 	
 		this.state = {
-			calendarInitDate: moment("2019-12").toDate(),
-			selectedDate: moment(),
+			calendarInitDate: moment().toDate(),
+			forceUpdateCalendar: 0,
 			fetchedEntries: null,
 			fetchedHolidays: null,
 		};
@@ -59,7 +59,7 @@ export default class Calendar extends React.PureComponent {
 				this.setState({ fetchedEntries: {} });
 			});
 
-		fetchHolidays()
+		fetchHolidays(moment(this.state.calendarInitDate).format("YYYY"))
 			.then(result => this.setState({ fetchedHolidays: result }))
 			.catch(error => {
 				console.error(error);
@@ -68,23 +68,33 @@ export default class Calendar extends React.PureComponent {
 			});
 	}
 
+	resetCalendarToInitDate() {
+		this.setState({ forceUpdateCalendar: Math.random() });
+
+		const start = moment(this.state.calendarInitDate).subtract(7, "days").format("YYYY-MM-DD");
+		const end = moment(this.state.calendarInitDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
+
+		getRecordsInRange(start, end, ["assignedDay", "tags"])
+			.then(fetchedEntries => this.setState({ fetchedEntries }));
+	}
+
 	render() {
 		return (
 			<StyledCalendar
 				className="calendar-dark-theme"
-				key={this.props.forceUpdateCalendar}
-				value={this.state.calendarInitDate}
+				key={this.state.forceUpdateCalendar}
+				activeStartDate={this.state.calendarInitDate}
 				minDetail="decade"
 				minDate={moment("2019-01-01").toDate()}
 				tileClassName={({ activeStartDate, date, view }) => {
-					if (view !== "month") return;
-					if (!this.state.fetchedEntries || !this.state.fetchedHolidays) return;
-					
+					if (view !== "month") return false;
+					if (!this.state.fetchedEntries || !this.state.fetchedHolidays) return false;
+
 					const currentTilesDate = moment(date).format("YYYY-MM-DD");
 					const entries = this.state.fetchedEntries;
 					const holidays = this.state.fetchedHolidays;
 					
-					// eslint-disable-next-line consistent-return
+					// return class names as string
 					return entries.map(entry => Calendar.dayMarker(currentTilesDate, entry, holidays));
 				}}
 
@@ -100,7 +110,7 @@ export default class Calendar extends React.PureComponent {
 						.then(fetchedEntries => this.setState({ fetchedEntries }));
 				}}
 
-				// month selected
+				// month selected // fetch data for month with 1 week +- offset
 				onClickMonth={activeStartDate => {
 					const start = moment(activeStartDate).subtract(7, "days").format("YYYY-MM-DD");
 					const end = moment(activeStartDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
@@ -114,7 +124,7 @@ export default class Calendar extends React.PureComponent {
 					const date = moment(activeStartDate);
 
 					getRecordForDay(date.format("YYYY"), date.format(("MM")), date.format("DD"))
-						.then(result => console.log(result.content));
+						.then(result => console.log(result));
 				}}
 				
 				// year selector (maybe pre-fetch (?))
@@ -128,6 +138,5 @@ export default class Calendar extends React.PureComponent {
 }
 
 Calendar.propTypes = {
-	forceUpdateCalendar: PropTypes.number.isRequired,
 
 };
