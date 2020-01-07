@@ -33,15 +33,23 @@ export default class MetaEditor extends React.PureComponent {
 		super(props);
 	
 		this.state = {
-			favorite: true,
+			highlight: false,
 			vacation: false,
-			sickness: false,
+			sick: false,
 			nsfw: false,
 			checkboxDisabled: this.props.isReadModeActive,
 		};
 	}
 
+	componentDidMount() {
+		const { highlight = false, vacation = false, sick = false, nsfw = false } = this.props.tags;
+		this.setState({ highlight, vacation, sick, nsfw, });
+	}
+
 	componentDidUpdate(prevProps, prevState) {
+		const { highlight = false, vacation = false, sick = false, nsfw = false } = this.props.tags;
+		this.setState({ highlight, vacation, sick, nsfw, });
+
 		if (prevProps.isReadModeActive !== this.props.isReadModeActive) {
 			this.setState({ checkboxDisabled: this.props.isReadModeActive });
 		}
@@ -54,12 +62,12 @@ export default class MetaEditor extends React.PureComponent {
 	render() {
 		return (
 			<MetaEditorContainer>
-				<Heading>Labels</Heading>
+				<Heading>Tags</Heading>
 				<MetaFields>
-					<Checkbox label="Markieren" icon={faTheaterMasks}
+					<Checkbox label="Highlight" icon={faTheaterMasks}
 						disabled={this.state.checkboxDisabled}
-						checked={this.state.favorite}
-						onChange={() => this.setState(prevState => ({ favorite: !prevState.favorite }))}
+						checked={this.state.highlight}
+						onChange={() => this.setState(prevState => ({ highlight: !prevState.highlight }))}
 					/>
 					<Checkbox label="Urlaub" icon={faMapMarkerAlt}
 						disabled={this.state.checkboxDisabled}
@@ -68,8 +76,8 @@ export default class MetaEditor extends React.PureComponent {
 					/>
 					<Checkbox label="Krank" icon={faBiohazard}
 						disabled={this.state.checkboxDisabled}
-						checked={this.state.sickness}
-						onChange={() => this.setState(prevState => ({ sickness: !prevState.sickness }))}
+						checked={this.state.sick}
+						onChange={() => this.setState(prevState => ({ sick: !prevState.sick }))}
 					/>
 					<Checkbox label="NSFW" icon={faLock}
 						disabled={this.state.checkboxDisabled}
@@ -84,5 +92,5 @@ export default class MetaEditor extends React.PureComponent {
 
 MetaEditor.propTypes = {
 	isReadModeActive: PropTypes.bool.isRequired,
-
+	// tags: PropTypes.array,
 };

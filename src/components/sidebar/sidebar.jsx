@@ -33,6 +33,7 @@ export default class Sidebar extends React.PureComponent {
 
 		this.state = {
 			dateToday: moment(),
+			tags: {},
 		};
 	}
 
@@ -55,9 +56,15 @@ export default class Sidebar extends React.PureComponent {
 					{moment(this.state.dateToday).format("dddd, D. MMMM YYYY")}
 				</Today>
 
-				<Calendar ref={ref => (this.calendarRef = ref)} />
+				<Calendar
+					ref={ref => (this.calendarRef = ref)}
+					dealTags={tags => this.setState({ tags })}
+				/>
 
-				<MetaEditor isReadModeActive={this.props.isReadModeActive} />
+				<MetaEditor
+					isReadModeActive={this.props.isReadModeActive}
+					tags={this.state.tags}
+				/>
 
 				<Progress />
 			</StyledSidebar>
