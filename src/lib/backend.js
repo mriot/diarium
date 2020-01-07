@@ -103,3 +103,17 @@ export const getRecordForDay = (year, month, day) => {
 		.then(response => response.json())
 		.catch(error => console.error(error));
 };
+
+
+// SEARCH ====================================================
+export const search = query => {
+	return fetch(`${BACKEND_URL}/entries/search?q=${query}`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${GLOBAL_TOKEN}`
+		},
+	})
+		.then(response => response.json())
+		.catch(error => console.error(error));
+};
