@@ -14,26 +14,24 @@ const StyledCalendar = styled(ReactCalendar) `
 `;
 
 export default class Calendar extends React.PureComponent {
-	static dayMarker(date, entry, holidays) {
-		let classList = [];
-
-		if (holidays[moment(date).format("YYYY-MM-DD")]) {
-			classList.push("holiday");
-		}
+	static dayMarker(date, entry) {
+		const classList = [];
 
 		if (moment(date).isSame(entry.assignedDay)) {
-			// TODO: REMOVE ITEM FROM ARRAY TO SPEED UP THE REST
 			classList.push("marked");
 
 			if (entry.tags) {
 				try {
-					classList = classList.concat(JSON.parse(entry.tags));
+					const parsedTags = JSON.parse(entry.tags);
+					classList.push(
+						Object.keys(parsedTags).filter(tag => parsedTags[tag])
+					);
 				} catch (error) {
 					console.log(error);
 				}
 			}
 		}
-		return classList.join(" ");
+		return classList.flat(Infinity);
 	}
 
 	constructor(props) {
@@ -93,9 +91,17 @@ export default class Calendar extends React.PureComponent {
 					const currentTilesDate = moment(date).format("YYYY-MM-DD");
 					const entries = this.state.fetchedEntries;
 					const holidays = this.state.fetchedHolidays;
-					
-					// return class names as string
-					return entries.map(entry => Calendar.dayMarker(currentTilesDate, entry, holidays));
+					const classNamesArray = [];
+
+					classNamesArray.push(
+						holidays[moment(date).format("YYYY-MM-DD")] ? "holiday" : []
+					);
+
+					classNamesArray.push(
+						entries.flatMap(entry => Calendar.dayMarker(currentTilesDate, entry, holidays))
+					);
+
+					return classNamesArray.flat(Infinity);
 				}}
 
 				// arrow navigation
@@ -124,13 +130,15 @@ export default class Calendar extends React.PureComponent {
 					const date = moment(activeStartDate);
 
 					getRecordForDay(date.format("YYYY"), date.format(("MM")), date.format("DD"))
-						.then(result => console.log(result));
+						.then(result => (result && JSON.parse(result.tags)) || {})
+						.then(tags => this.props.dealTags(tags))
+						.catch(error => console.error(error));
 				}}
 				
 				// year selector (maybe pre-fetch (?))
 				// onClickYear={(...args) => console.log("onClickYear", ...args)}
 
-				// general listener
+				// general change listener
 				// onChange={value => console.log("onChange:", value)}
 			/>
 		);
@@ -138,5 +146,5 @@ export default class Calendar extends React.PureComponent {
 }
 
 Calendar.propTypes = {
-
+	dealTags: PropTypes.func.isRequired,
 };
