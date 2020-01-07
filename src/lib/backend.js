@@ -68,6 +68,18 @@ export const getRecordsInRange = (start, end, columns) => {
 		.catch(error => console.error(error));
 };
 
+export const countRecordsInRange = (start, end) => {
+	return fetch(`${BACKEND_URL}/entries/range/count/?start=${start}&end=${end}`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${GLOBAL_TOKEN}`
+		},
+	})
+		.then(response => response.json())
+		.catch(error => console.error(error));
+};
+
 export const getAllEntriesForYear = year => {
 	return fetch(`${BACKEND_URL}/entries/${year}/`, {
 		method: "GET",
