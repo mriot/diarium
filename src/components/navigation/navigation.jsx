@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt, faStarAndCrescent, faStar, faPen } from "@fortawesome/free-solid-svg-icons";
 import NavButton from "./nav-button";
-import TextInput from "../common/textinput";
 import { isLoggedIn } from "../../lib/backend";
+import Search from "./search";
 
 const Nav = styled.nav `
   width: 100%;
@@ -87,7 +87,7 @@ export default class Navigation extends React.PureComponent {
 						/>
 					</ButtonContainer>
 
-					<TextInput placeholder="Suchen..." />
+					<Search placeholder="Suchen..." />
 
 					<Separator />
           
