@@ -83,7 +83,7 @@ export default class Calendar extends React.PureComponent {
 			<StyledCalendar
 				className="calendar-dark-theme"
 				key={this.state.forceUpdateCalendar}
-				activeStartDate={this.state.calendarInitDate}
+				value={this.state.calendarInitDate}
 				minDetail="decade"
 				minDate={moment("2019-01-01").toDate()}
 				tileClassName={({ activeStartDate, date, view }) => {
