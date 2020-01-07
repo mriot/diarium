@@ -47,15 +47,19 @@ export default class Progress extends React.PureComponent {
 	}
 	
 	countAllEntries() {
-		countAllEntries().then(response => {
-			this.setState({ progressTotal: response.all_records });
-		});
+		countAllEntries()
+			.then(response => {
+				this.setState({ progressTotal: response.all_records });
+			})
+			.catch(error => console.log(error));
 	}
 
 	countRecordsInRange(start, end, stateKey) {
-		countRecordsInRange(start, end).then(response => {
-			this.setState({ [stateKey]: response.records_in_range });
-		});
+		countRecordsInRange(start, end)
+			.then(response => {
+				this.setState({ [stateKey]: response.records_in_range });
+			})
+			.catch(error => console.log(error));
 	}
 
 	render() {
