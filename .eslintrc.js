@@ -33,6 +33,7 @@ module.exports = {
       "ignoreComments": true,
     }],
     "no-unused-vars": ["warn"],
+    "consistent-return": ["warn"],
     "comma-dangle": ["off"],
     "spaced-comment": ["off"],
     "no-console": ["off"],
