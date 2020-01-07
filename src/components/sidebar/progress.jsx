@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import moment from "moment";
 import ProgressBar from "../common/progressbar";
-import { countAllEntries } from "../../lib/backend";
+import { countAllEntries, countRecordsInRange } from "../../lib/backend";
 
 const ProgressContainer = styled.div `
 	padding: 0 0 5px 5px;
@@ -33,6 +34,16 @@ export default class Progress extends React.PureComponent {
 
 	componentDidMount() {
 		this.countAllEntries();
+		this.countRecordsInRange(
+			moment().startOf("month").format("YYYY-MM-DD"),
+			moment().add(1, "month").format("YYYY-MM-DD"),
+			"progressMonth"
+		);
+		this.countRecordsInRange(
+			moment().startOf("year").format("YYYY-MM-DD"),
+			moment().add(1, "year").format("YYYY-MM-DD"),
+			"progressYear"
+		);
 	}
 	
 	countAllEntries() {
@@ -41,21 +52,27 @@ export default class Progress extends React.PureComponent {
 		});
 	}
 
+	countRecordsInRange(start, end, stateKey) {
+		countRecordsInRange(start, end).then(response => {
+			this.setState({ [stateKey]: response.records_in_range });
+		});
+	}
+
 	render() {
 		return (
 			<ProgressContainer>
-				<ProgressDescription>
+				{/* <ProgressDescription>
 					Einträge diese Woche: {this.state.progressWeek}%
 				</ProgressDescription>
-				<ProgressBar progress={this.state.progressWeek} />
+				<ProgressBar progress={this.state.progressWeek} /> */}
 
 				<ProgressDescription>
-					Einträge im November: {this.state.progressMonth}%
+					Einträge im {moment().format("MMMM")}: {this.state.progressMonth}
 				</ProgressDescription>
 				<ProgressBar progress={this.state.progressMonth} />
 
 				<ProgressDescription>
-					Einträge im aktuellen Jahr: {this.state.progressYear}%
+					Einträge im Jahr {moment().year()}: {(this.state.progressYear / 365).toFixed(2)}%
 				</ProgressDescription>
 				<ProgressBar progress={this.state.progressYear} />
 
