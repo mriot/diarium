@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import Checkbox from '../common/checkbox';
-import { faStar, faMapMarkerAlt, faBiohazard, faLock } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks } from "@fortawesome/free-solid-svg-icons";
+import Checkbox from "../common/checkbox";
 
 const MetaEditorContainer = styled.div `
 	color: #fff;
@@ -12,13 +12,13 @@ const MetaEditorContainer = styled.div `
 	box-sizing: border-box;
 	border-bottom: 1px solid #191919;
 	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
-`
+`;
 const Heading = styled.h3 `
 	margin: 0 0 10px;
 	padding-left: 5px;
 	padding-bottom: 10px;
 	border-bottom: 1px solid #191919;
-`
+`;
 const MetaFields = styled.div ` 
 	display: flex;
 	flex-direction: column;
@@ -26,7 +26,7 @@ const MetaFields = styled.div `
 	${Checkbox} {
 		line-height: 2;
 	}
-`
+`;
 
 export default class MetaEditor extends React.PureComponent {
 	constructor(props) {
@@ -38,16 +38,17 @@ export default class MetaEditor extends React.PureComponent {
 			sickness: false,
 			nsfw: false,
 			checkboxDisabled: this.props.isReadModeActive,
-		}
-	}	
+		};
+	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (prevProps.isReadModeActive !== this.props.isReadModeActive)
-			this.setState({checkboxDisabled: this.props.isReadModeActive})
+		if (prevProps.isReadModeActive !== this.props.isReadModeActive) {
+			this.setState({ checkboxDisabled: this.props.isReadModeActive });
+		}
 	}
 	
 	handleCheckboxClick(stuff) {
-		console.log(stuff)
+		console.log(this, stuff);
 	}
 
 	render() {
@@ -55,25 +56,25 @@ export default class MetaEditor extends React.PureComponent {
 			<MetaEditorContainer>
 				<Heading>Labels</Heading>
 				<MetaFields>
-					<Checkbox label="Favorit" icon={faStar} 
+					<Checkbox label="Markieren" icon={faTheaterMasks}
 						disabled={this.state.checkboxDisabled}
 						checked={this.state.favorite}
-						onChange={() => this.setState({favorite: !this.state.favorite})}
+						onChange={() => this.setState(prevState => ({ favorite: !prevState.favorite }))}
 					/>
 					<Checkbox label="Urlaub" icon={faMapMarkerAlt}
 						disabled={this.state.checkboxDisabled}
 						checked={this.state.vacation}
-						onChange={() => this.setState({vacation: !this.state.vacation})}
+						onChange={() => this.setState(prevState => ({ vacation: !prevState.vacation }))}
 					/>
 					<Checkbox label="Krank" icon={faBiohazard}
 						disabled={this.state.checkboxDisabled}
 						checked={this.state.sickness}
-						onChange={() => this.setState({sickness: !this.state.sickness})}
+						onChange={() => this.setState(prevState => ({ sickness: !prevState.sickness }))}
 					/>
 					<Checkbox label="NSFW" icon={faLock}
 						disabled={this.state.checkboxDisabled}
 						checked={this.state.nsfw}
-						onChange={() => this.setState({nsfw: !this.state.nsfw})}
+						onChange={() => this.setState(prevState => ({ nsfw: !prevState.nsfw }))}
 					/>
 				</MetaFields>
 			</MetaEditorContainer>
@@ -82,5 +83,6 @@ export default class MetaEditor extends React.PureComponent {
 }
 
 MetaEditor.propTypes = {
-	
-}
+	isReadModeActive: PropTypes.bool.isRequired,
+
+};
