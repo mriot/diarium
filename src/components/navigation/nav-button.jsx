@@ -10,8 +10,8 @@ const NavItem = styled.div `
   color: #9e9e9e;
   padding: 7px 20px;
   margin: 0 5px;
+  border-radius: 3px;
   border-bottom: 1px solid transparent;
-	perspective: 1000;
   backface-visibility: hidden;
   user-select: none;
   transition: all 0.2s;
@@ -27,6 +27,7 @@ const NavItem = styled.div `
   ${props => !props.active} {
     color: #00b7ff;
     border-color: #00b7ff;
+    border-radius: 3px 3px 0 0;
   }
 `;
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon) `
