@@ -130,7 +130,7 @@ export default class Calendar extends React.PureComponent {
 					const date = moment(activeStartDate);
 
 					getRecordForDay(date.format("YYYY"), date.format(("MM")), date.format("DD"))
-						.then(result => (result && JSON.parse(result.tags)) || {})
+						.then(result => (result && JSON.parse(result.tags)) || [])
 						.then(tags => this.props.dealTags(tags))
 						.catch(error => console.error(error));
 				}}

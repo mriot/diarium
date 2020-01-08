@@ -33,7 +33,7 @@ export default class Sidebar extends React.PureComponent {
 
 		this.state = {
 			dateToday: moment(),
-			tags: {},
+			tags: [],
 		};
 	}
 

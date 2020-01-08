@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks } from "@fortawesome/free-solid-svg-icons";
+import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks, faCross } from "@fortawesome/free-solid-svg-icons";
 import Checkbox from "../common/checkbox";
 
 const MetaEditorContainer = styled.div `
@@ -33,57 +33,71 @@ export default class MetaEditor extends React.PureComponent {
 		super(props);
 	
 		this.state = {
-			highlight: false,
-			vacation: false,
-			sick: false,
-			nsfw: false,
+			tags: {
+				highlight: { label: "Highlight", icon: faTheaterMasks, disabled: false, checked: false, },
+				vacation: { label: "Urlaub", icon: faMapMarkerAlt, disabled: false, checked: false, },
+				sick: { label: "Krank", icon: faBiohazard, disabled: false, checked: false, },
+				nsfw: { label: "NSFW", icon: faLock, disabled: false, checked: false, },
+				rip: { label: "RIP", icon: faCross, disabled: false, checked: false, },
+			},
 			checkboxDisabled: this.props.isReadModeActive,
+			selectedTags: [],
 		};
 	}
 
 	componentDidMount() {
-		const { highlight = false, vacation = false, sick = false, nsfw = false } = this.props.tags;
-		this.setState({ highlight, vacation, sick, nsfw, });
+		this.updateTags(this.props.tags);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		const { highlight = false, vacation = false, sick = false, nsfw = false } = this.props.tags;
-		this.setState({ highlight, vacation, sick, nsfw, });
-
 		if (prevProps.isReadModeActive !== this.props.isReadModeActive) {
 			this.setState({ checkboxDisabled: this.props.isReadModeActive });
 		}
+
+		if (prevProps.tags !== this.props.tags) {
+			this.updateTags(this.props.tags);
+		}
 	}
-	
-	handleCheckboxClick(stuff) {
-		console.log(this, stuff);
+
+	updateTags(changedTags) {
+		// console.log(changedTags);
+		changedTags.forEach(tag => {
+			this.setState(prevState => ({
+				tags: {
+					...prevState.tags,
+					[tag]: {
+						...prevState.tags[tag],
+						checked: true
+					}
+				}
+			}));
+		});
+	}
+
+	addToSelectedTags() {
+		console.log(this, "asd");
 	}
 
 	render() {
+		const { tags } = this.state;
+
 		return (
 			<MetaEditorContainer>
 				<Heading>Tags</Heading>
 				<MetaFields>
-					<Checkbox label="Highlight" icon={faTheaterMasks}
-						disabled={this.state.checkboxDisabled}
-						checked={this.state.highlight}
-						onChange={() => this.setState(prevState => ({ highlight: !prevState.highlight }))}
-					/>
-					<Checkbox label="Urlaub" icon={faMapMarkerAlt}
-						disabled={this.state.checkboxDisabled}
-						checked={this.state.vacation}
-						onChange={() => this.setState(prevState => ({ vacation: !prevState.vacation }))}
-					/>
-					<Checkbox label="Krank" icon={faBiohazard}
-						disabled={this.state.checkboxDisabled}
-						checked={this.state.sick}
-						onChange={() => this.setState(prevState => ({ sick: !prevState.sick }))}
-					/>
-					<Checkbox label="NSFW" icon={faLock}
-						disabled={this.state.checkboxDisabled}
-						checked={this.state.nsfw}
-						onChange={() => this.setState(prevState => ({ nsfw: !prevState.nsfw }))}
-					/>
+					{Object.keys(tags).map((tag, index) => (
+						<Checkbox
+							key={index}
+							label={tags[tag].label}
+							icon={tags[tag].icon}
+							value={tags[tag].value}
+							checked={tags[tag].checked}
+							disabled={this.state.checkboxDisabled}
+							click={() => this.setState(prevState => ({
+								selectedTags: [...prevState.selectedTags, tags[tag].value]
+							}))}
+						/>
+					))}
 				</MetaFields>
 			</MetaEditorContainer>
 		);
@@ -92,5 +106,5 @@ export default class MetaEditor extends React.PureComponent {
 
 MetaEditor.propTypes = {
 	isReadModeActive: PropTypes.bool.isRequired,
-	// tags: PropTypes.array,
+	tags: PropTypes.array.isRequired,
 };

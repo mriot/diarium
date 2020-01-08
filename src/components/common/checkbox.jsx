@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const StyledLabel = styled.label `
 	display: block;
@@ -10,7 +10,7 @@ const StyledLabel = styled.label `
 	display: flex;
 	align-items: center;
 	color: ${props => (props.checked && "#00ff8b") || (props.disabled && "#aaa")};
-	cursor: ${props => props.disabled ? "default" : "pointer"};
+	cursor: ${props => (props.disabled ? "default" : "pointer")};
 	font-size: 15px;
 	transform-origin: left;
 	transition: all 200ms;
@@ -47,29 +47,32 @@ const StyledLabel = styled.label `
 			transform: rotate(45deg);
 		}
 	}
-`
+`;
 const Input = styled.input `
-	display: none;
-`
+	/* display: none; */
+`;
 const Icon = styled(FontAwesomeIcon) `
 	width: 10% !important;
 	margin-right: 5px;
 	transform-origin: left;
 	transition: all 100ms;
-`
+`;
 const Text = styled.span `
 	width: 25%;
 	transform-origin: left;
 	transition: all 100ms;
-`
+`;
 
 export default class Checkbox extends React.PureComponent {
 	render() {
 		return (
-			<StyledLabel {...this.props}>
+			<StyledLabel
+				disabled={this.props.disabled}
+				checked={this.props.checked}
+			>
 				<Icon icon={this.props.icon} />
 				<Text>{this.props.label}</Text>
-				<Input type="checkbox" checked={this.props.checked} {...this.props} /> 
+				<Input type="checkbox" onClick={this.props.click} />
 			</StyledLabel>
 		);
 	}
@@ -77,7 +80,8 @@ export default class Checkbox extends React.PureComponent {
 
 Checkbox.propTypes = {
 	label: PropTypes.any,
+	icon: PropTypes.object,
 	checked: PropTypes.bool,
 	disabled: PropTypes.bool,
-	icon: PropTypes.object,
-}
+	click: PropTypes.func.isRequired,
+};
