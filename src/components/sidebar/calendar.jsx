@@ -22,10 +22,7 @@ export default class Calendar extends React.PureComponent {
 
 			if (entry.tags) {
 				try {
-					const parsedTags = JSON.parse(entry.tags);
-					classList.push(
-						Object.keys(parsedTags).filter(tag => parsedTags[tag])
-					);
+					classList.push(JSON.parse(entry.tags));
 				} catch (error) {
 					console.log(error);
 				}
