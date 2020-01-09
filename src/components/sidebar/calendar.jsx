@@ -127,8 +127,9 @@ export default class Calendar extends React.PureComponent {
 					const date = moment(activeStartDate);
 
 					getRecordForDay(date.format("YYYY"), date.format(("MM")), date.format("DD"))
-						.then(result => (result && JSON.parse(result.tags)) || [])
-						.then(tags => this.props.dealTags(tags))
+						// .then(result => (result && JSON.parse(result.tags)) || [])
+						// .then(tags => this.props.dealTags(tags))
+						.then(dayRecord => this.props.getDayRecord(dayRecord))
 						.catch(error => console.error(error));
 				}}
 				

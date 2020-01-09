@@ -33,6 +33,7 @@ export default class Sidebar extends React.PureComponent {
 
 		this.state = {
 			dateToday: moment(),
+			dayRecord: {},
 			tags: [],
 		};
 	}
@@ -59,10 +60,12 @@ export default class Sidebar extends React.PureComponent {
 				<Calendar
 					ref={ref => (this.calendarRef = ref)}
 					dealTags={tags => this.setState({ tags })}
+					getDayRecord={dayRecord => this.setState({ dayRecord, tags: JSON.parse(dayRecord.tags) })}
 				/>
 
 				<MetaEditor
 					isReadModeActive={this.props.isReadModeActive}
+					recordID={this.state.dayRecord.id}
 					tags={this.state.tags}
 				/>
 

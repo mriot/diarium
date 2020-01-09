@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks, faCross } from "@fortawesome/free-solid-svg-icons";
 import Tag from "./tag";
+import { updateExistingEntryById } from "../../lib/backend";
 
 const MetaEditorContainer = styled.div `
 	color: #fff;
@@ -56,17 +57,25 @@ export default class MetaEditor extends React.PureComponent {
 	}
 
 	addToSelectedTags(tag) {
-		// TODO: PUT request
+		// TODO: PUT request BEFORE state update -> server rules
 		this.setState(prevState => (
 			{ selectedTags: [...prevState.selectedTags, tag] }
-		));
+		), () => {
+			updateExistingEntryById(this.props.recordID, {
+				tags: JSON.stringify(this.state.selectedTags)
+			});
+		});
 	}
 
 	removeFromSelectedTags(tag) {
-		// TODO: PUT request
+		// TODO: PUT request BEFORE state update -> server rules
 		this.setState(prevState => ({
 			selectedTags: prevState.selectedTags.filter(oldTag => oldTag !== tag)
-		}));
+		}), () => {
+			updateExistingEntryById(this.props.recordID, {
+				tags: JSON.stringify(this.state.selectedTags)
+			});
+		});
 	}
 
 	render() {
