@@ -5,6 +5,7 @@ import moment from "moment";
 import Progress from "./progress";
 import Calendar from "./calendar";
 import MetaEditor from "./meta-editor";
+import Loadingbar from "../common/loadingbar";
 
 const StyledSidebar = styled.aside `
   position: relative;
@@ -35,6 +36,7 @@ export default class Sidebar extends React.PureComponent {
 			dateToday: moment(),
 			dayRecord: {},
 			tags: [],
+			loadingbar: false,
 		};
 	}
 
@@ -57,9 +59,10 @@ export default class Sidebar extends React.PureComponent {
 					{moment(this.state.dateToday).format("dddd, D. MMMM YYYY")}
 				</Today>
 
+				<Loadingbar active={this.state.loadingbar} />
+
 				<Calendar
 					ref={ref => (this.calendarRef = ref)}
-					dealTags={tags => this.setState({ tags })}
 					getDayRecord={dayRecord => this.setState({ dayRecord, tags: JSON.parse(dayRecord.tags) })}
 				/>
 
