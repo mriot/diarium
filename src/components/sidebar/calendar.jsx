@@ -144,5 +144,5 @@ export default class Calendar extends React.PureComponent {
 }
 
 Calendar.propTypes = {
-	dealTags: PropTypes.func.isRequired,
+	getDayRecord: PropTypes.func.isRequired,
 };
