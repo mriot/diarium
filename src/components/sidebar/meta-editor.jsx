@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks, faCross } from "@fortawesome/free-solid-svg-icons";
-import Checkbox from "../common/checkbox";
+import Tag from "./tag";
 
 const MetaEditorContainer = styled.div `
 	color: #fff;
@@ -22,10 +22,6 @@ const Heading = styled.h3 `
 const MetaFields = styled.div ` 
 	display: flex;
 	flex-direction: column;
-
-	${Checkbox} {
-		line-height: 2;
-	}
 `;
 
 export default class MetaEditor extends React.PureComponent {
@@ -34,11 +30,11 @@ export default class MetaEditor extends React.PureComponent {
 	
 		this.state = {
 			tags: {
-				highlight: { label: "Highlight", icon: faTheaterMasks, disabled: false, checked: false, },
-				vacation: { label: "Urlaub", icon: faMapMarkerAlt, disabled: false, checked: false, },
-				sick: { label: "Krank", icon: faBiohazard, disabled: false, checked: false, },
-				nsfw: { label: "NSFW", icon: faLock, disabled: false, checked: false, },
-				rip: { label: "RIP", icon: faCross, disabled: false, checked: false, },
+				highlight: { label: "Highlight", icon: faTheaterMasks },
+				vacation: { label: "Urlaub", icon: faMapMarkerAlt },
+				sick: { label: "Krank", icon: faBiohazard },
+				nsfw: { label: "NSFW", icon: faLock },
+				rip: { label: "RIP", icon: faCross },
 			},
 			checkboxDisabled: this.props.isReadModeActive,
 			selectedTags: [],
@@ -46,7 +42,7 @@ export default class MetaEditor extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		this.updateTags(this.props.tags);
+		this.setState({ selectedTags: this.props.tags });
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -55,47 +51,41 @@ export default class MetaEditor extends React.PureComponent {
 		}
 
 		if (prevProps.tags !== this.props.tags) {
-			this.updateTags(this.props.tags);
+			this.setState({ selectedTags: this.props.tags });
 		}
 	}
 
-	updateTags(changedTags) {
-		// console.log(changedTags);
-		changedTags.forEach(tag => {
-			this.setState(prevState => ({
-				tags: {
-					...prevState.tags,
-					[tag]: {
-						...prevState.tags[tag],
-						checked: true
-					}
-				}
-			}));
-		});
+	addToSelectedTags(tag) {
+		// TODO: PUT request
+		this.setState(prevState => (
+			{ selectedTags: [...prevState.selectedTags, tag] }
+		));
 	}
 
-	addToSelectedTags() {
-		console.log(this, "asd");
+	removeFromSelectedTags(tag) {
+		// TODO: PUT request
+		this.setState(prevState => ({
+			selectedTags: prevState.selectedTags.filter(oldTag => oldTag !== tag)
+		}));
 	}
 
 	render() {
-		const { tags } = this.state;
+		const { tags, selectedTags } = this.state;
 
 		return (
 			<MetaEditorContainer>
 				<Heading>Tags</Heading>
 				<MetaFields>
 					{Object.keys(tags).map((tag, index) => (
-						<Checkbox
+						<Tag
 							key={index}
+							value={tag}
 							label={tags[tag].label}
 							icon={tags[tag].icon}
-							value={tags[tag].value}
-							checked={tags[tag].checked}
 							disabled={this.state.checkboxDisabled}
-							click={() => this.setState(prevState => ({
-								selectedTags: [...prevState.selectedTags, tags[tag].value]
-							}))}
+							defaultChecked={selectedTags.some(sTag => sTag === tag) || false}
+							addToSelectedTags={newTag => this.addToSelectedTags(newTag)}
+							removeFromSelectedTags={oldTag => this.removeFromSelectedTags(oldTag)}
 						/>
 					))}
 				</MetaFields>
