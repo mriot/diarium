@@ -104,6 +104,12 @@ export default class MetaEditor extends React.PureComponent {
 }
 
 MetaEditor.propTypes = {
+	tags: PropTypes.array,
+	recordID: PropTypes.number,
 	isReadModeActive: PropTypes.bool.isRequired,
-	tags: PropTypes.array.isRequired,
+};
+
+MetaEditor.defaultProps = {
+	tags: [],
+	recordID: -1,
 };
