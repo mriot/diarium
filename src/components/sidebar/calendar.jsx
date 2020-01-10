@@ -152,4 +152,5 @@ export default class Calendar extends React.PureComponent {
 
 Calendar.propTypes = {
 	getDayRecord: PropTypes.func.isRequired,
+	showLoadingbar: PropTypes.func.isRequired,
 };
