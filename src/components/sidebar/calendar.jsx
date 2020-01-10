@@ -19,6 +19,7 @@ export default class Calendar extends React.PureComponent {
 	
 		this.state = {
 			calendarInitDate: moment().toDate(),
+			selectedDay: moment().toDate(),
 			forceUpdateCalendar: 0,
 			fetchedEntries: null,
 			fetchedHolidays: null,
@@ -27,8 +28,8 @@ export default class Calendar extends React.PureComponent {
 	
 	componentDidMount() {
 		this.props.showLoadingbar(true);
-		const start = moment(this.state.calendarInitDate).subtract(7, "days").format("YYYY-MM-DD");
-		const end = moment(this.state.calendarInitDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
+		const start = moment(this.state.calendarInitDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+		const end = moment(this.state.calendarInitDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
 		const prom1 = getRecordsInRange(start, end, ["assignedDay", "tags"])
 			.then(fetchedEntries => this.setState({ fetchedEntries }))
@@ -47,21 +48,35 @@ export default class Calendar extends React.PureComponent {
 			});
 
 		const today = moment(this.state.calendarInitDate);
-		const prom3 =	getRecordForDay(today.format("YYYY"), today.format(("MM")), today.format("DD"))
+		const prom3 =	getRecordForDay(today.format("YYYY"), today.format("MM"), today.format("DD"))
 			.then(dayRecord => this.props.getDayRecord(dayRecord))
 			.catch(error => console.error(error));
-			
 			
 		Promise.all([prom1, prom2, prom3])
 			.then(() => this.props.showLoadingbar(false));
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if (prevState.selectedDay !== this.state.selectedDay)	{
+			this.props.showLoadingbar(true);
+
+			const today = moment(this.state.selectedDay || this.state.calendarInitDate);
+			getRecordForDay(today.format("YYYY"), today.format("MM"), today.format("DD"))
+				.then(dayRecord => this.props.getDayRecord(dayRecord))
+				.then(() => this.props.showLoadingbar(false))
+				.catch(error => console.error(error));
+		}
+	}
+
 	resetCalendarToInitDate() {
 		this.props.showLoadingbar(true);
-		this.setState({ forceUpdateCalendar: Math.random() });
+		this.setState({
+			forceUpdateCalendar: Math.random(),
+			selectedDay: null,
+		});
 
-		const start = moment(this.state.calendarInitDate).subtract(7, "days").format("YYYY-MM-DD");
-		const end = moment(this.state.calendarInitDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
+		const start = moment(this.state.calendarInitDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+		const end = moment(this.state.calendarInitDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
 		getRecordsInRange(start, end, ["assignedDay", "tags"])
 			.then(fetchedEntries => this.setState({ fetchedEntries }))
@@ -74,7 +89,8 @@ export default class Calendar extends React.PureComponent {
 			<StyledCalendar
 				className="calendar-dark-theme"
 				key={this.state.forceUpdateCalendar}
-				value={this.state.calendarInitDate}
+				activeStartDate={this.state.calendarInitDate}
+				value={this.state.selectedDay}
 				minDetail="decade"
 				minDate={moment("2019-01-01").toDate()}
 				tileClassName={({ activeStartDate, date, view }) => {
@@ -108,8 +124,11 @@ export default class Calendar extends React.PureComponent {
 					const { activeStartDate, view } = changeObj;
 					if (view !== "month") return;
 
-					const start = moment(activeStartDate).subtract(7, "days").format("YYYY-MM-DD");
-					const end = moment(activeStartDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
+					const start = moment(activeStartDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+					const end = moment(activeStartDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
+
+					// select first day of month
+					this.setState({ selectedDay: activeStartDate });
 
 					getRecordsInRange(start, end, ["assignedDay", "tags"])
 						.then(fetchedEntries => this.setState({ fetchedEntries }))
@@ -120,8 +139,11 @@ export default class Calendar extends React.PureComponent {
 				// month selected // fetch data for month with 1 week +- offset
 				onClickMonth={activeStartDate => {
 					this.props.showLoadingbar(true);
-					const start = moment(activeStartDate).subtract(7, "days").format("YYYY-MM-DD");
-					const end = moment(activeStartDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
+					const start = moment(activeStartDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+					const end = moment(activeStartDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
+
+					// select first day of month
+					this.setState({ selectedDay: activeStartDate });
 
 					getRecordsInRange(start, end, ["assignedDay", "tags"])
 						.then(fetchedEntries => this.setState({ fetchedEntries }))
