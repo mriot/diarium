@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import TextInput from "../common/textinput";
 import Button from "../common/button";
 import { auth } from "../../lib/backend";
+import Select from "../common/select";
 
 const LoginMaskWrapper = styled.div `
   width: 100%;
@@ -84,6 +85,13 @@ export default class Login extends React.PureComponent {
 		};
 	}
 
+	componentDidMount() {
+		if (!localStorage.getItem("federal_state")) {
+			localStorage.setItem("federal_state", "HE");
+		}
+	}
+	
+
 	handleKeyStrokes(nativeEvent) {
 		// enter key
 		if (nativeEvent.which === 13) {
@@ -117,7 +125,7 @@ export default class Login extends React.PureComponent {
 							onKeyPress={event => this.handleKeyStrokes(event.nativeEvent)}
 						/>
 					</Row>
-					<Row style={{ marginBottom: "25px" }}>
+					<Row>
 						<Label>Passwort:</Label>
 						<TextInput
 							light
@@ -125,6 +133,35 @@ export default class Login extends React.PureComponent {
 							onChange={event => (this.password = event.currentTarget.value)}
 							onKeyPress={event => this.handleKeyStrokes(event.nativeEvent)}
 						/>
+					</Row>
+					<Row style={{ marginBottom: "25px" }}>
+						<Label title="Nur um dir die richtigen Feiertage anzuzeigen. =)">
+							Bundesland: <span role="img" aria-label="warum?">🤔</span>?
+						</Label>
+						<Select
+							value={localStorage.getItem("federal_state")}
+							onChange={event => {
+								this.forceUpdate();
+								localStorage.setItem("federal_state", event.currentTarget.value);
+							}}
+						>
+							<option value="BB">Brandenburg</option>
+							<option value="BE">Berlin</option>
+							<option value="BW">Baden-Württemberg</option>
+							<option value="BY">Bayern</option>
+							<option value="HB">Bremen</option>
+							<option value="HE" selected>Hessen</option>
+							<option value="HH">Hamburg</option>
+							<option value="MV">Mecklenburg-Vorpommern</option>
+							<option value="NI">Niedersachsen</option>
+							<option value="NW">Nordrhein-Westfalen</option>
+							<option value="RP">Rheinland-Pfalz</option>
+							<option value="SH">Schleswig-Holstein</option>
+							<option value="SL">Saarland</option>
+							<option value="SN">Sachsen</option>
+							<option value="ST">Sachsen-Anhalt</option>
+							<option value="TH">Thüringen</option>
+						</Select>
 					</Row>
 					{this.state.loginFailed > 0 && (
 						<Row key={this.state.loginFailed}>
