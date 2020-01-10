@@ -95,7 +95,14 @@ export default class Calendar extends React.PureComponent {
 					);
 
 					classNamesArray.push(
-						entries.flatMap(entry => Calendar.dayMarker(currentTilesDate, entry, holidays))
+						entries.map(entry => {
+							const classList = [];
+							if (moment(currentTilesDate).isSame(entry.assignedDay)) {
+								classList.push("marked");
+								classList.push(entry.tags);
+							}
+							return classList.flat();
+						})
 					);
 
 					return classNamesArray.flat(Infinity);
