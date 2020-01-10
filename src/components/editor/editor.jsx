@@ -1,11 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import styled from 'styled-components';
+import React from "react";
+import ReactDOM from "react-dom";
+import styled from "styled-components";
+import posed from "react-pose";
+import PropTypes from "prop-types";
 import SeparatorHandle from "./separator-handle";
-import MarkdownView from './markdown-view';
-import MarkdownEditor from './markdown-editor';
-import Toolbar from './toolbar';
-import posed from 'react-pose';
+import MarkdownView from "./markdown-view";
+import MarkdownEditor from "./markdown-editor";
+import Toolbar from "./toolbar";
 import { editorAnimation } from "./animations";
 
 const PosedEditorContainer = posed.div(editorAnimation);
@@ -26,7 +27,7 @@ const EditorContainer = styled(PosedEditorContainer) `
 		bottom: 0;
 		z-index: 1;
 	`}
-`
+`;
 
 const InnerEditorContainer = styled.div `
   position: relative;
@@ -34,7 +35,7 @@ const InnerEditorContainer = styled.div `
 	overflow: auto;
 	width: 100%;
 	height: 100%;
-`
+`;
 
 export default class Editor extends React.PureComponent {
 	constructor(props) {
@@ -45,10 +46,10 @@ export default class Editor extends React.PureComponent {
 
 		this.backup = {
 			scrollSyncPreference: true,
-		}
+		};
 
 		this.state = {
-			markdown: `# Hello World!`,
+			markdown: "# Hello World!",
 			readMode: this.props.isReadModeActive,
 			zenMode: false,
 			nodesReady: false,
@@ -56,20 +57,19 @@ export default class Editor extends React.PureComponent {
 			scrollSync: true,
 			forceUpdateSeparator: 0,
 			scrollSyncPosition: 0,
-			editorHistory: {undo: 0, redo: 0},
-		}
+			editorHistory: { undo: 0, redo: 0 },
+		};
 	}
 
 	componentDidMount() {
 		// collects DOM nodes
 		this.setUpSeparator();
 		
-		if (!this.state.readMode && localStorage.getItem("preview-hidden") === "true") 
-			this.hidePreview();
+		if (!this.state.readMode && localStorage.getItem("preview-hidden") === "true") { this.hidePreview(); }
 
 		// always focus editor on 'tab' press
 		document.addEventListener("keydown", event => {
-      if (event.which === 9) {
+			if (event.which === 9) {
 				event.preventDefault();
 				this.markdownEditorRef.editorFocus();
 			}
@@ -82,7 +82,7 @@ export default class Editor extends React.PureComponent {
 		if (prevProps.readMode !== this.props.isReadModeActive) {
 			this.setState({
 				readMode: this.props.isReadModeActive
-			})
+			});
 		}
 	}
 
@@ -91,8 +91,7 @@ export default class Editor extends React.PureComponent {
 			this.editorContainerNode = ReactDOM.findDOMNode(this.editorContainerRef.current);
 			this.previewNode = ReactDOM.findDOMNode(this.markdownViewRef.current);
 			// render separator when all node refs are available
-			if (this.editorContainerNode && this.previewNode)
-				this.setState({nodesReady: true});
+			if (this.editorContainerNode && this.previewNode) this.setState({ nodesReady: true });
 		}
 	}
 
@@ -122,11 +121,11 @@ export default class Editor extends React.PureComponent {
 		this.setState({
 			zenMode: force === undefined ? !this.state.zenMode : force,
 			forceUpdateSeparator: this.state.forceUpdateSeparator + 1,
-		})
+		});
 	}
 
 	toggleScrollSync(force) {
-		this.setState({scrollSync: force === undefined ? !this.state.scrollSync : force});
+		this.setState({ scrollSync: force === undefined ? !this.state.scrollSync : force });
 	}
 
 	resetEditorLayout() {
@@ -138,7 +137,7 @@ export default class Editor extends React.PureComponent {
 
 		this.previewNode.style.width = "";
 
-		this.setState({forceUpdateSeparator: this.state.forceUpdateSeparator + 1});
+		this.setState(prevState => ({ forceUpdateSeparator: prevState.forceUpdateSeparator + 1 }));
 	}
 
 	render() {
@@ -148,7 +147,7 @@ export default class Editor extends React.PureComponent {
 				isZenModeActive={this.state.zenMode}
 				pose={this.props.pose}
 			>
-				<Toolbar 
+				<Toolbar
 					// call markdown-editor methods
 					editorFocus={() => this.markdownEditorRef.editorFocus()}
 					editorUndo={() => this.markdownEditorRef.editorUndo()}
@@ -156,10 +155,10 @@ export default class Editor extends React.PureComponent {
 					insertCode={() => this.markdownEditorRef.insertCode()}
 					insertLink={() => this.markdownEditorRef.insertLink()}
 					// called directly here
-					toggleZenMode={this.toggleZenMode.bind(this)}
-					togglePreview={this.state.preview ? this.hidePreview.bind(this) : this.showPreview.bind(this)}
-					toggleScrollSync={this.toggleScrollSync.bind(this)}
-					resetEditorLayout={this.resetEditorLayout.bind(this)}
+					toggleZenMode={() => this.toggleZenMode}
+					togglePreview={this.state.preview ? () => this.hidePreview : () => this.showPreview}
+					toggleScrollSync={() => this.toggleScrollSync}
+					resetEditorLayout={() => this.resetEditorLayout}
 					// provides everything the Toolbar needs to know
 					toolbarStatus={{
 						readModeActive: this.state.readMode,
@@ -171,23 +170,23 @@ export default class Editor extends React.PureComponent {
 				/>
 
 				<InnerEditorContainer>
-					{!this.state.readMode && 
+					{!this.state.readMode && (
 						<MarkdownEditor
-							ref={ref => this.markdownEditorRef = ref}
+							ref={ref => (this.markdownEditorRef = ref)}
 							value={this.state.markdown}
-							scrollPosChange={scrollSyncPosition => this.setState({scrollSyncPosition})}
-							change={markdown => this.setState({markdown})}
-							getEditorHistory={editorHistory => this.setState({editorHistory})}
+							scrollPosChange={scrollSyncPosition => this.setState({ scrollSyncPosition })}
+							change={markdown => this.setState({ markdown })}
+							getEditorHistory={editorHistory => this.setState({ editorHistory })}
 						/>
-					}
+					)}
 
-					{!this.state.readMode && this.state.nodesReady && this.state.preview &&
+					{!this.state.readMode && this.state.nodesReady && this.state.preview && (
 						<SeparatorHandle
 							forceUpdateSeparator={this.state.forceUpdateSeparator}
 							containerNode={this.editorContainerNode}
 							previewNode={this.previewNode}
 						/>
-					}
+					)}
 
 					<MarkdownView
 						ref={this.markdownViewRef}
@@ -197,7 +196,14 @@ export default class Editor extends React.PureComponent {
 						scrollSyncPos={this.state.scrollSyncPosition}
 					/>
 				</InnerEditorContainer>
-			</EditorContainer>			
+			</EditorContainer>
 		);
 	}
 }
+
+Editor.propTypes = {
+	// TODO: fix this prop type
+	readMode: PropTypes.bool,
+	isReadModeActive: PropTypes.bool.isRequired,
+	pose: PropTypes.string.isRequired,
+};
