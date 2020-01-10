@@ -26,10 +26,11 @@ export default class Calendar extends React.PureComponent {
 	}
 	
 	componentDidMount() {
+		this.props.showLoadingbar(true);
 		const start = moment(this.state.calendarInitDate).subtract(7, "days").format("YYYY-MM-DD");
 		const end = moment(this.state.calendarInitDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
 
-		getRecordsInRange(start, end, ["assignedDay", "tags"])
+		const prom1 = getRecordsInRange(start, end, ["assignedDay", "tags"])
 			.then(fetchedEntries => this.setState({ fetchedEntries }))
 			.catch(error => {
 				console.error(error);
@@ -37,7 +38,7 @@ export default class Calendar extends React.PureComponent {
 				this.setState({ fetchedEntries: {} });
 			});
 
-		fetchHolidays(moment(this.state.calendarInitDate).format("YYYY"))
+		const prom2 = fetchHolidays(moment(this.state.calendarInitDate).format("YYYY"))
 			.then(result => this.setState({ fetchedHolidays: result }))
 			.catch(error => {
 				console.error(error);
@@ -46,19 +47,26 @@ export default class Calendar extends React.PureComponent {
 			});
 
 		const today = moment(this.state.calendarInitDate);
-		getRecordForDay(today.format("YYYY"), today.format(("MM")), today.format("DD"))
+		const prom3 =	getRecordForDay(today.format("YYYY"), today.format(("MM")), today.format("DD"))
 			.then(dayRecord => this.props.getDayRecord(dayRecord))
 			.catch(error => console.error(error));
+			
+			
+		Promise.all([prom1, prom2, prom3])
+			.then(() => this.props.showLoadingbar(false));
 	}
 
 	resetCalendarToInitDate() {
+		this.props.showLoadingbar(true);
 		this.setState({ forceUpdateCalendar: Math.random() });
 
 		const start = moment(this.state.calendarInitDate).subtract(7, "days").format("YYYY-MM-DD");
 		const end = moment(this.state.calendarInitDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
 
 		getRecordsInRange(start, end, ["assignedDay", "tags"])
-			.then(fetchedEntries => this.setState({ fetchedEntries }));
+			.then(fetchedEntries => this.setState({ fetchedEntries }))
+			.then(() => this.props.showLoadingbar(false))
+			.catch(error => console.error(error));
 	}
 
 	render() {
@@ -74,7 +82,7 @@ export default class Calendar extends React.PureComponent {
 					if (!this.state.fetchedEntries || !this.state.fetchedHolidays) return false;
 
 					const currentTilesDate = moment(date).format("YYYY-MM-DD");
-					const entries = this.state.fetchedEntries;
+					const { entries } = this.state.fetchedEntries;
 					const holidays = this.state.fetchedHolidays;
 					const classNamesArray = [];
 
@@ -96,6 +104,7 @@ export default class Calendar extends React.PureComponent {
 
 				// arrow navigation
 				onActiveDateChange={changeObj => {
+					this.props.showLoadingbar(true);
 					const { activeStartDate, view } = changeObj;
 					if (view !== "month") return;
 
@@ -103,24 +112,31 @@ export default class Calendar extends React.PureComponent {
 					const end = moment(activeStartDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
 
 					getRecordsInRange(start, end, ["assignedDay", "tags"])
-						.then(fetchedEntries => this.setState({ fetchedEntries }));
+						.then(fetchedEntries => this.setState({ fetchedEntries }))
+						.then(() => this.props.showLoadingbar(false))
+						.catch(error => console.error(error));
 				}}
 
 				// month selected // fetch data for month with 1 week +- offset
 				onClickMonth={activeStartDate => {
+					this.props.showLoadingbar(true);
 					const start = moment(activeStartDate).subtract(7, "days").format("YYYY-MM-DD");
 					const end = moment(activeStartDate).add(1, "month").add(7, "days").format("YYYY-MM-DD");
 
 					getRecordsInRange(start, end, ["assignedDay", "tags"])
-						.then(fetchedEntries => this.setState({ fetchedEntries }));
+						.then(fetchedEntries => this.setState({ fetchedEntries }))
+						.then(() => this.props.showLoadingbar(false))
+						.catch(error => console.error(error));
 				}}
 
 				// date/day selected (fetch selected day -> all data)
 				onClickDay={activeStartDate => {
+					this.props.showLoadingbar(true);
 					const date = moment(activeStartDate);
 
 					getRecordForDay(date.format("YYYY"), date.format(("MM")), date.format("DD"))
 						.then(dayRecord => this.props.getDayRecord(dayRecord))
+						.then(() => this.props.showLoadingbar(false))
 						.catch(error => console.error(error));
 				}}
 				
