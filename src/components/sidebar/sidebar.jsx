@@ -35,7 +35,6 @@ export default class Sidebar extends React.PureComponent {
 		this.state = {
 			dateToday: moment(),
 			dayRecord: {},
-			tags: [],
 			loadingbar: false,
 		};
 	}
@@ -49,6 +48,8 @@ export default class Sidebar extends React.PureComponent {
 	}
   
 	render() {
+		const { dayRecord, dateToday, loadingbar } = this.state;
+
 		return (
 			<StyledSidebar>
 				<Today onClick={() => {
@@ -56,20 +57,21 @@ export default class Sidebar extends React.PureComponent {
 					this.updateTodaysDate();
 				}}
 				>
-					{moment(this.state.dateToday).format("dddd, D. MMMM YYYY")}
+					{moment(dateToday).format("dddd, D. MMMM YYYY")}
 				</Today>
 
-				<Loadingbar active={this.state.loadingbar} />
+				<Loadingbar active={loadingbar} />
 
 				<Calendar
 					ref={ref => (this.calendarRef = ref)}
-					getDayRecord={dayRecord => this.setState({ dayRecord, tags: JSON.parse(dayRecord.tags) })}
+					getDayRecord={record => this.setState({ dayRecord: record })}
+					showLoadingbar={status => this.setState({ loadingbar: status })}
 				/>
 
 				<MetaEditor
 					isReadModeActive={this.props.isReadModeActive}
-					recordID={this.state.dayRecord.id}
-					tags={this.state.tags}
+					recordID={dayRecord && dayRecord.id}
+					tags={dayRecord && dayRecord.tags}
 				/>
 
 				<Progress />
