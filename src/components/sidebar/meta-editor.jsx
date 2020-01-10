@@ -37,13 +37,19 @@ export default class MetaEditor extends React.PureComponent {
 				nsfw: { label: "NSFW", icon: faLock },
 				rip: { label: "RIP", icon: faCross },
 			},
-			checkboxDisabled: this.props.isReadModeActive,
+			checkboxDisabled: false,
 			selectedTags: [],
 		};
 	}
 
 	componentDidMount() {
-		this.setState({ selectedTags: this.props.tags });
+		if (this.props.isReadModeActive) {
+			this.setState({ checkboxDisabled: true });
+		}
+
+		if (this.props.tags) {
+			this.setState({ selectedTags: this.props.tags });
+		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -51,8 +57,11 @@ export default class MetaEditor extends React.PureComponent {
 			this.setState({ checkboxDisabled: this.props.isReadModeActive });
 		}
 
-		if (prevProps.tags !== this.props.tags) {
-			this.setState({ selectedTags: this.props.tags });
+		if (this.props.tags !== prevProps.tags) {
+			this.setState({
+				selectedTags: this.props.tags || [],
+				checkboxDisabled: !this.props.recordID
+			});
 		}
 	}
 
@@ -92,7 +101,7 @@ export default class MetaEditor extends React.PureComponent {
 							label={tags[tag].label}
 							icon={tags[tag].icon}
 							disabled={this.state.checkboxDisabled}
-							defaultChecked={selectedTags.some(sTag => sTag === tag) || false}
+							defaultChecked={selectedTags.some(sTag => sTag === tag)}
 							addToSelectedTags={newTag => this.addToSelectedTags(newTag)}
 							removeFromSelectedTags={oldTag => this.removeFromSelectedTags(oldTag)}
 						/>
