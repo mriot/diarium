@@ -14,23 +14,6 @@ const StyledCalendar = styled(ReactCalendar) `
 `;
 
 export default class Calendar extends React.PureComponent {
-	static dayMarker(date, entry) {
-		const classList = [];
-
-		if (moment(date).isSame(entry.assignedDay)) {
-			classList.push("marked");
-
-			if (entry.tags) {
-				try {
-					classList.push(JSON.parse(entry.tags));
-				} catch (error) {
-					console.log(error);
-				}
-			}
-		}
-		return classList.flat(Infinity);
-	}
-
 	constructor(props) {
 		super(props);
 	
@@ -95,9 +78,7 @@ export default class Calendar extends React.PureComponent {
 					const holidays = this.state.fetchedHolidays;
 					const classNamesArray = [];
 
-					classNamesArray.push(
-						holidays[moment(date).format("YYYY-MM-DD")] ? "holiday" : []
-					);
+					if (holidays[moment(date).format("YYYY-MM-DD")]) classNamesArray.push("holiday");
 
 					classNamesArray.push(
 						entries.map(entry => {
@@ -139,13 +120,11 @@ export default class Calendar extends React.PureComponent {
 					const date = moment(activeStartDate);
 
 					getRecordForDay(date.format("YYYY"), date.format(("MM")), date.format("DD"))
-						// .then(result => (result && JSON.parse(result.tags)) || [])
-						// .then(tags => this.props.dealTags(tags))
 						.then(dayRecord => this.props.getDayRecord(dayRecord))
 						.catch(error => console.error(error));
 				}}
 				
-				// year selector (maybe pre-fetch (?))
+				// year selector
 				// onClickYear={(...args) => console.log("onClickYear", ...args)}
 
 				// general change listener
