@@ -32,6 +32,7 @@ module.exports = {
       "skipBlankLines": true,
       "ignoreComments": true,
     }],
+    "eol-last": ["warn"],
     "no-unused-vars": ["warn"],
     "consistent-return": ["warn"],
     "comma-dangle": ["off"],
