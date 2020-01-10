@@ -57,25 +57,25 @@ export default class MetaEditor extends React.PureComponent {
 	}
 
 	addToSelectedTags(tag) {
-		// TODO: PUT request BEFORE state update -> server rules
-		this.setState(prevState => (
-			{ selectedTags: [...prevState.selectedTags, tag] }
-		), () => {
-			updateExistingEntryById(this.props.recordID, {
-				tags: JSON.stringify(this.state.selectedTags)
+		const newSelectedTags = [...this.state.selectedTags, tag];
+
+		updateExistingEntryById(this.props.recordID, {
+			tags: newSelectedTags
+		})
+			.then(result => {
+				if (!result.error) this.setState({ selectedTags: newSelectedTags });
 			});
-		});
 	}
 
 	removeFromSelectedTags(tag) {
-		// TODO: PUT request BEFORE state update -> server rules
-		this.setState(prevState => ({
-			selectedTags: prevState.selectedTags.filter(oldTag => oldTag !== tag)
-		}), () => {
-			updateExistingEntryById(this.props.recordID, {
-				tags: JSON.stringify(this.state.selectedTags)
+		const newSelectedTags = this.state.selectedTags.filter(oldTag => oldTag !== tag);
+
+		updateExistingEntryById(this.props.recordID, {
+			tags: newSelectedTags
+		})
+			.then(result => {
+				if (!result.error) this.setState({ selectedTags: newSelectedTags });
 			});
-		});
 	}
 
 	render() {
