@@ -111,9 +111,13 @@ export default class Tag extends React.PureComponent {
 Tag.propTypes = {
 	value: PropTypes.string.isRequired,
 	label: PropTypes.string.isRequired,
-	icon: PropTypes.object,
+	icon: PropTypes.object.isRequired,
 	disabled: PropTypes.bool,
 	defaultChecked: PropTypes.bool.isRequired,
 	addToSelectedTags: PropTypes.func.isRequired,
 	removeFromSelectedTags: PropTypes.func.isRequired,
+};
+
+Tag.defaultProps = {
+	disabled: false,
 };
