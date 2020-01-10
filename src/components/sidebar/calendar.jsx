@@ -61,6 +61,11 @@ export default class Calendar extends React.PureComponent {
 				toast.error("Whoops! 😱 An error occured while processing the holidays!", { autoClose: 10000 });
 				this.setState({ fetchedHolidays: {} });
 			});
+
+		const today = moment(this.state.calendarInitDate);
+		getRecordForDay(today.format("YYYY"), today.format(("MM")), today.format("DD"))
+			.then(dayRecord => this.props.getDayRecord(dayRecord))
+			.catch(error => console.error(error));
 	}
 
 	resetCalendarToInitDate() {
