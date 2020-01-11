@@ -62,10 +62,9 @@ export default class App extends React.PureComponent {
 				{!this.state.isLoggedIn && (
 					<>
 						<Redirect to="/login" />
-						<Route path="/login" exact render={() => (
+						<Route path="/login" exact>
 							<Login setLoggedIn={status => this.setLoggedIn(status)} />
-						)}
-						/>
+						</Route>
 					</>
 				)}
 
