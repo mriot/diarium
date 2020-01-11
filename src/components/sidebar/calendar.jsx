@@ -44,7 +44,7 @@ class Calendar extends React.PureComponent {
 			.then(fetchedEntries => this.setState({ fetchedEntries }))
 			.catch(error => {
 				console.error(error);
-				toast.error("Whoops! 😱 An error occured while processing the entries!", { autoClose: 10000 });
+				toast.error("Whoops! 😱 Die Einträge für diesen Monat konnten nicht geladen werden.", { autoClose: 10000 });
 				this.setState({ fetchedEntries: {} });
 			});
 
@@ -52,7 +52,7 @@ class Calendar extends React.PureComponent {
 			.then(result => this.setState({ fetchedHolidays: result }))
 			.catch(error => {
 				console.error(error);
-				toast.error("Whoops! 😱 An error occured while processing the holidays!", { autoClose: 10000 });
+				toast.error("Whoops! 😱 Die Feiertage konnten nicht geladen werden.", { autoClose: 10000 });
 				this.setState({ fetchedHolidays: {} });
 			});
 
