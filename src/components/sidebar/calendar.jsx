@@ -96,12 +96,10 @@ class Calendar extends React.PureComponent {
 			forceUpdateCalendar, calendarInitDate, selectedDay,
 			fetchedEntries, fetchedHolidays,
 		} = this.state;
-
-		const fDate = moment(selectedDay);
-
+		
 		return (
 			<>
-				<Redirect to={`/${fDate.format("YYYY")}/${fDate.format("MM")}/${fDate.format("DD")}`} />;
+				<Redirect push to={`/${moment(selectedDay).format("YYYY/MM/DD")}`} />;
 
 				<StyledCalendar
 					className="calendar-dark-theme"
