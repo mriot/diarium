@@ -32,6 +32,10 @@ class Calendar extends React.PureComponent {
 		const start = moment(this.state.calendarInitDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
 		const end = moment(this.state.calendarInitDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
+		// using moment() here again because startOf and endOf would mutate the original obj...
+		const start = moment(calendarInitDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+		const end = moment(calendarInitDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
+
 		const prom1 = getRecordsInRange(start, end, ["assignedDay", "tags"])
 			.then(fetchedEntries => this.setState({ fetchedEntries }))
 			.catch(error => {
@@ -76,8 +80,10 @@ class Calendar extends React.PureComponent {
 			selectedDay: prevState.calendarInitDate,
 		}));
 
-		const start = moment(this.state.calendarInitDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
-		const end = moment(this.state.calendarInitDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
+		const { calendarInitDate } = this.state;
+
+		const start = moment(today).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+		const end = moment(today).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
 		getRecordsInRange(start, end, ["assignedDay", "tags"])
 			.then(fetchedEntries => this.setState({ fetchedEntries }))
