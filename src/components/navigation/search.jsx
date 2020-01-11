@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import moment from "moment";
 import posed, { PoseGroup } from "react-pose";
+import { NavLink } from "react-router-dom";
 import TextInput from "../common/textinput";
 import { search } from "../../lib/backend";
 import { searchResultAnimation } from "./animations";
@@ -32,8 +33,11 @@ const SearchResultContainer = styled.div `
 	box-shadow: 1px 5px 7px 1px rgba(0, 0, 0, 0.5);
 	background-color: #20232a;
 `;
-const PosedResult = posed.div(searchResultAnimation);
+
+const PosedResult = posed(NavLink)(searchResultAnimation);
 const SearchResult = styled(PosedResult) `
+	display: block;
+	color: inherit;
 	padding: 10px;
 	cursor: pointer;
 	border-bottom: 1px solid #191919;
@@ -107,7 +111,11 @@ export default class Search extends React.PureComponent {
 				<SearchResultContainer>
 					<PoseGroup>
 						{this.state.showSearchResults && this.state.searchResults.map(item => (
-							<SearchResult key={item.id} onClick={null} title={item.content}>
+							<SearchResult
+								key={item.id}
+								title={item.content}
+								to={`/${moment(item.assignedDay).format("YYYY/MM/DD")}`}
+							>
 								<span>{moment(item.assignedDay).format("dd, DD. MMMM YYYY")}</span>
 								<div>
 									{item.content}
