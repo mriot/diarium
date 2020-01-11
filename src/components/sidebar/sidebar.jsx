@@ -40,7 +40,7 @@ export default class Sidebar extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		setInterval(this.updateTodaysDate, 1000 * 60 * 5); // 5 minutes
+		setInterval(() => this.updateTodaysDate, 1000 * 60 * 5); // 5 minutes
 	}
 
 	componentDidUpdate(prevProps, prevState) {
