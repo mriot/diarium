@@ -5,7 +5,7 @@ import { Calendar as ReactCalendar } from "react-calendar";
 import "../../themes/caledar-eros.css";
 import moment from "moment";
 import { toast } from "react-toastify";
-import { Redirect } from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
 import { fetchHolidays } from "../../lib/external";
 import { getRecordsInRange, getRecordForDay } from "../../lib/backend";
 
@@ -14,7 +14,7 @@ const StyledCalendar = styled(ReactCalendar) `
 	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
 `;
 
-export default class Calendar extends React.PureComponent {
+class Calendar extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	
@@ -190,3 +190,5 @@ Calendar.propTypes = {
 	getDayRecord: PropTypes.func.isRequired,
 	showLoadingbar: PropTypes.func.isRequired,
 };
+
+export default withRouter(Calendar);
