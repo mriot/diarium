@@ -1,7 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import styled from 'styled-components';
+import styled from "styled-components";
 import CodeMirror from "react-codemirror";
 import "codemirror/lib/codemirror.css";
 import "../../themes/codemirror-callisto.css";
@@ -38,7 +38,7 @@ const StyledCodeMirror = styled(CodeMirror) `
 			}
 		}
 	}
-`
+`;
 
 export default class MarkdownEditor extends React.PureComponent {
 	constructor(props) {
@@ -51,7 +51,6 @@ export default class MarkdownEditor extends React.PureComponent {
 			mode: "gfm", // github flavored markdown
 			theme: "callisto",
 			tabSize: 2,
-			// autofocus: true,
 			fixedGutter: true,
 			lineNumbers: true,
 			lineWrapping: true,
@@ -62,7 +61,7 @@ export default class MarkdownEditor extends React.PureComponent {
 			styleActiveLine: true,
 			autoCloseBrackets: true,
 			scrollbarStyle: "overlay",
-		}
+		};
 	}
 
 	componentDidMount() {
@@ -85,19 +84,19 @@ export default class MarkdownEditor extends React.PureComponent {
 	}
 
 	getCursor() {
-		return this.CodeMirrorInstance.getCursor()
+		return this.CodeMirrorInstance.getCursor();
 	}
 
 	editorFocus() {
-		this.CodeMirrorInstance.focus()
+		this.CodeMirrorInstance.focus();
 	}
 
 	editorUndo() {
-		this.CodeMirrorInstance.undo()
+		this.CodeMirrorInstance.undo();
 	}
 
 	editorRedo() {
-		this.CodeMirrorInstance.redo()
+		this.CodeMirrorInstance.redo();
 	}
 
 	insertCode() {
@@ -123,8 +122,8 @@ export default class MarkdownEditor extends React.PureComponent {
 				value={this.props.content}
 				options={this.editorConfig}
 				onChange={markdown => {
-					this.props.change(markdown)
-					this.props.getEditorHistory(this.CodeMirrorInstance.historySize())
+					this.props.change(markdown);
+					this.props.getEditorHistory(this.CodeMirrorInstance.historySize());
 				}}
 			/>
 		);
@@ -132,8 +131,12 @@ export default class MarkdownEditor extends React.PureComponent {
 }
 
 MarkdownEditor.propTypes = {
-	value: PropTypes.string,
-	scrollPosChange: PropTypes.func,
-	change: PropTypes.func,
-	getEditorHistory: PropTypes.func,
-}
+	content: PropTypes.string,
+	scrollPosChange: PropTypes.func.isRequired,
+	change: PropTypes.func.isRequired,
+	getEditorHistory: PropTypes.func.isRequired,
+};
+
+MarkdownEditor.defaultProps = {
+	content: ""
+};
