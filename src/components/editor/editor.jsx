@@ -213,5 +213,9 @@ Editor.propTypes = {
 	readMode: PropTypes.bool,
 	isReadModeActive: PropTypes.bool.isRequired,
 	pose: PropTypes.string.isRequired,
-	dayRecord: PropTypes.object.isRequired,
+	dayRecord: PropTypes.object,
+};
+
+Editor.defaultProp = {
+	dayRecord: {},
 };
