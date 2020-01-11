@@ -69,7 +69,7 @@ export default class Sidebar extends React.PureComponent {
 				<Loadingbar active={loadingbar} />
 
 				<Calendar
-					ref={ref => (this.calendarRef = ref)}
+					innerRef={ref => (this.calendarRef = ref)}
 					getDayRecord={record => this.setState({ dayRecord: record })}
 					showLoadingbar={status => this.setState({ loadingbar: status })}
 				/>
