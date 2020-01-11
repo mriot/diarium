@@ -19,8 +19,8 @@ class Calendar extends React.PureComponent {
 		super(props);
 	
 		this.state = {
-			calendarInitDate: moment().toDate(),
-			selectedDay: moment().toDate(),
+			calendarInitDate: moment(window.location.pathname, "YYYY/MM/DD").toDate() || moment().toDate(),
+			selectedDay: moment(window.location.pathname, "YYYY/MM/DD").toDate() || moment().toDate(),
 			forceUpdateCalendar: 0,
 			fetchedEntries: null,
 			fetchedHolidays: null,
@@ -29,8 +29,12 @@ class Calendar extends React.PureComponent {
 	
 	componentDidMount() {
 		this.props.showLoadingbar(true);
-		const start = moment(this.state.calendarInitDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
-		const end = moment(this.state.calendarInitDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
+
+		const calendarInitDate = moment(this.state.calendarInitDate);
+
+		if (!calendarInitDate.isValid()) {
+			toast.error("Whoops! 😱 Der angegebene Pfad ergibt leider kein valides Datum. Es wird der heutige Tag verwendet");
+		}
 
 		// using moment() here again because startOf and endOf would mutate the original obj...
 		const start = moment(calendarInitDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
