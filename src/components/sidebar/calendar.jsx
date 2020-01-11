@@ -5,6 +5,7 @@ import { Calendar as ReactCalendar } from "react-calendar";
 import "../../themes/caledar-eros.css";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { Redirect } from "react-router-dom";
 import { fetchHolidays } from "../../lib/external";
 import { getRecordsInRange, getRecordForDay } from "../../lib/backend";
 
@@ -70,10 +71,10 @@ export default class Calendar extends React.PureComponent {
 
 	resetCalendarToInitDate() {
 		this.props.showLoadingbar(true);
-		this.setState({
+		this.setState(prevState => ({
 			forceUpdateCalendar: Math.random(),
-			selectedDay: null,
-		});
+			selectedDay: prevState.calendarInitDate,
+		}));
 
 		const start = moment(this.state.calendarInitDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
 		const end = moment(this.state.calendarInitDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
@@ -85,89 +86,102 @@ export default class Calendar extends React.PureComponent {
 	}
 
 	render() {
+		const {
+			forceUpdateCalendar, calendarInitDate, selectedDay,
+			fetchedEntries, fetchedHolidays,
+		} = this.state;
+
+		const fDate = moment(selectedDay);
+
 		return (
-			<StyledCalendar
-				className="calendar-dark-theme"
-				key={this.state.forceUpdateCalendar}
-				activeStartDate={this.state.calendarInitDate}
-				value={this.state.selectedDay}
-				minDetail="decade"
-				minDate={moment("2019-01-01").toDate()}
-				tileClassName={({ activeStartDate, date, view }) => {
-					if (view !== "month") return false;
-					if (!this.state.fetchedEntries || !this.state.fetchedHolidays) return false;
+			<>
+				<Redirect to={`/${fDate.format("YYYY")}/${fDate.format("MM")}/${fDate.format("DD")}`} />;
 
-					const currentTilesDate = moment(date).format("YYYY-MM-DD");
-					const { entries } = this.state.fetchedEntries;
-					const holidays = this.state.fetchedHolidays;
-					const classNamesArray = [];
+				<StyledCalendar
+					className="calendar-dark-theme"
+					key={forceUpdateCalendar}
+					activeStartDate={calendarInitDate}
+					value={selectedDay}
+					minDetail="decade"
+					minDate={moment("2019-01-01").toDate()}
+					tileClassName={({ activeStartDate, date, view }) => {
+						if (view !== "month") return false;
+						if (!fetchedEntries || !fetchedHolidays) return false;
 
-					if (holidays[moment(date).format("YYYY-MM-DD")]) classNamesArray.push("holiday");
+						const currentTilesDate = moment(date).format("YYYY-MM-DD");
+						const { entries } = fetchedEntries;
+						const holidays = fetchedHolidays;
+						const classNamesArray = [];
 
-					classNamesArray.push(
-						entries.map(entry => {
-							const classList = [];
-							if (moment(currentTilesDate).isSame(entry.assignedDay)) {
-								classList.push("marked");
-								classList.push(entry.tags);
-							}
-							return classList.flat();
-						})
-					);
+						if (holidays[moment(date).format("YYYY-MM-DD")]) classNamesArray.push("holiday");
 
-					return classNamesArray.flat(Infinity);
-				}}
+						classNamesArray.push(
+							entries.map(entry => {
+								const classList = [];
+								if (moment(currentTilesDate).isSame(entry.assignedDay)) {
+									classList.push("marked");
+									classList.push(entry.tags);
+								}
+								return classList.flat();
+							})
+						);
 
-				// arrow navigation
-				onActiveDateChange={changeObj => {
-					this.props.showLoadingbar(true);
-					const { activeStartDate, view } = changeObj;
-					if (view !== "month") return;
+						return classNamesArray.flat(Infinity);
+					}}
 
-					const start = moment(activeStartDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
-					const end = moment(activeStartDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
+					// arrow navigation
+					onActiveDateChange={changeObj => {
+						this.props.showLoadingbar(true);
+						const { activeStartDate, view } = changeObj;
+						if (view !== "month") return;
 
-					// select first day of month
-					this.setState({ selectedDay: activeStartDate });
+						const start = moment(activeStartDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+						const end = moment(activeStartDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
-					getRecordsInRange(start, end, ["assignedDay", "tags"])
-						.then(fetchedEntries => this.setState({ fetchedEntries }))
-						.then(() => this.props.showLoadingbar(false))
-						.catch(error => console.error(error));
-				}}
+						// select first day of month
+						this.setState({ selectedDay: activeStartDate });
 
-				// month selected // fetch data for month with 1 week +- offset
-				onClickMonth={activeStartDate => {
-					this.props.showLoadingbar(true);
-					const start = moment(activeStartDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
-					const end = moment(activeStartDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
+						getRecordsInRange(start, end, ["assignedDay", "tags"])
+							.then(fetchedEntries => this.setState({ fetchedEntries }))
+							.then(() => this.props.showLoadingbar(false))
+							.catch(error => console.error(error));
+					}}
 
-					// select first day of month
-					this.setState({ selectedDay: activeStartDate });
+					// month selected // fetch data for month with 1 week +- offset
+					onClickMonth={activeStartDate => {
+						this.props.showLoadingbar(true);
+						const start = moment(activeStartDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+						const end = moment(activeStartDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
-					getRecordsInRange(start, end, ["assignedDay", "tags"])
-						.then(fetchedEntries => this.setState({ fetchedEntries }))
-						.then(() => this.props.showLoadingbar(false))
-						.catch(error => console.error(error));
-				}}
+						// select first day of month
+						this.setState({ selectedDay: activeStartDate });
 
-				// date/day selected (fetch selected day -> all data)
-				onClickDay={activeStartDate => {
-					this.props.showLoadingbar(true);
-					const date = moment(activeStartDate);
+						getRecordsInRange(start, end, ["assignedDay", "tags"])
+							.then(fetchedEntries => this.setState({ fetchedEntries }))
+							.then(() => this.props.showLoadingbar(false))
+							.catch(error => console.error(error));
+					}}
 
-					getRecordForDay(date.format("YYYY"), date.format(("MM")), date.format("DD"))
-						.then(dayRecord => this.props.getDayRecord(dayRecord))
-						.then(() => this.props.showLoadingbar(false))
-						.catch(error => console.error(error));
-				}}
+					// date/day selected (fetch selected day -> all data)
+					onClickDay={activeStartDate => {
+						this.props.showLoadingbar(true);
+						const date = moment(activeStartDate);
+
+						this.setState({ selectedDay: activeStartDate });
+
+						getRecordForDay(date.format("YYYY"), date.format("MM"), date.format("DD"))
+							.then(dayRecord => this.props.getDayRecord(dayRecord))
+							.then(() => this.props.showLoadingbar(false))
+							.catch(error => console.error(error));
+					}}
 				
-				// year selector
-				// onClickYear={(...args) => console.log("onClickYear", ...args)}
+					// year selector
+					// onClickYear={(...args) => console.log("onClickYear", ...args)}
 
-				// general change listener
-				// onChange={value => console.log("onChange:", value)}
-			/>
+					// general change listener
+					// onChange={value => console.log("onChange:", value)}
+				/>
+			</>
 		);
 	}
 }
