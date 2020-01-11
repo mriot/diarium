@@ -41,6 +41,7 @@ export default class App extends React.PureComponent {
 			showHighlights: false,
 			isLoggedIn: false,
 			tokenChecked: false,
+			dayRecord: {},
 		};
 	}
 
@@ -80,6 +81,7 @@ export default class App extends React.PureComponent {
 
 						<Sidebar
 							isReadModeActive={this.state.readMode}
+							getDayRecord={record => this.setState({ dayRecord: record })}
 						/>
 
 						<Main>
@@ -91,6 +93,7 @@ export default class App extends React.PureComponent {
 							<Editor
 								isReadModeActive={this.state.readMode}
 								pose={this.state.showHighlights ? "hidden" : "visible"}
+								dayRecord={this.state.dayRecord}
 							/>
 						</Main>
 					</Layout>
