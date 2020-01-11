@@ -65,7 +65,9 @@ export default class Editor extends React.PureComponent {
 		// collects DOM nodes
 		this.setUpSeparator();
 		
-		if (!this.state.readMode && localStorage.getItem("preview-hidden") === "true") { this.hidePreview(); }
+		if (!this.state.readMode && localStorage.getItem("preview-hidden") === "true") {
+			this.hidePreview();
+		}
 
 		// always focus editor on 'tab' press
 		document.addEventListener("keydown", event => {
@@ -118,14 +120,16 @@ export default class Editor extends React.PureComponent {
 	}
 
 	toggleZenMode(force) {
-		this.setState({
-			zenMode: force === undefined ? !this.state.zenMode : force,
-			forceUpdateSeparator: this.state.forceUpdateSeparator + 1,
-		});
+		this.setState(prevState => ({
+			zenMode: typeof force === "undefined" ? !prevState.zenMode : force,
+			forceUpdateSeparator: prevState.forceUpdateSeparator + 1,
+		}));
 	}
 
 	toggleScrollSync(force) {
-		this.setState({ scrollSync: force === undefined ? !this.state.scrollSync : force });
+		this.setState(prevState => ({
+			scrollSync: typeof force === "undefined" ? !prevState.scrollSync : force
+		}));
 	}
 
 	resetEditorLayout() {
