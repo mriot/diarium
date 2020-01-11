@@ -63,6 +63,10 @@ class Calendar extends React.PureComponent {
 			
 		Promise.all([prom1, prom2, prom3])
 			.then(() => this.props.showLoadingbar(false));
+		// listen for URL/history changes
+		this.props.history.listen((location, action) => {
+			this.setState({ selectedDay: moment(location.pathname, "YYYY/MM/DD").toDate() });
+		});
 	}
 
 	componentDidUpdate(prevProps, prevState) {
