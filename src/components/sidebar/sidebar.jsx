@@ -59,7 +59,7 @@ export default class Sidebar extends React.PureComponent {
 		return (
 			<StyledSidebar>
 				<Today onClick={() => {
-					this.calendarRef.resetCalendarToInitDate();
+					this.calendarRef.resetCalendarToToday();
 					this.updateTodaysDate();
 				}}
 				>
