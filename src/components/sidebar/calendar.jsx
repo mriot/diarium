@@ -77,11 +77,12 @@ class Calendar extends React.PureComponent {
 		}
 	}
 
-	resetCalendarToInitDate() {
+	resetCalendarToToday(today = moment().toDate()) {
 		this.props.showLoadingbar(true);
+
 		this.setState(prevState => ({
 			forceUpdateCalendar: Math.random(),
-			selectedDay: prevState.calendarInitDate,
+			selectedDay: today,
 		}));
 
 		const { calendarInitDate } = this.state;
