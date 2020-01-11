@@ -40,7 +40,13 @@ export default class Sidebar extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		setInterval(this.updateTodaysDate.bind(this), 1000 * 60 * 5); // 5 minutes
+		setInterval(this.updateTodaysDate, 1000 * 60 * 5); // 5 minutes
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (prevState.dayRecord !== this.state.dayRecord) {
+			this.props.getDayRecord(this.state.dayRecord);
+		}
 	}
 
 	updateTodaysDate() {
@@ -82,5 +88,5 @@ export default class Sidebar extends React.PureComponent {
 
 Sidebar.propTypes = {
 	isReadModeActive: PropTypes.bool.isRequired,
-  
+	getDayRecord: PropTypes.func.isRequired,
 };
