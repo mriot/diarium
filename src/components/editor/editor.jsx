@@ -49,7 +49,7 @@ export default class Editor extends React.PureComponent {
 		};
 
 		this.state = {
-			markdown: "# Hello World!",
+			markdown: "",
 			readMode: this.props.isReadModeActive,
 			zenMode: false,
 			nodesReady: false,
@@ -79,12 +79,16 @@ export default class Editor extends React.PureComponent {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+		const { dayRecord, isReadModeActive } = this.props;
+
 		this.setUpSeparator();
 
-		if (prevProps.readMode !== this.props.isReadModeActive) {
-			this.setState({
-				readMode: this.props.isReadModeActive
-			});
+		if (dayRecord && prevProps.dayRecord !== dayRecord) {
+			this.setState({ markdown: dayRecord.content });
+		}
+
+		if (prevProps.readMode !== isReadModeActive) {
+			this.setState({ readMode: isReadModeActive });
 		}
 	}
 
@@ -177,9 +181,9 @@ export default class Editor extends React.PureComponent {
 					{!this.state.readMode && (
 						<MarkdownEditor
 							ref={ref => (this.markdownEditorRef = ref)}
-							value={this.state.markdown}
-							scrollPosChange={scrollSyncPosition => this.setState({ scrollSyncPosition })}
+							content={this.state.markdown}
 							change={markdown => this.setState({ markdown })}
+							scrollPosChange={scrollSyncPosition => this.setState({ scrollSyncPosition })}
 							getEditorHistory={editorHistory => this.setState({ editorHistory })}
 						/>
 					)}
@@ -206,8 +210,8 @@ export default class Editor extends React.PureComponent {
 }
 
 Editor.propTypes = {
-	// TODO: fix this prop type
 	readMode: PropTypes.bool,
 	isReadModeActive: PropTypes.bool.isRequired,
 	pose: PropTypes.string.isRequired,
+	dayRecord: PropTypes.object.isRequired,
 };
