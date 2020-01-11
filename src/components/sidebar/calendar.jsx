@@ -48,7 +48,7 @@ class Calendar extends React.PureComponent {
 				this.setState({ fetchedEntries: {} });
 			});
 
-		const prom2 = fetchHolidays(moment(this.state.calendarInitDate).format("YYYY"))
+		const prom2 = fetchHolidays(calendarInitDate.format("YYYY"))
 			.then(result => this.setState({ fetchedHolidays: result }))
 			.catch(error => {
 				console.error(error);
@@ -56,13 +56,14 @@ class Calendar extends React.PureComponent {
 				this.setState({ fetchedHolidays: {} });
 			});
 
-		const today = moment(this.state.calendarInitDate);
-		const prom3 =	getRecordForDay(today.format("YYYY"), today.format("MM"), today.format("DD"))
+		const prom3 =	getRecordForDay(calendarInitDate.format("YYYY"), calendarInitDate.format("MM"), calendarInitDate.format("DD"))
 			.then(dayRecord => this.props.getDayRecord(dayRecord))
 			.catch(error => console.error(error));
 			
+		// hide loadingbar if all of above have finished
 		Promise.all([prom1, prom2, prom3])
 			.then(() => this.props.showLoadingbar(false));
+
 		// listen for URL/history changes
 		this.props.history.listen((location, action) => {
 			this.setState({ selectedDay: moment(location.pathname, "YYYY/MM/DD").toDate() });
@@ -73,8 +74,8 @@ class Calendar extends React.PureComponent {
 		if (prevState.selectedDay !== this.state.selectedDay)	{
 			this.props.showLoadingbar(true);
 
-			const today = moment(this.state.selectedDay || this.state.calendarInitDate);
-			getRecordForDay(today.format("YYYY"), today.format("MM"), today.format("DD"))
+			const activeDate = moment(this.state.selectedDay || this.state.calendarInitDate);
+			getRecordForDay(activeDate.format("YYYY"), activeDate.format("MM"), activeDate.format("DD"))
 				.then(dayRecord => this.props.getDayRecord(dayRecord))
 				.then(() => this.props.showLoadingbar(false))
 				.catch(error => console.error(error));
