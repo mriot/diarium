@@ -69,9 +69,9 @@ export default class Editor extends React.PureComponent {
 			this.hidePreview();
 		}
 
-		// always focus editor on 'tab' press
+		// always focus editor on 'tab'
 		document.addEventListener("keydown", event => {
-			if (event.which === 9) {
+			if (event.which === 9 && this.markdownEditorRef) {
 				event.preventDefault();
 				this.markdownEditorRef.editorFocus();
 			}
