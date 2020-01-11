@@ -68,16 +68,20 @@ export default class MarkdownEditor extends React.PureComponent {
 	componentDidMount() {
 		this.CodeMirrorNode = ReactDOM.findDOMNode(this.codeMirrorRef.current);
 		this.CodeMirrorInstance = this.codeMirrorRef.current.getCodeMirror();
-		
-		this.CodeMirrorInstance.execCommand("goLineEnd");
 
 		this.CodeMirrorInstance.on("scroll", event => {
-			this.props.scrollPosChange(event.doc.scrollTop)
+			this.props.scrollPosChange(event.doc.scrollTop);
 		});
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		this.editorFocus()
+		const { content } = this.props;
+
+		if (prevProps.content !== content) {
+			this.editorFocus();
+			this.CodeMirrorInstance.setValue(content);
+			this.CodeMirrorInstance.execCommand("goLineEnd");
+		}
 	}
 
 	getCursor() {
@@ -116,7 +120,7 @@ export default class MarkdownEditor extends React.PureComponent {
 		return (
 			<StyledCodeMirror
 				ref={this.codeMirrorRef}
-				value={this.props.value}
+				value={this.props.content}
 				options={this.editorConfig}
 				onChange={markdown => {
 					this.props.change(markdown)
