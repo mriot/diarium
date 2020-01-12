@@ -32,6 +32,8 @@ export default class Sidebar extends React.PureComponent {
 	constructor(props) {
 		super(props);
 
+		this.sharedMethods = {};
+
 		this.state = {
 			dateToday: moment(),
 			dayRecord: {},
@@ -59,7 +61,7 @@ export default class Sidebar extends React.PureComponent {
 		return (
 			<StyledSidebar>
 				<Today onClick={() => {
-					this.calendarRef.resetCalendarToToday();
+					this.sharedMethods.resetCalendarToToday();
 					this.updateTodaysDate();
 				}}
 				>
@@ -69,7 +71,7 @@ export default class Sidebar extends React.PureComponent {
 				<Loadingbar active={loadingbar} />
 
 				<Calendar
-					innerRef={ref => (this.calendarRef = ref)}
+					shareMethods={sharedMethods => (this.sharedMethods = sharedMethods)}
 					getDayRecord={record => this.setState({ dayRecord: record })}
 					showLoadingbar={status => this.setState({ loadingbar: status })}
 				/>
