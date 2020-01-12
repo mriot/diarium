@@ -17,30 +17,62 @@ const StyledCalendar = styled(ReactCalendar) `
 class Calendar extends React.PureComponent {
 	constructor(props) {
 		super(props);
+
+		this.historyUnlisten = null;
 	
 		this.state = {
-			calendarInitDate: moment(window.location.pathname, "YYYY/MM/DD").toDate() || moment().toDate(),
-			selectedDay: moment(window.location.pathname, "YYYY/MM/DD").toDate() || moment().toDate(),
-			forceUpdateCalendar: 0,
+			calendarInitDate: null,
+			selectedDay: null,
 			fetchedEntries: null,
 			fetchedHolidays: null,
+			forceUpdateCalendar: 0,
 		};
 	}
 	
 	componentDidMount() {
+		this.props.shareMethods({
+			resetCalendarToToday: () => this.resetCalendarToToday()
+		});
+		
+		const parsedInitDate = moment(window.location.pathname, "YYYY/MM/DD");
+		this.setState({
+			selectedDay: parsedInitDate.isValid() ? parsedInitDate.toDate() : moment().toDate()
+		});
+
+		// listen for URL/history changes
+		this.historyUnlisten = this.props.history.listen((location, action) => {
+			const parsedDate = moment(location.pathname, "YYYY/MM/DD");
+			console.log("HISTORY CHANGED", parsedDate.format());
+			
+			if (!parsedDate.isValid()) {
+				toast.error("Whoops! 😱 Der angegebene Pfad ergibt leider kein valides Datum. Es wird der heutige Tag verwendet");
+				return;
+			}
+
+			if (parsedDate.isSame(this.state.selectedDay)) return;
+			this.setState({ selectedDay: parsedDate.isValid() ? parsedDate.toDate() : moment().toDate() });
+		});
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (prevState.selectedDay === this.state.selectedDay) return;
+
 		this.props.showLoadingbar(true);
+		const selectedDay = moment(this.state.selectedDay);
+		// NOTE: using moment() here again, because startOf/endOf would mutate the original object
+		const start = moment(selectedDay).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+		const end = moment(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
-		const calendarInitDate = moment(this.state.calendarInitDate);
+		const dayRecordProm = getRecordForDay(
+			moment(selectedDay).format("YYYY"),
+			moment(selectedDay).format("MM"),
+			moment(selectedDay).format("DD")
+		)
+			.then(dayRecord => this.props.getDayRecord(dayRecord))
+			.then(() => this.props.showLoadingbar(false))
+			.catch(error => console.error(error));
 
-		if (!calendarInitDate.isValid()) {
-			toast.error("Whoops! 😱 Der angegebene Pfad ergibt leider kein valides Datum. Es wird der heutige Tag verwendet");
-		}
-
-		// using moment() here again because startOf and endOf would mutate the original obj...
-		const start = moment(calendarInitDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
-		const end = moment(calendarInitDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
-
-		const prom1 = getRecordsInRange(start, end, ["assignedDay", "tags"])
+		const rangeRecordsProm = getRecordsInRange(start, end, ["assignedDay", "tags"])
 			.then(fetchedEntries => this.setState({ fetchedEntries }))
 			.catch(error => {
 				console.error(error);
@@ -48,7 +80,7 @@ class Calendar extends React.PureComponent {
 				this.setState({ fetchedEntries: {} });
 			});
 
-		const prom2 = fetchHolidays(calendarInitDate.format("YYYY"))
+		const holidaysProm = fetchHolidays(selectedDay.format("YYYY"))
 			.then(result => this.setState({ fetchedHolidays: result }))
 			.catch(error => {
 				console.error(error);
@@ -56,30 +88,13 @@ class Calendar extends React.PureComponent {
 				this.setState({ fetchedHolidays: {} });
 			});
 
-		const prom3 =	getRecordForDay(calendarInitDate.format("YYYY"), calendarInitDate.format("MM"), calendarInitDate.format("DD"))
-			.then(dayRecord => this.props.getDayRecord(dayRecord))
-			.catch(error => console.error(error));
-			
 		// hide loadingbar if all of above have finished
-		Promise.all([prom1, prom2, prom3])
+		Promise.all([dayRecordProm, rangeRecordsProm, holidaysProm])
 			.then(() => this.props.showLoadingbar(false));
-
-		// listen for URL/history changes
-		this.props.history.listen((location, action) => {
-			this.setState({ selectedDay: moment(location.pathname, "YYYY/MM/DD").toDate() });
-		});
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		if (prevState.selectedDay !== this.state.selectedDay)	{
-			this.props.showLoadingbar(true);
-
-			const activeDate = moment(this.state.selectedDay || this.state.calendarInitDate);
-			getRecordForDay(activeDate.format("YYYY"), activeDate.format("MM"), activeDate.format("DD"))
-				.then(dayRecord => this.props.getDayRecord(dayRecord))
-				.then(() => this.props.showLoadingbar(false))
-				.catch(error => console.error(error));
-		}
+	componentWillUnmount() {
+		this.historyUnlisten();
 	}
 
 	resetCalendarToToday(today = moment().toDate()) {
@@ -107,6 +122,7 @@ class Calendar extends React.PureComponent {
 			fetchedEntries, fetchedHolidays,
 		} = this.state;
 		
+		if (!selectedDay) return null;
 		return (
 			<>
 				<Redirect push to={`/${moment(selectedDay).format("YYYY/MM/DD")}`} />;
@@ -203,6 +219,8 @@ class Calendar extends React.PureComponent {
 Calendar.propTypes = {
 	getDayRecord: PropTypes.func.isRequired,
 	showLoadingbar: PropTypes.func.isRequired,
+	shareMethods: PropTypes.func.isRequired,
+	history: PropTypes.object.isRequired,
 };
 
 export default withRouter(Calendar);
