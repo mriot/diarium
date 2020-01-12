@@ -131,6 +131,21 @@ export const search = query => {
 };
 
 
+// POST ====================================================
+export const createNewEntry = newBodyObj => {
+	return fetch(`${BACKEND_URL}/entries`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${GLOBAL_TOKEN}`
+		},
+		body: JSON.stringify(newBodyObj),
+	})
+		.then(response => response.json())
+		.catch(error => console.error(error));
+};
+
+
 // PUT ====================================================
 export const updateExistingEntryById = (id, newBodyObj) => {
 	return fetch(`${BACKEND_URL}/entries?id=${id}`, {
