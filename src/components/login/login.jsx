@@ -139,9 +139,8 @@ export default class Login extends React.PureComponent {
 							Bundesland: <span role="img" aria-label="warum?">🤔</span>?
 						</Label>
 						<Select
-							value={localStorage.getItem("federal_state")}
+							defaultValue={localStorage.getItem("federal_state") || "HE"}
 							onChange={event => {
-								this.forceUpdate();
 								localStorage.setItem("federal_state", event.currentTarget.value);
 							}}
 						>
@@ -150,7 +149,7 @@ export default class Login extends React.PureComponent {
 							<option value="BW">Baden-Württemberg</option>
 							<option value="BY">Bayern</option>
 							<option value="HB">Bremen</option>
-							<option value="HE" selected>Hessen</option>
+							<option value="HE">Hessen</option>
 							<option value="HH">Hamburg</option>
 							<option value="MV">Mecklenburg-Vorpommern</option>
 							<option value="NI">Niedersachsen</option>
