@@ -42,14 +42,9 @@ class Calendar extends React.PureComponent {
 		// listen for URL/history changes
 		this.historyUnlisten = this.props.history.listen((location, action) => {
 			const parsedDate = moment(location.pathname, "YYYY/MM/DD");
-			console.log("HISTORY CHANGED", parsedDate.format());
-			
-			if (!parsedDate.isValid()) {
-				toast.error("Whoops! 😱 Der angegebene Pfad ergibt leider kein valides Datum. Es wird der heutige Tag verwendet");
-				return;
-			}
-
+			// console.log("HISTORY CHANGED", parsedDate.format());
 			if (parsedDate.isSame(this.state.selectedDay)) return;
+
 			this.setState({ selectedDay: parsedDate.isValid() ? parsedDate.toDate() : moment().toDate() });
 		});
 	}
