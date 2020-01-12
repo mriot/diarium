@@ -91,7 +91,6 @@ export default class Login extends React.PureComponent {
 		}
 	}
 	
-
 	handleKeyStrokes(nativeEvent) {
 		// enter key
 		if (nativeEvent.which === 13) {
@@ -102,11 +101,14 @@ export default class Login extends React.PureComponent {
 	doLogin() {
 		auth(this.username, this.password)
 			.then(response => {
+				if (!response) {
+					this.setState(prevState => ({ loginFailed: prevState.loginFailed + 1 }));
+					return;
+				}
 				this.props.setLoggedIn(true);
 			})
 			.catch(error => {
 				console.log(error);
-				this.setState(prevState => ({ loginFailed: prevState.loginFailed + 1 }));
 			});
 	}
 
