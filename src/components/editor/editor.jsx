@@ -83,8 +83,8 @@ export default class Editor extends React.PureComponent {
 
 		this.setUpSeparator();
 
-		if (dayRecord && prevProps.dayRecord !== dayRecord) {
-			this.setState({ markdown: dayRecord.content });
+		if (prevProps.dayRecord !== dayRecord) {
+			this.setState({ markdown: dayRecord ? dayRecord.content : "" });
 		}
 
 		if (prevProps.readMode !== isReadModeActive) {
