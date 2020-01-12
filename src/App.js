@@ -111,7 +111,6 @@ export default class App extends React.PureComponent {
 					newestOnTop
 					progressStyle={{ background: "linear-gradient(to right, #00b7ff, #5ac8fa, #007aff, #34aadc)" }}
 					style={{
-						"max-width": "300px",
 						left: 0
 					}}
 				/>
