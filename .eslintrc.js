@@ -42,6 +42,7 @@ module.exports = {
     "import/newline-after-import": ["off"],
     "arrow-body-style": ["off"],
     "import/prefer-default-export": ["off"],
+    "max-len": ["off"],
     "no-return-assign": ["error", "except-parens"],
 
     "react/jsx-indent": ["error", "tab"],
