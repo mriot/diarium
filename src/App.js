@@ -49,6 +49,13 @@ export default class App extends React.PureComponent {
 		this.setLoggedIn(isLoggedIn());
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if (!isLoggedIn()) {
+			this.setLoggedIn(false);
+			this.setState({ dayRecord: null });
+		}
+	}
+
 	setLoggedIn(status) {
 		this.setState({ isLoggedIn: status, tokenChecked: true });
 	}

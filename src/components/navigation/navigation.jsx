@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt, faStarAndCrescent, faStar, faPen } from "@fortawesome/free-solid-svg-icons";
 import NavButton from "./nav-button";
-import { isLoggedIn } from "../../lib/backend";
 import Search from "./search";
 
 const Nav = styled.nav `
@@ -56,12 +55,10 @@ const LogoutButton = styled.div `
 export default class Navigation extends React.PureComponent {
 	logout() {
 		localStorage.removeItem("token");
-		this.forceUpdate();
+		this.props.setLoggedIn(false);
 	}
 
 	render() {
-		if (!isLoggedIn()) this.props.setLoggedIn(false);
-
 		return (
 			<Nav>
 				<Logo>DIARIUM</Logo>
