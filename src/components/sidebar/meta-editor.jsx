@@ -37,16 +37,12 @@ export default class MetaEditor extends React.PureComponent {
 				nsfw: { label: "NSFW", icon: faLock },
 				rip: { label: "RIP", icon: faCross },
 			},
-			checkboxDisabled: false,
+			checkboxDisabled: true,
 			selectedTags: [],
 		};
 	}
 
 	componentDidMount() {
-		if (this.props.isReadModeActive) {
-			this.setState({ checkboxDisabled: true });
-		}
-
 		if (this.props.tags) {
 			this.setState({ selectedTags: this.props.tags });
 		}
