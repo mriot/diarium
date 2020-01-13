@@ -174,7 +174,7 @@ class Calendar extends React.PureComponent {
 						this.setState({ selectedDay: activeStartDate });
 
 						getRecordsInRange(start, end, ["assignedDay", "tags"])
-							.then(fetchedEntries => this.setState({ fetchedEntries }))
+							.then(fetchedRecords => this.setState({ fetchedEntries: fetchedRecords }))
 							.then(() => this.props.showLoadingbar(false))
 							.catch(error => console.error(error));
 					}}
@@ -189,7 +189,7 @@ class Calendar extends React.PureComponent {
 						this.setState({ selectedDay: activeStartDate });
 
 						getRecordsInRange(start, end, ["assignedDay", "tags"])
-							.then(fetchedEntries => this.setState({ fetchedEntries }))
+							.then(fetchedRecords => this.setState({ fetchedEntries: fetchedRecords }))
 							.then(() => this.props.showLoadingbar(false))
 							.catch(error => console.error(error));
 					}}
@@ -223,6 +223,11 @@ Calendar.propTypes = {
 	showLoadingbar: PropTypes.func.isRequired,
 	shareMethods: PropTypes.func.isRequired,
 	history: PropTypes.object.isRequired,
+	tagsDidChange: PropTypes.array,
+};
+
+Calendar.defaultProps = {
+	tagsDidChange: [],
 };
 
 export default withRouter(Calendar);
