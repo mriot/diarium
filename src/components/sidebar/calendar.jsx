@@ -50,42 +50,42 @@ class Calendar extends React.PureComponent {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (prevState.selectedDay === this.state.selectedDay) return;
-
-		this.props.showLoadingbar(true);
-		const selectedDay = moment(this.state.selectedDay);
-		// NOTE: using moment() here again, because startOf/endOf would mutate the original object
-		const start = moment(selectedDay).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
-		const end = moment(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
-
-		const dayRecordProm = getRecordForDay(
-			moment(selectedDay).format("YYYY"),
-			moment(selectedDay).format("MM"),
-			moment(selectedDay).format("DD")
-		)
-			.then(dayRecord => this.props.getDayRecord(dayRecord))
-			.then(() => this.props.showLoadingbar(false))
-			.catch(error => console.error(error));
-
-		const rangeRecordsProm = getRecordsInRange(start, end, ["assignedDay", "tags"])
-			.then(fetchedEntries => this.setState({ fetchedEntries }))
-			.catch(error => {
-				console.error(error);
-				toast.error("Whoops! 😱 Die Einträge für diesen Monat konnten nicht geladen werden.", { autoClose: 10000 });
-				this.setState({ fetchedEntries: {} });
-			});
-
-		const holidaysProm = fetchHolidays(selectedDay.format("YYYY"))
-			.then(result => this.setState({ fetchedHolidays: result }))
-			.catch(error => {
-				console.error(error);
-				toast.error("Whoops! 😱 Die Feiertage konnten nicht geladen werden.", { autoClose: 10000 });
-				this.setState({ fetchedHolidays: {} });
-			});
-
-		// hide loadingbar if all of above have finished
-		Promise.all([dayRecordProm, rangeRecordsProm, holidaysProm])
-			.then(() => this.props.showLoadingbar(false));
+		if (prevState.selectedDay !== this.state.selectedDay) {
+			this.props.showLoadingbar(true);
+			const selectedDay = moment(this.state.selectedDay);
+			// NOTE: using moment() here again, because startOf/endOf would mutate the original object
+			const start = moment(selectedDay).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+			const end = moment(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
+	
+			const dayRecordProm = getRecordForDay(
+				moment(selectedDay).format("YYYY"),
+				moment(selectedDay).format("MM"),
+				moment(selectedDay).format("DD")
+			)
+				.then(dayRecord => this.props.getDayRecord(dayRecord))
+				.then(() => this.props.showLoadingbar(false))
+				.catch(error => console.error(error));
+	
+			const rangeRecordsProm = getRecordsInRange(start, end, ["assignedDay", "tags"])
+				.then(fetchedEntries => this.setState({ fetchedEntries }))
+				.catch(error => {
+					console.error(error);
+					toast.error("Whoops! 😱 Die Einträge für diesen Monat konnten nicht geladen werden.", { autoClose: 10000 });
+					this.setState({ fetchedEntries: {} });
+				});
+	
+			const holidaysProm = fetchHolidays(selectedDay.format("YYYY"))
+				.then(result => this.setState({ fetchedHolidays: result }))
+				.catch(error => {
+					console.error(error);
+					toast.error("Whoops! 😱 Die Feiertage konnten nicht geladen werden.", { autoClose: 10000 });
+					this.setState({ fetchedHolidays: {} });
+				});
+	
+			// hide loadingbar if all of above have finished
+			Promise.all([dayRecordProm, rangeRecordsProm, holidaysProm])
+				.then(() => this.props.showLoadingbar(false));
+		}
 	}
 
 	componentWillUnmount() {
