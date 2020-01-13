@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Calendar as ReactCalendar } from "react-calendar";
-import "../../themes/calendar-eros.css";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { Redirect, withRouter } from "react-router-dom";
+import "../../themes/calendar-eros.css";
 import { fetchHolidays } from "../../lib/external";
 import { getRecordsInRange, getRecordForDay } from "../../lib/backend";
 
