@@ -21,7 +21,6 @@ class Calendar extends React.PureComponent {
 		this.historyUnlisten = null;
 	
 		this.state = {
-			calendarInitDate: null,
 			selectedDay: null,
 			fetchedEntries: null,
 			fetchedHolidays: null,
@@ -36,15 +35,15 @@ class Calendar extends React.PureComponent {
 		
 		const parsedInitDate = moment(window.location.pathname, "YYYY/MM/DD");
 		this.setState({
-			selectedDay: parsedInitDate.isValid() ? parsedInitDate.toDate() : moment().toDate()
+			selectedDay: parsedInitDate.isValid() ? parsedInitDate.toDate() : moment().toDate(),
 		});
 
-		// listen for URL/history changes
+		// listen for history changes
 		this.historyUnlisten = this.props.history.listen((location, action) => {
 			const parsedDate = moment(location.pathname, "YYYY/MM/DD");
-			// console.log("HISTORY CHANGED", parsedDate.format());
 			if (parsedDate.isSame(this.state.selectedDay)) return;
 
+			// parse date from URL — fallback is current date
 			this.setState({ selectedDay: parsedDate.isValid() ? parsedDate.toDate() : moment().toDate() });
 		});
 	}
@@ -70,7 +69,7 @@ class Calendar extends React.PureComponent {
 				.then(fetchedEntries => this.setState({ fetchedEntries }))
 				.catch(error => {
 					console.error(error);
-					toast.error("Whoops! 😱 Die Einträge für diesen Monat konnten nicht geladen werden.", { autoClose: 10000 });
+					toast.error("Whoops! 😱 Die Einträge für diesen Monat konnten nicht geladen werden.");
 					this.setState({ fetchedEntries: {} });
 				});
 	
@@ -78,7 +77,7 @@ class Calendar extends React.PureComponent {
 				.then(result => this.setState({ fetchedHolidays: result }))
 				.catch(error => {
 					console.error(error);
-					toast.error("Whoops! 😱 Die Feiertage konnten nicht geladen werden.", { autoClose: 10000 });
+					toast.error("Whoops! 😱 Die Feiertage konnten nicht geladen werden.");
 					this.setState({ fetchedHolidays: {} });
 				});
 	
@@ -95,12 +94,10 @@ class Calendar extends React.PureComponent {
 	resetCalendarToToday(today = moment().toDate()) {
 		this.props.showLoadingbar(true);
 
-		this.setState(prevState => ({
+		this.setState({
 			forceUpdateCalendar: Math.random(),
 			selectedDay: today,
-		}));
-
-		const { calendarInitDate } = this.state;
+		});
 
 		const start = moment(today).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
 		const end = moment(today).endOf("month").add(7, "days").format("YYYY-MM-DD");
@@ -113,7 +110,7 @@ class Calendar extends React.PureComponent {
 
 	render() {
 		const {
-			forceUpdateCalendar, calendarInitDate, selectedDay,
+			forceUpdateCalendar, selectedDay,
 			fetchedEntries, fetchedHolidays,
 		} = this.state;
 
@@ -127,7 +124,6 @@ class Calendar extends React.PureComponent {
 				<StyledCalendar
 					className="calendar-dark-theme"
 					key={forceUpdateCalendar}
-					activeStartDate={calendarInitDate}
 					value={selectedDay}
 					minDetail="decade"
 					minDate={moment("2019-01-01").toDate()}
@@ -142,9 +138,11 @@ class Calendar extends React.PureComponent {
 
 						// current date found as key in holidays...
 						if (holidays[moment(date).format("YYYY-MM-DD")]) classNamesArray.push("holiday");
-						// tags changed (user action via tag editor) can only occur on selected day
-						if (tagsDidChange && moment(currentTilesDate).isSame(selectedDay)) {
-							classNamesArray.push(tagsDidChange); // tags come in as array
+						// tags changed (user action via tag editor)
+						if (tagsDidChange && moment(currentTilesDate).isSame(tagsDidChange.date)) {
+							classNamesArray.push(tagsDidChange.tags, "marked"); // tags come in as array
+							// no need to proceed here, everything's done
+							return classNamesArray.flat(Infinity);
 						}
 
 						classNamesArray.push(
@@ -161,7 +159,7 @@ class Calendar extends React.PureComponent {
 						return classNamesArray.flat(Infinity);
 					}}
 
-					// arrow navigation
+					// ARROW NAVIGATION
 					onActiveDateChange={changeObj => {
 						this.props.showLoadingbar(true);
 						const { activeStartDate, view } = changeObj;
@@ -179,7 +177,7 @@ class Calendar extends React.PureComponent {
 							.catch(error => console.error(error));
 					}}
 
-					// month selected // fetch data for month with 1 week +- offset
+					// MONTH SELECTED // fetch data for month with 1 week +- offset
 					onClickMonth={activeStartDate => {
 						this.props.showLoadingbar(true);
 						const start = moment(activeStartDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
@@ -194,7 +192,7 @@ class Calendar extends React.PureComponent {
 							.catch(error => console.error(error));
 					}}
 
-					// date/day selected (fetch selected day -> all data)
+					// DATE/DAY SELECTED (fetch selected day -> all data)
 					onClickDay={activeStartDate => {
 						this.props.showLoadingbar(true);
 						const date = moment(activeStartDate);
@@ -207,10 +205,10 @@ class Calendar extends React.PureComponent {
 							.catch(error => console.error(error));
 					}}
 				
-					// year selector
+					// YEAR SELECTOR
 					// onClickYear={(...args) => console.log("onClickYear", ...args)}
 
-					// general change listener
+					// GENERAL CHANGE LISTENER
 					// onChange={value => console.log("onChange:", value)}
 				/>
 			</>
@@ -222,12 +220,15 @@ Calendar.propTypes = {
 	getDayRecord: PropTypes.func.isRequired,
 	showLoadingbar: PropTypes.func.isRequired,
 	shareMethods: PropTypes.func.isRequired,
-	history: PropTypes.object.isRequired,
-	tagsDidChange: PropTypes.array,
+	history: PropTypes.object.isRequired, // react-router
+	tagsDidChange: PropTypes.shape({
+		date: PropTypes.string,
+		tags: PropTypes.array,
+	}).isRequired,
 };
 
 Calendar.defaultProps = {
-	tagsDidChange: [],
+
 };
 
 export default withRouter(Calendar);

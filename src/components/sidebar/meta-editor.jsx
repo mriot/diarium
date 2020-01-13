@@ -1,9 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
-import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks, faCross } from "@fortawesome/free-solid-svg-icons";
+import styled, { keyframes } from "styled-components";
+import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks, faCross, faSync, faSyncAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Tag from "./tag";
 import { updateExistingEntryById } from "../../lib/backend";
+
+const rotate = keyframes `
+	from {
+		transform: rotate(0)
+	}
+	to {
+		transform: rotate(360deg)
+	}
+`;
 
 const MetaEditorContainer = styled.div `
 	color: #fff;
@@ -19,6 +29,13 @@ const Heading = styled.h3 `
 	padding-left: 5px;
 	padding-bottom: 10px;
 	border-bottom: 1px solid #191919;
+`;
+const Spinner = styled(FontAwesomeIcon) `
+	opacity: ${props => (props.active ? 1 : 0)};
+	font-size: 16px;
+	margin-left: 5px;
+	transition-delay: 100ms;
+	animation: 1s ${rotate} linear infinite;
 `;
 const MetaFields = styled.div ` 
 	display: flex;
@@ -39,6 +56,7 @@ export default class MetaEditor extends React.PureComponent {
 			},
 			checkboxDisabled: true,
 			selectedTags: [],
+			spinnerActive: false,
 		};
 	}
 
@@ -56,16 +74,21 @@ export default class MetaEditor extends React.PureComponent {
 		if (prevProps.tags !== this.props.tags) {
 			this.setState({
 				selectedTags: this.props.tags || [],
-				checkboxDisabled: !this.props.recordID
+				checkboxDisabled: !this.props.recordID,
+				spinnerActive: false
 			});
 		}
 
 		if (prevState.selectedTags !== this.state.selectedTags) {
-			this.props.tagsDidChange(this.state.selectedTags);
+			this.props.tagsDidChange({
+				date: this.props.recordDate,
+				tags: this.state.selectedTags
+			});
 		}
 	}
 
 	addToSelectedTags(tag) {
+		this.setState({ spinnerActive: true });
 		const newSelectedTags = [...this.state.selectedTags, tag];
 
 		updateExistingEntryById(this.props.recordID, {
@@ -73,10 +96,12 @@ export default class MetaEditor extends React.PureComponent {
 		})
 			.then(result => {
 				if (!result.error) this.setState({ selectedTags: newSelectedTags });
+				this.setState({ spinnerActive: false });
 			});
 	}
 
 	removeFromSelectedTags(tag) {
+		this.setState({ spinnerActive: true });
 		const newSelectedTags = this.state.selectedTags.filter(oldTag => oldTag !== tag);
 
 		updateExistingEntryById(this.props.recordID, {
@@ -84,6 +109,7 @@ export default class MetaEditor extends React.PureComponent {
 		})
 			.then(result => {
 				if (!result.error) this.setState({ selectedTags: newSelectedTags });
+				this.setState({ spinnerActive: false });
 			});
 	}
 
@@ -92,7 +118,9 @@ export default class MetaEditor extends React.PureComponent {
 
 		return (
 			<MetaEditorContainer>
-				<Heading>Tags</Heading>
+				<Heading>
+					Tags <Spinner icon={faSyncAlt} active={this.state.spinnerActive} />
+				</Heading>
 				<MetaFields>
 					{Object.keys(tags).map((tag, index) => (
 						<Tag
@@ -115,6 +143,7 @@ export default class MetaEditor extends React.PureComponent {
 MetaEditor.propTypes = {
 	tags: PropTypes.array,
 	recordID: PropTypes.number,
+	recordDate: PropTypes.string,
 	isReadModeActive: PropTypes.bool.isRequired,
 	tagsDidChange: PropTypes.func.isRequired,
 };
@@ -122,4 +151,5 @@ MetaEditor.propTypes = {
 MetaEditor.defaultProps = {
 	tags: [],
 	recordID: -1,
+	recordDate: null,
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import PropTypes from "prop-types";
 import moment from "moment";
 import Progress from "./progress";
@@ -17,11 +17,11 @@ const StyledSidebar = styled.aside `
   background-color: #20232a;
 `;
 const Today = styled.div `
-  color: #fff;
+	color: #fff;
   font-size: 18px;
   padding: 10px;
   cursor: pointer;
-  text-align: center;
+	text-align: center;
 
   &:hover {
     text-decoration: underline;
@@ -38,7 +38,7 @@ export default class Sidebar extends React.PureComponent {
 			dateToday: moment(),
 			dayRecord: {},
 			loadingbar: false,
-			tagsDidChange: [],
+			tagsDidChange: {},
 		};
 	}
 
@@ -82,6 +82,7 @@ export default class Sidebar extends React.PureComponent {
 					tagsDidChange={newTags => this.setState({ tagsDidChange: newTags })}
 					isReadModeActive={this.props.isReadModeActive}
 					recordID={dayRecord && dayRecord.id}
+					recordDate={dayRecord && dayRecord.assignedDay}
 					tags={dayRecord && dayRecord.tags}
 				/>
 
