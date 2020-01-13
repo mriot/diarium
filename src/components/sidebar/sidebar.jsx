@@ -38,6 +38,7 @@ export default class Sidebar extends React.PureComponent {
 			dateToday: moment(),
 			dayRecord: {},
 			loadingbar: false,
+			tagsDidChange: [],
 		};
 	}
 
@@ -71,12 +72,14 @@ export default class Sidebar extends React.PureComponent {
 				<Loadingbar active={loadingbar} />
 
 				<Calendar
+					tagsDidChange={this.state.tagsDidChange}
 					shareMethods={sharedMethods => (this.sharedMethods = sharedMethods)}
 					getDayRecord={record => this.setState({ dayRecord: record })}
 					showLoadingbar={status => this.setState({ loadingbar: status })}
 				/>
 
 				<MetaEditor
+					tagsDidChange={newTags => this.setState({ tagsDidChange: newTags })}
 					isReadModeActive={this.props.isReadModeActive}
 					recordID={dayRecord && dayRecord.id}
 					tags={dayRecord && dayRecord.tags}

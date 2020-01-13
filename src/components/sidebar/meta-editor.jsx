@@ -53,11 +53,15 @@ export default class MetaEditor extends React.PureComponent {
 			this.setState({ checkboxDisabled: this.props.isReadModeActive });
 		}
 
-		if (this.props.tags !== prevProps.tags) {
+		if (prevProps.tags !== this.props.tags) {
 			this.setState({
 				selectedTags: this.props.tags || [],
 				checkboxDisabled: !this.props.recordID
 			});
+		}
+
+		if (prevState.selectedTags !== this.state.selectedTags) {
+			this.props.tagsDidChange(this.state.selectedTags);
 		}
 	}
 
@@ -112,6 +116,7 @@ MetaEditor.propTypes = {
 	tags: PropTypes.array,
 	recordID: PropTypes.number,
 	isReadModeActive: PropTypes.bool.isRequired,
+	tagsDidChange: PropTypes.func.isRequired,
 };
 
 MetaEditor.defaultProps = {
