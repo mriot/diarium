@@ -119,7 +119,7 @@ class Calendar extends React.PureComponent {
 		if (!selectedDay) return null;
 		return (
 			<>
-				<Redirect push to={`/${moment(selectedDay).format("YYYY/MM/DD")}`} />;
+				<Redirect push to={`/${moment(selectedDay).format("YYYY/MM/DD")}`} />
 
 				<StyledCalendar
 					className="calendar-dark-theme"
