@@ -116,6 +116,8 @@ class Calendar extends React.PureComponent {
 			forceUpdateCalendar, calendarInitDate, selectedDay,
 			fetchedEntries, fetchedHolidays,
 		} = this.state;
+
+		const { tagsDidChange } = this.props;
 		
 		if (!selectedDay) return null;
 		return (
@@ -138,16 +140,21 @@ class Calendar extends React.PureComponent {
 						const holidays = fetchedHolidays;
 						const classNamesArray = [];
 
+						// current date found as key in holidays...
 						if (holidays[moment(date).format("YYYY-MM-DD")]) classNamesArray.push("holiday");
+						// tags changed (user action via tag editor) can only occur on selected day
+						if (tagsDidChange && moment(currentTilesDate).isSame(selectedDay)) {
+							classNamesArray.push(tagsDidChange); // tags come in as array
+						}
 
 						classNamesArray.push(
-							entries.map(entry => {
+							entries.flatMap(entry => {
 								const classList = [];
 								if (moment(currentTilesDate).isSame(entry.assignedDay)) {
 									classList.push("marked");
 									classList.push(entry.tags);
 								}
-								return classList.flat();
+								return classList;
 							})
 						);
 
