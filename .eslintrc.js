@@ -44,6 +44,7 @@ module.exports = {
     "import/prefer-default-export": ["off"],
     "max-len": ["off"],
     "no-return-assign": ["error", "except-parens"],
+    "no-underscore-dangle": ["warn", {"allowAfterThis": true}],
 
     "react/jsx-indent": ["error", "tab"],
     "react/require-default-props": ["warn"],
