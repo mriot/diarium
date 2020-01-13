@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled, { keyframes } from "styled-components";
 import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks, faCross, faSync, faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { toast } from "react-toastify";
 import Tag from "./tag";
 import { updateExistingEntryById } from "../../lib/backend";
 
@@ -31,7 +32,7 @@ const Heading = styled.h3 `
 	border-bottom: 1px solid #191919;
 `;
 const Spinner = styled(FontAwesomeIcon) `
-	opacity: ${props => (props.active ? 1 : 0)};
+	opacity: ${props => (props.spinning ? 1 : 0)};
 	font-size: 16px;
 	margin-left: 5px;
 	transition-delay: 100ms;
@@ -61,16 +62,19 @@ export default class MetaEditor extends React.PureComponent {
 	}
 
 	componentDidMount() {
+		// get tags from selected day — if any
 		if (this.props.tags) {
 			this.setState({ selectedTags: this.props.tags });
 		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
+		// readmode prop changed -> e.g. activated edit mode
 		if (prevProps.isReadModeActive !== this.props.isReadModeActive) {
 			this.setState({ checkboxDisabled: this.props.isReadModeActive });
 		}
 
+		// tags prop changed -> e.g. other day selected
 		if (prevProps.tags !== this.props.tags) {
 			this.setState({
 				selectedTags: this.props.tags || [],
@@ -79,7 +83,9 @@ export default class MetaEditor extends React.PureComponent {
 			});
 		}
 
+		// selected tags state changed -> this is for updating the Calendar component
 		if (prevState.selectedTags !== this.state.selectedTags) {
+			// provide the current, active tags and the associated date
 			this.props.tagsDidChange({
 				date: this.props.recordDate,
 				tags: this.state.selectedTags
@@ -87,30 +93,31 @@ export default class MetaEditor extends React.PureComponent {
 		}
 	}
 
-	addToSelectedTags(tag) {
-		this.setState({ spinnerActive: true });
-		const newSelectedTags = [...this.state.selectedTags, tag];
-
-		updateExistingEntryById(this.props.recordID, {
-			tags: newSelectedTags
-		})
+	_updateSelectedTags(newSelectedTags) {
+		updateExistingEntryById(this.props.recordID, { tags: newSelectedTags })
 			.then(result => {
-				if (!result.error) this.setState({ selectedTags: newSelectedTags });
+				if (!result.error) {
+					this.setState({ selectedTags: newSelectedTags });
+				} else {
+					toast.error("Die Tags konnten leider nicht geupdated werden... 😟");
+				}
 				this.setState({ spinnerActive: false });
-			});
+			})
+			.catch(error => console.log(error));
+	}
+
+	addToSelectedTags(tag) {
+		if (this.state.spinnerActive) return;
+		this.setState({ spinnerActive: true });
+
+		this._updateSelectedTags([...this.state.selectedTags, tag]);
 	}
 
 	removeFromSelectedTags(tag) {
+		if (this.state.spinnerActive) return;
 		this.setState({ spinnerActive: true });
-		const newSelectedTags = this.state.selectedTags.filter(oldTag => oldTag !== tag);
 
-		updateExistingEntryById(this.props.recordID, {
-			tags: newSelectedTags
-		})
-			.then(result => {
-				if (!result.error) this.setState({ selectedTags: newSelectedTags });
-				this.setState({ spinnerActive: false });
-			});
+		this._updateSelectedTags(this.state.selectedTags.filter(oldTag => oldTag !== tag));
 	}
 
 	render() {
@@ -119,7 +126,7 @@ export default class MetaEditor extends React.PureComponent {
 		return (
 			<MetaEditorContainer>
 				<Heading>
-					Tags <Spinner icon={faSyncAlt} active={this.state.spinnerActive} />
+					Tags <Spinner icon={faSyncAlt} spinning={this.state.spinnerActive ? 1 : 0} />
 				</Heading>
 				<MetaFields>
 					{Object.keys(tags).map((tag, index) => (
