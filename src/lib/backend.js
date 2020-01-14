@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import moment from "moment";
+import { fetch2 } from "./fetchWithTimeout";
 
 // GLOBALS ====================================================
 const BACKEND_URL = "http://localhost:5000/api";
@@ -11,9 +12,9 @@ export const auth = (username, password) => {
 	return fetch(`${BACKEND_URL}/auth`, {
 		method: "POST",
 		headers: {
-			"Content-Type": "application/json"
+			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ username, password })
+		body: JSON.stringify({ username, password }),
 	})
 		.then(response => {
 			if (!response.ok) {
@@ -46,7 +47,7 @@ export const isLoggedIn = () => {
 // COUNT ALL ====================================================
 export const countAllEntries = () => {
 	return fetch(`${BACKEND_URL}/entries/count/`, {
-		method: "GET"
+		method: "GET",
 	})
 		.then(response => response.json())
 		.catch(error => console.error(error));
@@ -61,7 +62,7 @@ export const getRecordsInRange = (start, end, columns) => {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${GLOBAL_TOKEN}`
+			Authorization: `Bearer ${GLOBAL_TOKEN}`,
 		},
 	})
 		.then(response => response.json())
@@ -73,7 +74,7 @@ export const countRecordsInRange = (start, end) => {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${GLOBAL_TOKEN}`
+			Authorization: `Bearer ${GLOBAL_TOKEN}`,
 		},
 	})
 		.then(response => response.json())
@@ -85,7 +86,7 @@ export const getAllEntriesForYear = year => {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${GLOBAL_TOKEN}`
+			Authorization: `Bearer ${GLOBAL_TOKEN}`,
 		},
 	})
 		.then(response => response.json())
@@ -97,7 +98,7 @@ export const getAllEntriesForYearMonth = (year, month) => {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${GLOBAL_TOKEN}`
+			Authorization: `Bearer ${GLOBAL_TOKEN}`,
 		},
 	})
 		.then(response => response.json())
@@ -109,7 +110,7 @@ export const getRecordForDay = (year, month, day) => {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${GLOBAL_TOKEN}`
+			Authorization: `Bearer ${GLOBAL_TOKEN}`,
 		},
 	})
 		.then(response => response.json())
@@ -123,7 +124,7 @@ export const search = query => {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${GLOBAL_TOKEN}`
+			Authorization: `Bearer ${GLOBAL_TOKEN}`,
 		},
 	})
 		.then(response => response.json())
@@ -137,25 +138,49 @@ export const createNewEntry = newBodyObj => {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${GLOBAL_TOKEN}`
+			Authorization: `Bearer ${GLOBAL_TOKEN}`,
+		},
+		body: JSON.stringify(newBodyObj),
+	})
+		.then(response => response.json().then(json => ({ ok: response.ok, body: json })))
+		.catch(error => console.error(error));
+};
+
+
+// PUT ====================================================
+/* */
+export const updateExistingEntryById = (id, newBodyObj) => {
+	return fetch(`${BACKEND_URL}/entries?id=${id}`, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${GLOBAL_TOKEN}`,
 		},
 		body: JSON.stringify(newBodyObj),
 	})
 		.then(response => response.json())
 		.catch(error => console.error(error));
 };
+/* */
 
-
-// PUT ====================================================
+/* * /
 export const updateExistingEntryById = (id, newBodyObj) => {
-	return fetch(`${BACKEND_URL}/entries?id=${id}`, {
+	return fetch2(`${BACKEND_URL}/entries?id=${id}`, {
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json",
 			Authorization: `Bearer ${GLOBAL_TOKEN}`
 		},
 		body: JSON.stringify(newBodyObj),
-	})
+	}, 1000)
 		.then(response => response.json())
-		.catch(error => console.error(error));
+		.catch(error => {
+			if (error.code === 20) {
+				console.log("The request timed out...");
+				return error;
+			}
+			console.log(error);
+			return error;
+		});
 };
+/* */
