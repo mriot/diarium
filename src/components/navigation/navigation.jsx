@@ -64,15 +64,27 @@ export default class Navigation extends React.PureComponent {
 				<Logo>DIARIUM</Logo>
 				<RightSide>
 					<ButtonContainer>
-						<NavButton
-							value="Bearbeiten"
-							icon={faPen}
-							active={!this.props.isReadModeActive}
-							onClick={() => {
-								this.props.setReadMode(!this.props.isReadModeActive);
-								if (this.props.isReadModeActive) this.props.setHighlightsView(false);
-							}}
-						/>
+						{isCreateButtonVisible && (
+							<NavButton
+								value="Erstellen"
+								icon={faPlusSquare}
+								onClick={() => {
+									createNewEntry();
+									if (isReadModeActive) setHighlightsView(false);
+								}}
+							/>
+						)}
+						{!isCreateButtonVisible && (
+							<NavButton
+								value="Bearbeiten"
+								icon={faPen}
+								active={!isReadModeActive}
+								onClick={() => {
+									setReadMode(!isReadModeActive);
+									if (isReadModeActive) setHighlightsView(false);
+								}}
+							/>
+						)}
 						<NavButton
 							value="Highlights"
 							icon={faStar}
