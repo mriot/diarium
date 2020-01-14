@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOutAlt, faStarAndCrescent, faStar, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faStar, faPen, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import NavButton from "./nav-button";
 import Search from "./search";
 
@@ -59,6 +59,11 @@ export default class Navigation extends React.PureComponent {
 	}
 
 	render() {
+		const {
+			isCreateButtonVisible, createNewEntry, isReadModeActive,
+			setHighlightsView, setReadMode, isHighlightsViewActive,
+		} = this.props;
+
 		return (
 			<Nav>
 				<Logo>DIARIUM</Logo>
@@ -88,10 +93,10 @@ export default class Navigation extends React.PureComponent {
 						<NavButton
 							value="Highlights"
 							icon={faStar}
-							active={this.props.isHighlightsViewActive}
+							active={isHighlightsViewActive}
 							onClick={() => {
-								this.props.setHighlightsView(!this.props.isHighlightsViewActive);
-								if (!this.props.isHighlightsViewActive) this.props.setReadMode(true);
+								setHighlightsView(!isHighlightsViewActive);
+								if (!isHighlightsViewActive) setReadMode(true);
 							}}
 						/>
 					</ButtonContainer>
@@ -115,4 +120,6 @@ Navigation.propTypes = {
 	isHighlightsViewActive: PropTypes.bool.isRequired,
 	setHighlightsView: PropTypes.func.isRequired,
 	setLoggedIn: PropTypes.func.isRequired,
+	isCreateButtonVisible: PropTypes.bool.isRequired,
+	createNewEntry: PropTypes.func.isRequired,
 };
