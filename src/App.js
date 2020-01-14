@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PoseGroup } from "react-pose";
 import moment from "moment";
@@ -11,7 +11,7 @@ import Editor from "./components/editor/editor";
 import Highlights from "./components/highlights/highlights";
 import "moment/locale/de";
 import Login from "./components/login/login";
-import { isLoggedIn } from "./lib/backend";
+import { isLoggedIn, createNewEntry } from "./lib/backend";
 
 const Layout = styled.div `
   position: relative;
@@ -37,7 +37,7 @@ export default class App extends React.PureComponent {
 		moment().locale("de");
 
 		this.state = {
-			readMode: false,
+			readMode: true,
 			showHighlights: false,
 			isLoggedIn: false,
 			tokenChecked: false,
@@ -58,6 +58,25 @@ export default class App extends React.PureComponent {
 
 	setLoggedIn(status) {
 		this.setState({ isLoggedIn: status, tokenChecked: true });
+	}
+
+	createNewEntryForSelectedDay() {
+		const selectedDay = moment(window.location.pathname, "YYYY/MM/DD");
+		
+		createNewEntry({
+			assignedDay: moment(selectedDay).format("YYYY-MM-DD"),
+			content: `# ${selectedDay.format("dddd, D. MMMM YYYY")}\n\n`,
+			contentType: "text/markdown",
+			tags: [],
+		})
+			.then(result => {
+				if (result.ok) {
+					this.setState({
+						dayRecord: result.body,
+						readMode: false,
+					});
+				}
+			});
 	}
   
 	render() {
@@ -83,6 +102,8 @@ export default class App extends React.PureComponent {
 							isHighlightsViewActive={this.state.showHighlights}
 							setHighlightsView={bool => this.setState({ showHighlights: bool })}
 							setLoggedIn={bool => this.setLoggedIn(bool)}
+							isCreateButtonVisible={!this.state.dayRecord}
+							createNewEntry={() => this.createNewEntryForSelectedDay()}
 						/>
 
 						<Sidebar
@@ -97,9 +118,9 @@ export default class App extends React.PureComponent {
 							</PoseGroup>
 
 							<Editor
+								dayRecord={this.state.dayRecord}
 								isReadModeActive={this.state.readMode}
 								pose={this.state.showHighlights ? "hidden" : "visible"}
-								dayRecord={this.state.dayRecord}
 							/>
 						</Main>
 					</Layout>
@@ -112,13 +133,13 @@ export default class App extends React.PureComponent {
 				)}
 
 				<ToastContainer
-					position="bottom-left"
 					// hideProgressBar={true}
-					// autoClose={5000}
+					position="bottom-left"
+					autoClose={10000}
 					newestOnTop
 					progressStyle={{ background: "linear-gradient(to right, #00b7ff, #5ac8fa, #007aff, #34aadc)" }}
 					style={{
-						left: 0
+						left: 0,
 					}}
 				/>
 			</BrowserRouter>
