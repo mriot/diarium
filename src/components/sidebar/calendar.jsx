@@ -30,7 +30,7 @@ class Calendar extends React.PureComponent {
 	
 	componentDidMount() {
 		this.props.shareMethods({
-			resetCalendarToToday: () => this.resetCalendarToToday()
+			resetCalendarToToday: () => this.resetCalendarToToday(),
 		});
 		
 		const parsedInitDate = moment(window.location.pathname, "YYYY/MM/DD");
