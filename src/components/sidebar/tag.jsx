@@ -92,6 +92,8 @@ export default class Tag extends React.PureComponent {
 				disabled={disabled}
 				checked={this.state.isChecked}
 				onClick={() => {
+					if (disabled) return;
+					
 					if (!this.state.isChecked) {
 						addToSelectedTags(value);
 					} else {
