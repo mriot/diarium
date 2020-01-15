@@ -8,6 +8,8 @@ import MarkdownView from "./markdown-view";
 import MarkdownEditor from "./markdown-editor";
 import Toolbar from "./toolbar";
 import { editorAnimation } from "./animations";
+import { DayRecordContext } from "../../contexts";
+import { updateExistingEntryById } from "../../lib/backend";
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer) `
@@ -58,13 +60,14 @@ export default class Editor extends React.PureComponent {
 			forceUpdateSeparator: 0,
 			scrollSyncPosition: 0,
 			editorHistory: { undo: 0, redo: 0 },
+			saveStatusText: "",
 		};
 	}
 
 	componentDidMount() {
-		// collects DOM nodes
 		this.setUpSeparator();
 		
+		// whether to show preview or not
 		if (!this.state.readMode && localStorage.getItem("preview-hidden") === "true") {
 			this.hidePreview();
 		}
@@ -79,17 +82,47 @@ export default class Editor extends React.PureComponent {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		const { dayRecord, isReadModeActive } = this.props;
+		const { markdown } = this.state;
+		const { isReadModeActive } = this.props;
+		const { dayRecord } = this.context;
 
 		this.setUpSeparator();
 
-		if (prevProps.dayRecord !== dayRecord) {
+		// don't load fetched markdown into state while we're in edit mode
+		if (isReadModeActive) {
 			this.setState({ markdown: dayRecord ? dayRecord.content : "" });
 		}
 
-		if (prevProps.readMode !== isReadModeActive) {
+		// if (dayRecord && markdown && prevState.markdown !== markdown) {
+		// 	console.log(this.state.markdown);
+		// 	let timeout;
+		// 	clearTimeout(timeout);
+		// 	timeout = setTimeout(() => this.saveContent(), 2000);
+		// }
+
+		if (prevProps.isReadModeActive !== isReadModeActive) {
 			this.setState({ readMode: isReadModeActive });
 		}
+	}
+
+	// eslint-disable-next-line react/sort-comp
+	saveContent() {
+		if (!this.context.dayRecord) throw new Error("Can't save to not existing entry!");
+		this.setState({ saveStatusText: "Speichern..." });
+
+		updateExistingEntryById(this.context.dayRecord.id, {
+			content: this.state.markdown,
+		})
+			.then(result => {
+				if (!result.error) {
+					this.context.updateDayRecord(result);
+					this.setState({ saveStatusText: "Gespeichert!" });
+				} else {
+					this.setState({ saveStatusText: `Speichern fehlgeschlagen! ${result.error}` });
+					console.log("Could not save content", result.error);
+				}
+			})
+			.catch(error => console.log(error));
 	}
 
 	setUpSeparator() {
@@ -132,7 +165,7 @@ export default class Editor extends React.PureComponent {
 
 	toggleScrollSync(force) {
 		this.setState(prevState => ({
-			scrollSync: typeof force === "undefined" ? !prevState.scrollSync : force
+			scrollSync: typeof force === "undefined" ? !prevState.scrollSync : force,
 		}));
 	}
 
@@ -149,11 +182,16 @@ export default class Editor extends React.PureComponent {
 	}
 
 	render() {
+		const {
+			readMode, zenMode, preview, scrollSync, editorHistory, saveStatusText,
+			markdown, nodesReady, forceUpdateSeparator, scrollSyncPosition,
+		} = this.state;
+
 		return (
 			<EditorContainer
 				ref={this.editorContainerRef}
-				isZenModeActive={this.state.zenMode}
 				pose={this.props.pose}
+				isZenModeActive={zenMode}
 			>
 				<Toolbar
 					// call markdown-editor methods
@@ -164,33 +202,35 @@ export default class Editor extends React.PureComponent {
 					insertLink={() => this.markdownEditorRef.insertLink()}
 					// called directly here
 					toggleZenMode={() => this.toggleZenMode}
-					togglePreview={this.state.preview ? () => this.hidePreview : () => this.showPreview}
+					togglePreview={preview ? () => this.hidePreview : () => this.showPreview}
 					toggleScrollSync={() => this.toggleScrollSync}
 					resetEditorLayout={() => this.resetEditorLayout}
 					// provides everything the Toolbar needs to know
 					toolbarStatus={{
-						readModeActive: this.state.readMode,
-						zenModeActive: this.state.zenMode,
-						previewActive: this.state.preview,
-						scrollSyncActive: this.state.scrollSync,
-						editorHistory: this.state.editorHistory, // for redo/undo buttons
+						readModeActive: readMode,
+						zenModeActive: zenMode,
+						previewActive: preview,
+						scrollSyncActive: scrollSync,
+						editorHistory,
+						saveStatusText,
 					}}
 				/>
 
 				<InnerEditorContainer>
-					{!this.state.readMode && (
+					{!readMode && (
 						<MarkdownEditor
 							ref={ref => (this.markdownEditorRef = ref)}
-							content={this.state.markdown}
-							change={markdown => this.setState({ markdown })}
-							scrollPosChange={scrollSyncPosition => this.setState({ scrollSyncPosition })}
-							getEditorHistory={editorHistory => this.setState({ editorHistory })}
+							content={markdown}
+							change={editedMarkdown => this.setState({ markdown: editedMarkdown })}
+							saveContent={() => this.saveContent()}
+							scrollPosChange={pos => this.setState({ scrollSyncPosition: pos })}
+							getEditorHistory={history => this.setState({ editorHistory: history })}
 						/>
 					)}
 
-					{!this.state.readMode && this.state.nodesReady && this.state.preview && (
+					{!readMode && nodesReady && preview && (
 						<SeparatorHandle
-							forceUpdateSeparator={this.state.forceUpdateSeparator}
+							forceUpdateSeparator={forceUpdateSeparator}
 							containerNode={this.editorContainerNode}
 							previewNode={this.previewNode}
 						/>
@@ -198,10 +238,10 @@ export default class Editor extends React.PureComponent {
 
 					<MarkdownView
 						ref={this.markdownViewRef}
-						markdown={this.state.markdown}
-						isReadModeActive={this.state.readMode}
-						isScrollSyncActive={this.state.scrollSync}
-						scrollSyncPos={this.state.scrollSyncPosition}
+						markdown={markdown}
+						isReadModeActive={readMode}
+						isScrollSyncActive={scrollSync}
+						scrollSyncPos={scrollSyncPosition}
 					/>
 				</InnerEditorContainer>
 			</EditorContainer>
@@ -210,12 +250,10 @@ export default class Editor extends React.PureComponent {
 }
 
 Editor.propTypes = {
-	readMode: PropTypes.bool,
 	isReadModeActive: PropTypes.bool.isRequired,
 	pose: PropTypes.string.isRequired,
-	dayRecord: PropTypes.object,
 };
 
-Editor.defaultProp = {
-	dayRecord: {},
-};
+Editor.defaultProp = {};
+
+Editor.contextType = DayRecordContext;

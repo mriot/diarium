@@ -47,6 +47,8 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.codeMirrorRef = React.createRef();
 		this.CodeMirrorInstance = null;
 
+		this.saveTimeout = null;
+
 		this.editorConfig = {
 			mode: "gfm", // github flavored markdown
 			theme: "callisto",
@@ -77,9 +79,9 @@ export default class MarkdownEditor extends React.PureComponent {
 		const { content } = this.props;
 
 		if (prevProps.content !== content) {
-			this.editorFocus();
-			this.CodeMirrorInstance.setValue(content);
-			this.CodeMirrorInstance.execCommand("goLineEnd");
+			// this.editorFocus();
+			// this.CodeMirrorInstance.setValue(content);
+			// this.CodeMirrorInstance.execCommand("goLineEnd");
 		}
 	}
 
@@ -103,7 +105,7 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.CodeMirrorInstance.replaceSelection("```language\n\n````");
 		this.CodeMirrorInstance.setCursor({
 			line: this.getCursor().line - 1,
-			ch: 0
+			ch: 0,
 		});
 	}
 
@@ -111,7 +113,7 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.CodeMirrorInstance.replaceSelection("[]()");
 		this.CodeMirrorInstance.setCursor({
 			line: this.getCursor().line,
-			ch: this.getCursor().ch - 3
+			ch: this.getCursor().ch - 3,
 		});
 	}
 
@@ -124,6 +126,9 @@ export default class MarkdownEditor extends React.PureComponent {
 				onChange={markdown => {
 					this.props.change(markdown);
 					this.props.getEditorHistory(this.CodeMirrorInstance.historySize());
+
+					clearTimeout(this.saveTimeout);
+					this.saveTimeout = setTimeout(() => this.props.saveContent(), 2000);
 				}}
 			/>
 		);
@@ -135,8 +140,9 @@ MarkdownEditor.propTypes = {
 	scrollPosChange: PropTypes.func.isRequired,
 	change: PropTypes.func.isRequired,
 	getEditorHistory: PropTypes.func.isRequired,
+	saveContent: PropTypes.func.isRequired,
 };
 
 MarkdownEditor.defaultProps = {
-	content: ""
+	content: "",
 };

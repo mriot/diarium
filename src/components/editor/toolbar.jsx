@@ -75,7 +75,6 @@ export default class Toolbar extends React.PureComponent {
 		this.state = {
 			inFullscreenMode: false,
 			readMode: this.props.toolbarStatus.readModeActive,
-			saveStatusText: "Speichern...",
 		};
 		
 		this.toolbarItems = {
@@ -107,12 +106,12 @@ export default class Toolbar extends React.PureComponent {
 					onClick: () => this.props.insertCode(),
 					icon: faCode,
 				},
-				{ separator: true, },
+				{ separator: true },
 				{
 					title: "Scrollen synchronisieren",
 					onClick: () => this.props.toggleScrollSync(),
 					isActive: () => this.props.toolbarStatus.scrollSyncActive,
-					icon: faArrowsAltH
+					icon: faArrowsAltH,
 				},
 			],
 			
@@ -195,13 +194,13 @@ export default class Toolbar extends React.PureComponent {
 							</IconButton>
 						), // <- we're in an array
 
-						item.separator && <ButtonSeparator key={index} pose={this.state.readMode ? "hide" : "show"} />
+						item.separator && <ButtonSeparator key={index} pose={this.state.readMode ? "hide" : "show"} />,
 					])}
 
 					<ButtonSeparator pose={this.state.readMode ? "hide" : "show"} />
 
 					<SaveStatusText>
-						{this.state.saveStatusText}
+						{this.props.toolbarStatus.saveStatusText}
 					</SaveStatusText>
 				</LeftSide>
 
@@ -233,5 +232,13 @@ Toolbar.propTypes = {
 	togglePreview: PropTypes.func.isRequired,
 	toggleScrollSync: PropTypes.func.isRequired,
 	resetEditorLayout: PropTypes.func.isRequired,
-	toolbarStatus: PropTypes.object.isRequired,
+
+	toolbarStatus: PropTypes.shape({
+		readModeActive: PropTypes.bool,
+		zenModeActive: PropTypes.bool,
+		previewActive: PropTypes.bool,
+		scrollSyncActive: PropTypes.bool,
+		editorHistory: PropTypes.object,
+		saveStatusText: PropTypes.string,
+	}).isRequired,
 };
