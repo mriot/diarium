@@ -114,7 +114,6 @@ export default class App extends React.PureComponent {
 
 							<Sidebar
 								isReadModeActive={this.state.readMode}
-								// getDayRecord={record => this.setState({ dayRecord: record })}
 							/>
 
 							<Main>
@@ -124,7 +123,6 @@ export default class App extends React.PureComponent {
 								</PoseGroup>
 
 								<Editor
-									// dayRecord={this.state.dayRecord}
 									isReadModeActive={this.state.readMode}
 									pose={this.state.showHighlights ? "hidden" : "visible"}
 								/>
