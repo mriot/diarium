@@ -61,7 +61,7 @@ class Calendar extends React.PureComponent {
 				moment(selectedDay).format("MM"),
 				moment(selectedDay).format("DD")
 			)
-				.then(dayRecord => this.props.getDayRecord(dayRecord))
+				.then(fetchedDayRecord => this.context.updateDayRecord(fetchedDayRecord))
 				.then(() => this.props.showLoadingbar(false))
 				.catch(error => console.error(error));
 	
@@ -200,7 +200,7 @@ class Calendar extends React.PureComponent {
 						this.setState({ selectedDay: activeStartDate });
 
 						getRecordForDay(date.format("YYYY"), date.format("MM"), date.format("DD"))
-							.then(dayRecord => this.props.getDayRecord(dayRecord))
+							.then(fetchedDayRecord => this.context.updateDayRecord(fetchedDayRecord))
 							.then(() => this.props.showLoadingbar(false))
 							.catch(error => console.error(error));
 					}}
