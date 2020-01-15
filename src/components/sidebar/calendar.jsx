@@ -133,27 +133,24 @@ class Calendar extends React.PureComponent {
 						if (!fetchedEntries || !fetchedHolidays) return false;
 
 						const currentTilesDate = moment(date).format("YYYY-MM-DD");
+
+						// current dayRecord (via context) did change
+						if (dayRecord && moment(currentTilesDate).isSame(dayRecord.assignedDay)) {
+							return [...dayRecord.tags, "marked"].flat(Infinity);
+						}
+
+						// this runs for any other than the selected tile
 						const { entries } = fetchedEntries;
 						const holidays = fetchedHolidays;
 						const classNamesArray = [];
 
-						// current date found as key in holidays...
+						// date found as key in holidays — congrats, it's a holiday
 						if (holidays[moment(date).format("YYYY-MM-DD")]) classNamesArray.push("holiday");
-						// tags changed (user action via tag editor)
-						if (tagsDidChange && moment(currentTilesDate).isSame(tagsDidChange.date)) {
-							classNamesArray.push(tagsDidChange.tags, "marked"); // tags come in as array
-							// no need to proceed here, everything's done
-							return classNamesArray.flat(Infinity);
-						}
 
+						// generate classnames from tags
 						classNamesArray.push(
-							entries.flatMap(entry => {
-								const classList = [];
-								if (moment(currentTilesDate).isSame(entry.assignedDay)) {
-									classList.push("marked");
-									classList.push(entry.tags);
-								}
-								return classList;
+							entries.map(entry => {
+								return moment(currentTilesDate).isSame(entry.assignedDay) ? [...entry.tags, "marked"] : [];
 							})
 						);
 
