@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import moment from "moment";
 import Progress from "./progress";
 import Calendar from "./calendar";
-import MetaEditor from "./meta-editor";
+import MetaEditor from "./tag-editor";
 import Loadingbar from "../common/loadingbar";
 
 const StyledSidebar = styled.aside `
