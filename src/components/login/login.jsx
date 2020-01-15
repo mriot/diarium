@@ -1,17 +1,21 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
 import PropTypes from "prop-types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faArrowsAltH } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import TextInput from "../common/textinput";
 import Button from "../common/button";
 import { auth } from "../../lib/backend";
 import Select from "../common/select";
 
-const LoginMaskWrapper = styled.div `
+const LoginMaskContainer = styled.div `
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: baseline;
-  justify-content: center;
+  align-items: center;
+	justify-content: center;
+	flex-direction: column;
 `;
 
 const LoginMask = styled.div `
@@ -25,6 +29,17 @@ const LoginMask = styled.div `
   transition: all 0.3s;
 `;
 
+const LoginFooter = styled.div `
+	width: auto;
+	color: #ddd;
+	display: flex;
+	justify-content: space-between;
+
+	a {
+		color: #ddd;
+	}
+`;
+
 const Row = styled.div `
   margin: 5px;
   display: flex;
@@ -35,9 +50,9 @@ const Row = styled.div `
 
 const Heading = styled.h1 `
 	color: #353a47;
-	font-size: 40px;
+	font-size: 45px;
 	letter-spacing: 2px;
-	margin: 15px;
+	margin: 0 5px 5px;
 `;
 
 const shakeAnimation = keyframes `
@@ -114,75 +129,85 @@ export default class Login extends React.PureComponent {
 
 	render() {
 		return (
-			<LoginMaskWrapper>
-				<LoginMask>
-					<Row style={{ margin: "0 auto 30px" }}>
-						<Heading>DIARIUM</Heading>
-					</Row>
-					<Row>
-						<Label>Benutzername:</Label>
-						<TextInput
-							light
-							onChange={event => (this.username = event.currentTarget.value)}
-							onKeyPress={event => this.handleKeyStrokes(event.nativeEvent)}
-						/>
-					</Row>
-					<Row>
-						<Label>Passwort:</Label>
-						<TextInput
-							light
-							type="password"
-							onChange={event => (this.password = event.currentTarget.value)}
-							onKeyPress={event => this.handleKeyStrokes(event.nativeEvent)}
-						/>
-					</Row>
-					<Row style={{ marginBottom: "25px" }}>
-						<Label title="Nur um dir die richtigen Feiertage anzuzeigen. =)">
-							Bundesland: <span role="img" aria-label="warum?">🤔</span>?
-						</Label>
-						<Select
-							defaultValue={localStorage.getItem("federal_state") || "HE"}
-							onChange={event => {
-								localStorage.setItem("federal_state", event.currentTarget.value);
-							}}
-						>
-							<option value="BB">Brandenburg</option>
-							<option value="BE">Berlin</option>
-							<option value="BW">Baden-Württemberg</option>
-							<option value="BY">Bayern</option>
-							<option value="HB">Bremen</option>
-							<option value="HE">Hessen</option>
-							<option value="HH">Hamburg</option>
-							<option value="MV">Mecklenburg-Vorpommern</option>
-							<option value="NI">Niedersachsen</option>
-							<option value="NW">Nordrhein-Westfalen</option>
-							<option value="RP">Rheinland-Pfalz</option>
-							<option value="SH">Schleswig-Holstein</option>
-							<option value="SL">Saarland</option>
-							<option value="SN">Sachsen</option>
-							<option value="ST">Sachsen-Anhalt</option>
-							<option value="TH">Thüringen</option>
-						</Select>
-					</Row>
-					{this.state.loginFailed > 0 && (
-						<Row key={this.state.loginFailed}>
-							<ErrorMessage>
-                Anmeldedaten fehlerhaft.
-							</ErrorMessage>
+			<LoginMaskContainer>
+				<div>
+					<LoginMask>
+						<Row style={{ margin: "0 auto 30px" }}>
+							<Heading>DIARIUM</Heading>
 						</Row>
-					)}
-					<Row alignedRight>
-						<Button onClick={() => this.doLogin()}>
+						<Row>
+							<Label>Benutzername:</Label>
+							<TextInput
+								light
+								onChange={event => (this.username = event.currentTarget.value)}
+								onKeyPress={event => this.handleKeyStrokes(event.nativeEvent)}
+							/>
+						</Row>
+						<Row>
+							<Label>Passwort:</Label>
+							<TextInput
+								light
+								type="password"
+								onChange={event => (this.password = event.currentTarget.value)}
+								onKeyPress={event => this.handleKeyStrokes(event.nativeEvent)}
+							/>
+						</Row>
+						<Row style={{ marginBottom: "25px" }}>
+							<Label
+								title="Nur um dir die richtigen Feiertage anzeigen zu können. =)"
+								style={{ cursor: "help" }}
+							>
+							Bundesland: <span role="img" aria-label="warum?">🤔</span>?
+							</Label>
+							<Select
+								defaultValue={localStorage.getItem("federal_state") || "HE"}
+								onChange={event => {
+									localStorage.setItem("federal_state", event.currentTarget.value);
+								}}
+							>
+								<option value="BB">Brandenburg</option>
+								<option value="BE">Berlin</option>
+								<option value="BW">Baden-Württemberg</option>
+								<option value="BY">Bayern</option>
+								<option value="HB">Bremen</option>
+								<option value="HE">Hessen</option>
+								<option value="HH">Hamburg</option>
+								<option value="MV">Mecklenburg-Vorpommern</option>
+								<option value="NI">Niedersachsen</option>
+								<option value="NW">Nordrhein-Westfalen</option>
+								<option value="RP">Rheinland-Pfalz</option>
+								<option value="SH">Schleswig-Holstein</option>
+								<option value="SL">Saarland</option>
+								<option value="SN">Sachsen</option>
+								<option value="ST">Sachsen-Anhalt</option>
+								<option value="TH">Thüringen</option>
+							</Select>
+						</Row>
+						{this.state.loginFailed > 0 && (
+							<Row key={this.state.loginFailed}>
+								<ErrorMessage>
+                Anmeldedaten fehlerhaft.
+								</ErrorMessage>
+							</Row>
+						)}
+						<Row alignedRight>
+							<Button onClick={() => this.doLogin()}>
               Einloggen
-						</Button>
-					</Row>
-				</LoginMask>
-			</LoginMaskWrapper>
+							</Button>
+						</Row>
+					</LoginMask>
+					{/* <LoginFooter>
+						<span>by mriot</span>
+						<a href="https://github.com/mriot/diarium">
+							<FontAwesomeIcon icon={faGithub} />
+						</a>
+					</LoginFooter> */}
+				</div>
+			</LoginMaskContainer>
 		);
 	}
 }
 
 Login.propTypes = {
 	setLoggedIn: PropTypes.func.isRequired,
-	
 };
