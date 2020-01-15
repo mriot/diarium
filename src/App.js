@@ -12,6 +12,7 @@ import Highlights from "./components/highlights/highlights";
 import "moment/locale/de";
 import Login from "./components/login/login";
 import { isLoggedIn, createNewEntry } from "./lib/backend";
+import { DayRecordContext } from "./contexts";
 
 const Layout = styled.div `
   position: relative;
@@ -72,8 +73,8 @@ export default class App extends React.PureComponent {
 			.then(result => {
 				if (result.ok) {
 					this.setState({
-						dayRecord: result.body,
 						readMode: false,
+						dayRecord: result.body,
 					});
 				}
 			});
@@ -96,33 +97,39 @@ export default class App extends React.PureComponent {
 
 				{this.state.isLoggedIn && (
 					<Layout>
-						<Navigation
-							isReadModeActive={this.state.readMode}
-							setReadMode={bool => this.setState({ readMode: bool })}
-							isHighlightsViewActive={this.state.showHighlights}
-							setHighlightsView={bool => this.setState({ showHighlights: bool })}
-							setLoggedIn={bool => this.setLoggedIn(bool)}
-							isCreateButtonVisible={!this.state.dayRecord}
-							createNewEntry={() => this.createNewEntryForSelectedDay()}
-						/>
-
-						<Sidebar
-							isReadModeActive={this.state.readMode}
-							getDayRecord={record => this.setState({ dayRecord: record })}
-						/>
-
-						<Main>
-							<PoseGroup>
-								{this.state.showHighlights &&
-								<Highlights key="highlights" />}
-							</PoseGroup>
-
-							<Editor
-								dayRecord={this.state.dayRecord}
+						<DayRecordContext.Provider value={{
+							dayRecord: this.state.dayRecord,
+							updateDayRecord: newDayRecord => this.setState({ dayRecord: newDayRecord }),
+						}}
+						>
+							<Navigation
 								isReadModeActive={this.state.readMode}
-								pose={this.state.showHighlights ? "hidden" : "visible"}
+								setReadMode={bool => this.setState({ readMode: bool })}
+								isHighlightsViewActive={this.state.showHighlights}
+								setHighlightsView={bool => this.setState({ showHighlights: bool })}
+								setLoggedIn={bool => this.setLoggedIn(bool)}
+								isCreateButtonVisible={!this.state.dayRecord}
+								createNewEntry={() => this.createNewEntryForSelectedDay()}
 							/>
-						</Main>
+
+							<Sidebar
+								isReadModeActive={this.state.readMode}
+								// getDayRecord={record => this.setState({ dayRecord: record })}
+							/>
+
+							<Main>
+								<PoseGroup>
+									{this.state.showHighlights &&
+									<Highlights key="highlights" />}
+								</PoseGroup>
+
+								<Editor
+									// dayRecord={this.state.dayRecord}
+									isReadModeActive={this.state.readMode}
+									pose={this.state.showHighlights ? "hidden" : "visible"}
+								/>
+							</Main>
+						</DayRecordContext.Provider>
 					</Layout>
 				)}
 
