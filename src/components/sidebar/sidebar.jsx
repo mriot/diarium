@@ -36,9 +36,7 @@ export default class Sidebar extends React.PureComponent {
 
 		this.state = {
 			dateToday: moment(),
-			dayRecord: {},
 			loadingbar: false,
-			tagsDidChange: {},
 		};
 	}
 
@@ -46,18 +44,12 @@ export default class Sidebar extends React.PureComponent {
 		setInterval(() => this.updateTodaysDate, 1000 * 60 * 5); // 5 minutes
 	}
 
-	componentDidUpdate(prevProps, prevState) {
-		if (prevState.dayRecord !== this.state.dayRecord) {
-			this.props.getDayRecord(this.state.dayRecord);
-		}
-	}
-
 	updateTodaysDate() {
 		this.setState({ dateToday: moment() });
 	}
   
 	render() {
-		const { dayRecord, dateToday, loadingbar } = this.state;
+		const { dateToday, loadingbar } = this.state;
 
 		return (
 			<StyledSidebar>
@@ -72,18 +64,12 @@ export default class Sidebar extends React.PureComponent {
 				<Loadingbar active={loadingbar} />
 
 				<Calendar
-					tagsDidChange={this.state.tagsDidChange}
 					shareMethods={sharedMethods => (this.sharedMethods = sharedMethods)}
-					getDayRecord={record => this.setState({ dayRecord: record })}
 					showLoadingbar={status => this.setState({ loadingbar: status })}
 				/>
 
 				<MetaEditor
-					tagsDidChange={newTags => this.setState({ tagsDidChange: newTags })}
 					isReadModeActive={this.props.isReadModeActive}
-					recordID={dayRecord && dayRecord.id}
-					recordDate={dayRecord && dayRecord.assignedDay}
-					tags={dayRecord && dayRecord.tags}
 				/>
 
 				<Progress />
@@ -94,5 +80,4 @@ export default class Sidebar extends React.PureComponent {
 
 Sidebar.propTypes = {
 	isReadModeActive: PropTypes.bool.isRequired,
-	getDayRecord: PropTypes.func.isRequired,
 };
