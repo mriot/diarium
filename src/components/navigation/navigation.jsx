@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOutAlt, faStar, faPen, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faStar, faPen, faPlusSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import NavButton from "./nav-button";
 import Search from "./search";
 
@@ -33,23 +33,16 @@ const RightSide = styled.div `
 const ButtonContainer = styled.div `
   position: relative;
   display: flex;
-  margin-right: 20px;
+  /* margin-right: 20px; */
 `;
 const Separator = styled.div `
   width: 2px;
   align-self: stretch;
-  margin: 7px 5px 7px 20px;
-  background-color: rgba(255, 255, 255, 0.5);
+  margin: 5px 0;
+  background-color: #414247;
 `;
-const LogoutButton = styled.div `
-  color: #9e9e9e;
-  padding: 10px;
-  cursor: pointer;
-  transition: all 0.3s;
-  
-  &:hover {
-    color: orangered;
-  }
+const SearchWithMargin = styled(Search) `
+	margin: 0 20px;
 `;
 
 export default class Navigation extends React.PureComponent {
@@ -79,6 +72,23 @@ export default class Navigation extends React.PureComponent {
 								}}
 							/>
 						)}
+						{!isCreateButtonVisible && !isReadModeActive && (
+							<NavButton
+								icon={faTrash}
+								onClick={() => {
+									const rand3DigitsCode = Math.floor(10 + Math.random() * 90);
+
+									if (prompt(
+										// eslint-disable-next-line prefer-template
+										"Bist du dir sicher, dass du diesen Eintrag löschen möchtest? 😐\n" +
+										"Gib zum Bestätigen bitte diesen Code ein: " + rand3DigitsCode
+									) === String(rand3DigitsCode)) {
+										// TODO: add delete function
+										console.log("Delete...");
+									}
+								}}
+							/>
+						)}
 						{!isCreateButtonVisible && (
 							<NavButton
 								value="Bearbeiten"
@@ -101,13 +111,14 @@ export default class Navigation extends React.PureComponent {
 						/>
 					</ButtonContainer>
 
-					<Search placeholder="Suchen..." />
+					<SearchWithMargin placeholder="Suchen..." />
 
 					<Separator />
           
-					<LogoutButton onClick={() => this.logout()}>
-						<FontAwesomeIcon icon={faSignOutAlt} />
-					</LogoutButton>
+					<NavButton
+						icon={faSignOutAlt}
+						onClick={() => this.logout()}
+					/>
 				</RightSide>
 			</Nav>
 		);
