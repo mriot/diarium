@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import moment from "moment";
 import Progress from "./progress";
 import Calendar from "./calendar";
-import MetaEditor from "./tag-editor";
 import Loadingbar from "../common/loadingbar";
+import TagEditor from "./tag-editor";
 
 const StyledSidebar = styled.aside `
   position: relative;
@@ -82,7 +82,7 @@ export default class Sidebar extends React.PureComponent {
 					showLoadingbar={status => this.setState({ loadingbar: status })}
 				/>
 
-				<MetaEditor
+				<TagEditor
 					isReadModeActive={this.props.isReadModeActive}
 				/>
 

@@ -17,7 +17,7 @@ const rotate = keyframes `
 	}
 `;
 
-const MetaEditorContainer = styled.div `
+const TagEditorContainer = styled.div `
 	color: #fff;
 	width: 100%;
 	flex: 1;
@@ -39,12 +39,12 @@ const Spinner = styled(FontAwesomeIcon) `
 	transition-delay: 100ms;
 	animation: 1s ${rotate} linear infinite;
 `;
-const MetaFields = styled.div ` 
+const TagContainer = styled.div ` 
 	display: flex;
 	flex-direction: column;
 `;
 
-export default class MetaEditor extends React.PureComponent {
+export default class TagEditor extends React.PureComponent {
 	constructor(props) {
 		super(props);
 	
@@ -99,11 +99,11 @@ export default class MetaEditor extends React.PureComponent {
 		const selectedTags = this.context.dayRecord ? this.context.dayRecord.tags : [];
 
 		return (
-			<MetaEditorContainer>
+			<TagEditorContainer>
 				<Heading>
 					Tags <Spinner icon={faSyncAlt} spinning={this.state.spinnerActive ? 1 : 0} />
 				</Heading>
-				<MetaFields>
+				<TagContainer>
 					{Object.keys(definedTags).map((tag, index) => (
 						<Tag
 							key={index}
@@ -116,16 +116,16 @@ export default class MetaEditor extends React.PureComponent {
 							removeFromSelectedTags={oldTag => this.removeFromSelectedTags(oldTag)}
 						/>
 					))}
-				</MetaFields>
-			</MetaEditorContainer>
+				</TagContainer>
+			</TagEditorContainer>
 		);
 	}
 }
 
-MetaEditor.propTypes = {
+TagEditor.propTypes = {
 	isReadModeActive: PropTypes.bool.isRequired,
 };
 
-MetaEditor.defaultProps = {};
+TagEditor.defaultProps = {};
 
-MetaEditor.contextType = DayRecordContext;
+TagEditor.contextType = DayRecordContext;
