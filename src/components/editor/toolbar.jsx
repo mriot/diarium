@@ -133,7 +133,7 @@ export default class Toolbar extends React.PureComponent {
 					title: "Vollbild",
 					onClick: () => {
 						this.toggleFullScreen();
-						this.props.editorFocus();
+						if (!this.state.readMode) this.props.editorFocus();
 					},
 					isActive: () => this.state.inFullscreenMode,
 					icon: this.state.inFullscreenMode ? faCompress : faExpand,

@@ -201,10 +201,10 @@ export default class Editor extends React.PureComponent {
 					insertCode={() => this.markdownEditorRef.insertCode()}
 					insertLink={() => this.markdownEditorRef.insertLink()}
 					// called directly here
-					toggleZenMode={() => this.toggleZenMode}
-					togglePreview={preview ? () => this.hidePreview : () => this.showPreview}
-					toggleScrollSync={() => this.toggleScrollSync}
-					resetEditorLayout={() => this.resetEditorLayout}
+					toggleZenMode={() => this.toggleZenMode()}
+					togglePreview={preview ? () => this.hidePreview() : () => this.showPreview()}
+					toggleScrollSync={() => this.toggleScrollSync()}
+					resetEditorLayout={() => this.resetEditorLayout()}
 					// provides everything the Toolbar needs to know
 					toolbarStatus={{
 						readModeActive: readMode,
