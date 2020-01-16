@@ -41,11 +41,25 @@ export default class Sidebar extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		setInterval(() => this.updateTodaysDate, 1000 * 60 * 5); // 5 minutes
+		setInterval(() => {
+			if (moment(this.state.dateToday).diff(moment(), "days") > 0) {
+				console.log("'todaysDate' is one day behind — updating...");
+				this.updateTodaysDate();
+			}
+		}, 1000 * 60); // 1 min
+
+		// check after user inactivity
+		document.addEventListener("visibilitychange", () => {
+			if (!document.hidden && moment(this.state.dateToday).diff(moment(), "days") > 0) {
+				console.log("'todaysDate' is one day behind — updating...");
+				this.updateTodaysDate();
+			}
+		});
 	}
 
 	updateTodaysDate() {
-		this.setState({ dateToday: moment() });
+		this.setState({ dateToday: moment() },
+			() => console.log("Updated 'todaysDate' 👍"));
 	}
   
 	render() {
