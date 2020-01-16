@@ -52,6 +52,7 @@ module.exports = {
     "no-return-assign": ["error", "except-parens"],
     "no-underscore-dangle": ["warn", {"allowAfterThis": true}],
     "class-methods-use-this": ["off"],
+    "no-alert": ["off"],
 
     "react/jsx-indent": ["error", "tab"],
     "react/require-default-props": ["warn"],
