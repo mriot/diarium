@@ -10,6 +10,7 @@ import { searchResultAnimation } from "./animations";
 
 const StyledSearch = styled.div `
 	position: relative;
+	margin: 0 20px;
 `;
 const StyledTextInput = styled(TextInput) `
 	width: 20vw;
@@ -33,7 +34,6 @@ const SearchResultContainer = styled.div `
 	box-shadow: 1px 5px 7px 1px rgba(0, 0, 0, 0.5);
 	background-color: #20232a;
 `;
-
 const PosedResult = posed(NavLink)(searchResultAnimation);
 const SearchResult = styled(PosedResult) `
 	display: block;
@@ -104,6 +104,7 @@ export default class Search extends React.PureComponent {
 		return (
 			<StyledSearch ref={input => (this.input = input)}>
 				<StyledTextInput {...this.props}
+					autocomplete="off" autocorrect="off" spellcheck="false" type="search"
 					onChange={event => this.handleChange(event.currentTarget.value)}
 					onFocus={() => this.setShowResults(!!this.state.searchResults)}
 				/>
@@ -129,6 +130,4 @@ export default class Search extends React.PureComponent {
 	}
 }
 
-Search.propTypes = {
-	
-};
+Search.propTypes = {};

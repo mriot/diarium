@@ -41,9 +41,6 @@ const Separator = styled.div `
   margin: 5px 0;
   background-color: #414247;
 `;
-const SearchWithMargin = styled(Search) `
-	margin: 0 20px;
-`;
 
 export default class Navigation extends React.PureComponent {
 	logout() {
@@ -111,7 +108,7 @@ export default class Navigation extends React.PureComponent {
 						/>
 					</ButtonContainer>
 
-					<SearchWithMargin placeholder="Suchen..." />
+					<Search placeholder="Suchen..." />
 
 					<Separator />
           
