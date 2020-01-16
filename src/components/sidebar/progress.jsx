@@ -98,6 +98,8 @@ class Progress extends React.PureComponent {
 
 	render() {
 		const { selectedDay, progressMonth, progressYear, progressTotal } = this.state;
+		const progressYearPercent = ((progressYear / (moment(selectedDay).isLeapYear() ? 366 : 365)) * 100).toFixed(2);
+		const progressMonthPercent = ((progressMonth / moment(selectedDay).daysInMonth()) * 100).toFixed(2);
 
 		return (
 			<ProgressContainer>
@@ -108,15 +110,15 @@ class Progress extends React.PureComponent {
 
 				<ProgressDescription>
 					Einträge im {moment(selectedDay).format("MMMM")}: {progressMonth}
-					<span>({((progressMonth / moment(selectedDay).daysInMonth()) * 100).toFixed(2)}%)</span>
+					<span>({progressMonthPercent}%)</span>
 				</ProgressDescription>
-				<ProgressBar progress={progressMonth} />
+				<ProgressBar progress={progressMonthPercent} />
 
 				<ProgressDescription>
 					Einträge in {moment(selectedDay).year()}: {progressYear}
-					<span>({((progressYear / (moment(selectedDay).isLeapYear() ? 366 : 365)) * 100).toFixed(2)}%)</span>
+					<span>({progressYearPercent}%)</span>
 				</ProgressDescription>
-				<ProgressBar progress={progressYear} />
+				<ProgressBar progress={progressYearPercent} />
 
 				<TotalDescription>
 					Einträge gesamt: {progressTotal}
