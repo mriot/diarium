@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { NavLink } from "react-router-dom";
 
 const NavItem = styled.div `
   position: relative;
@@ -18,6 +17,7 @@ const NavItem = styled.div `
 
   > span {
     display: inline-block;
+    margin-left: ${props => (props.value && props.icon ? 10 : 0)}px;
   }
 
   &:hover {
@@ -33,7 +33,6 @@ const NavItem = styled.div `
 const StyledFontAwesomeIcon = styled(FontAwesomeIcon) `
   position: relative;
   top: 1px;
-  margin-right: 10px;
 `;
 
 export default class NavButton extends React.PureComponent {
@@ -51,4 +50,10 @@ NavButton.propTypes = {
 	active: PropTypes.bool,
 	value: PropTypes.string,
 	icon: PropTypes.object,
+};
+
+NavButton.defaultProps = {
+	active: false,
+	value: "",
+	icon: null,
 };
