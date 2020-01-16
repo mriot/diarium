@@ -6,47 +6,29 @@
 // main screen enter and exit animation
 export const highlightsAnimation = {
 	enter: {
-		scale: 1,
-		rotateX: 0,
+		translateX: 0,
 
-		applyAtStart: {position: "absolute"},
-		applyAtEnd: {
-			position: "relative",
-			scale: 1,
-			rotateX: 0,
-		},
+		applyAtStart: { position: "absolute" },
+		applyAtEnd: { position: "relative" },
 
 		transition: {
-			delay: 1000,
-			duration: 1000,
+			duration: 500,
 			ease: "anticipate",
-
-			rotateX: {
-				duration: 400,
-				delay: 900,
-			}
 		},
 	},
 
 
 	exit: {
-		scale: 0.75,
-		rotateX: -180,
+		translateX: "100%",
 
-		applyAtStart: {position: "absolute"},
-		applyAtEnd: {position: "relative"},
+		applyAtStart: { position: "absolute" },
+		applyAtEnd: { position: "relative" },
 
 		transition: {
-			duration: 1000,
-			ease: "easeOut",
-
-			rotateX: {
-				duration: 400,
-				delay: 900,
-			}
+			duration: 500,
 		},
 	},
-}
+};
 
 
 export const highlightCardAnimation = {
@@ -73,7 +55,7 @@ export const highlightCardAnimation = {
 		},
 
 		transition: {
-			duration: 200
-		}
+			duration: 200,
+		},
 	},
-}
+};
