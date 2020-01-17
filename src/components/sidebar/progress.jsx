@@ -5,7 +5,6 @@ import moment from "moment";
 import { withRouter, history } from "react-router-dom";
 import ProgressBar from "../common/progressbar";
 import { countAllEntries, countRecordsInRange } from "../../lib/backend";
-import { DayRecordContext } from "../../contexts";
 
 const ProgressContainer = styled.div `
 	padding: 0 0 5px 5px;
@@ -43,13 +42,19 @@ class Progress extends React.PureComponent {
 	}
 
 	componentDidMount() {
+		// listen for history changes
 		this.historyUnlisten = this.props.history.listen((location, action) => {
-			this.updateProgress(location.pathname);
+			const parsedDate = moment(location.pathname, "YYYY/MM/DD");
+			if (!parsedDate.isValid() || parsedDate.isSame(this.state.selectedDay)) return;
+
+			this.updateProgress(parsedDate);
 		});
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (this.context.dayRecord) {
+		const parsedDate = moment(window.location.pathname, "YYYY/MM/DD");
+
+		if (parsedDate.isValid() && parsedDate.isSame(this.state.selectedDay)) {
 			this.updateProgress(window.location.pathname);
 		}
 	}
@@ -131,7 +136,5 @@ class Progress extends React.PureComponent {
 Progress.propTypes = {
 	history: PropTypes.object.isRequired,
 };
-
-Progress.contextType = DayRecordContext;
 
 export default withRouter(Progress);
