@@ -30,5 +30,5 @@ export default class ProgressBar extends React.PureComponent {
 }
 
 ProgressBar.propTypes = {
-	progress: PropTypes.number.isRequired,
+	progress: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
