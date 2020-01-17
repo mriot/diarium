@@ -1,70 +1,41 @@
 # Diarium
 
-## Navigation
+## What I've learned during this project
 
-* Bearbeiten Modus für ausgewählten Tag umschalten
-* Meta Daten Editor
-* Favoriten
-* Suche
-* Logout
+### Web Frontend
 
----
+- Using Node as dev environment
+- React + Ecosystem
+- JSX
+- Serviceworker (offline capabilities)
+- Many libraries and modules
 
-## Editor / Preview
+### Backend
 
-* Mit Markdown formatieren
-  * Markdown Editor und Preview
-    * Split Ansicht ist anpassbar
+- Node as Webserver
+- Express Framework
+- Session management with JSON Web Tokens (JWT)
+- REST core concepts
+- Creating, planning, developing and testing API endpoints
+  - Postman
+- Using SQLite as database
+- Custom backup management
 
-### Toolbar (im Editor)
+### Server
 
-* Undo / Redo
-* Medien (Bilder, etc) hochladen / einbinden
-* Link einfügen
-* Code Snippet einfügen
-* Scroll Synchonisierung (Editor -> Preview)
-* Zen-Mode
-* Split Ansicht togglen
-* Fullscreen
-* Editor Layout reset
+- Using a Raspberry PI as Webserver
+- SSH (managing the PI via CLI)
+- Creating a VPN to access the Raspberry via internet
 
-### Metadaten Editor
+### Mobile App
 
-* Kategorien / Labels
+- React Native
 
----
+### Misc
 
-## Sidebar
-
-* Kalender
-* Progress in % (wie viele Tage abgedeckt sind)
-  * Woche, Monat und Jahr
-* "Toast notifications" (?)
-
-### Kalender
-
-* Farblich hervorgehobene Tage
-  * Tage mit Einträgen (grüne "Box")
-  * Feiertage (F)
-  * Urlaubstage (U)
-  * Krankheitstage (K)
-* Kalender Navigation mit Pfeilen: "einen Tag vor/zurück"
-* Ausgewählter Tag wird als Pfad in Adresszeile geschrieben
-  * z.B. /2019/11/22  <- 22. November 2019
-
----
-
-## Datenbank
-
-* Inhalt sollte irgendwie geschützt sein
-  * Gecrypted (?)
-* Felder
-  * ID
-  * Timestamp (z.B UTC)
-    * Zu welchem Tag gehört der Eintrag?
-  * Markup/Content type ("markdown", ...)
-    * Falls wir evtl. mal auf was anderes umbauen wollen
-  * SFW/NSFW Flag
-    * NSFW -> Inhalt geblurt und muss freigeschaltet werden (?)
-  * Kategorien / Labels
-    * z.B. "bild, sfw, fun, ..."
+- JS APIs and things
+  - Fetch
+  - Promises + Async / Await
+  - Object destructuring
+  - Spread operator
+- Using a JS linter (eslint) with a (slightly) customized styleguide from Airbnb
