@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { PoseGroup } from "react-pose";
+import posed, { PoseGroup } from "react-pose";
 import moment from "moment";
 import Navigation from "./components/navigation/navigation";
 import Sidebar from "./components/sidebar/sidebar";
@@ -13,8 +13,10 @@ import "moment/locale/de";
 import Login from "./components/login/login";
 import { isLoggedIn, createNewEntry } from "./lib/backend";
 import { DayRecordContext } from "./contexts";
+import { mainLayoutContainerAnimation, loginContainerAnimation } from "./animations";
 
-const Layout = styled.div `
+const PosedLayout = posed.div(mainLayoutContainerAnimation);
+const Layout = styled(PosedLayout) `
   position: relative;
   max-height: 100vh;
   height: 100vh;
@@ -30,7 +32,7 @@ const Main = styled.main `
   height: 100%;
   /* perspective: 1000px; */
 `;
-
+const LoginContainer = posed.div(loginContainerAnimation);
 export default class App extends React.PureComponent {
 	constructor(props) {
 		super(props);
@@ -40,7 +42,7 @@ export default class App extends React.PureComponent {
 		this.state = {
 			readMode: true,
 			showHighlights: false,
-			isLoggedIn: false,
+			loggedIn: false,
 			tokenChecked: false,
 			dayRecord: {},
 		};
@@ -58,7 +60,7 @@ export default class App extends React.PureComponent {
 	}
 
 	setLoggedIn(status) {
-		this.setState({ isLoggedIn: status, tokenChecked: true });
+		this.setState({ loggedIn: status, tokenChecked: true });
 	}
 
 	createNewEntryForSelectedDay() {
@@ -81,57 +83,62 @@ export default class App extends React.PureComponent {
 	}
   
 	render() {
+		const { tokenChecked, loggedIn, dayRecord, readMode, showHighlights } = this.state;
+
 		// prevent flashing '/login' in URL on page load when user is logged in
-		if (!this.state.tokenChecked) return null;
+		if (!tokenChecked) return null;
 
 		return (
 			<BrowserRouter>
-				{!this.state.isLoggedIn && (
-					<>
-						<Redirect to="/login" />
-						<Route path="/login" exact>
-							<Login setLoggedIn={status => this.setLoggedIn(status)} />
-						</Route>
-					</>
-				)}
+				<PoseGroup>
+					{!loggedIn && (
+						<LoginContainer key="posed-login-container-771634">
+							<Redirect to="/login" />
+							<Route path="/login" exact>
+								<Login setLoggedIn={status => this.setLoggedIn(status)} />
+							</Route>
+						</LoginContainer>
+					)}
 
-				{this.state.isLoggedIn && (
-					<Layout>
-						<DayRecordContext.Provider value={{
-							dayRecord: this.state.dayRecord,
-							updateDayRecord: newDayRecord => this.setState({ dayRecord: newDayRecord }),
-						}}
-						>
-							<Navigation
-								isReadModeActive={this.state.readMode}
-								setReadMode={bool => this.setState({ readMode: bool })}
-								isHighlightsViewActive={this.state.showHighlights}
-								setHighlightsView={bool => this.setState({ showHighlights: bool })}
-								setLoggedIn={bool => this.setLoggedIn(bool)}
-								isCreateButtonVisible={!this.state.dayRecord}
-								createNewEntry={() => this.createNewEntryForSelectedDay()}
-							/>
-
-							<Sidebar
-								isReadModeActive={this.state.readMode}
-							/>
-
-							<Main>
-								<PoseGroup>
-									{this.state.showHighlights &&
-									<Highlights key="highlights" />}
-								</PoseGroup>
-
-								<Editor
-									isReadModeActive={this.state.readMode}
-									pose={this.state.showHighlights ? "hidden" : "visible"}
+					{loggedIn && (
+						<Layout key="posed-layout-831276">
+							<DayRecordContext.Provider value={{
+								dayRecord,
+								updateDayRecord: newDayRecord => this.setState({ dayRecord: newDayRecord }),
+							}}
+							>
+								<Navigation
+									isReadModeActive={readMode}
+									setReadMode={bool => this.setState({ readMode: bool })}
+									isHighlightsViewActive={showHighlights}
+									setHighlightsView={bool => this.setState({ showHighlights: bool })}
+									setLoggedIn={bool => this.setLoggedIn(bool)}
+									isCreateButtonVisible={!dayRecord}
+									createNewEntry={() => this.createNewEntryForSelectedDay()}
 								/>
-							</Main>
-						</DayRecordContext.Provider>
-					</Layout>
-				)}
 
-				{this.state.isLoggedIn && (
+								<Sidebar
+									isReadModeActive={readMode}
+								/>
+
+								<Main>
+									<PoseGroup>
+										{showHighlights && (
+											<Highlights key="highlights" />
+										)}
+									</PoseGroup>
+
+									<Editor
+										isReadModeActive={readMode}
+										pose={showHighlights ? "hidden" : "visible"}
+									/>
+								</Main>
+							</DayRecordContext.Provider>
+						</Layout>
+					)}
+				</PoseGroup>
+
+				{loggedIn && (
 					<Switch>
 						<Redirect from="/login" to="/" exact />
 					</Switch>
