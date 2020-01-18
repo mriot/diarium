@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt, faStar, faPen, faPlusSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import NavButton from "./nav-button";
 import Search from "./search";
@@ -63,15 +62,12 @@ export default class Navigation extends React.PureComponent {
 							<NavButton
 								icon={faTrash}
 								onClick={() => {
-									const rand3DigitsCode = Math.floor(10 + Math.random() * 90);
-
 									if (prompt(
 										// eslint-disable-next-line prefer-template
 										"Bist du dir sicher, dass du diesen Eintrag löschen möchtest? 😐\n" +
-										"Gib zum Bestätigen bitte diesen Code ein: " + rand3DigitsCode
-									) === String(rand3DigitsCode)) {
-										// TODO: add delete function
-										console.log("Delete...");
+										"Gib zum Bestätigen bitte 'ok' ein"
+									) === "ok") {
+										this.props.deleteEntry();
 									}
 								}}
 							/>
@@ -130,4 +126,5 @@ Navigation.propTypes = {
 	setLoggedIn: PropTypes.func.isRequired,
 	isCreateButtonVisible: PropTypes.bool.isRequired,
 	createNewEntry: PropTypes.func.isRequired,
+	deleteEntry: PropTypes.func.isRequired,
 };
