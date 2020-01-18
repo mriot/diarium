@@ -87,10 +87,7 @@ export default class Editor extends React.PureComponent {
 
 		this.setUpSeparator();
 
-		// don't load fetched markdown into state while we're in edit mode
-		if (isReadModeActive) {
-			this.setState({ markdown: dayRecord ? dayRecord.content : "" });
-		}
+		this.setState({ markdown: GLOBAL_DAYRECORD ? GLOBAL_DAYRECORD.content : "" });
 
 		if (prevProps.isReadModeActive !== isReadModeActive) {
 			this.setState({ readMode: isReadModeActive });
@@ -121,7 +118,9 @@ export default class Editor extends React.PureComponent {
 
 	setUpSeparator() {
 		if (!this.state.nodesReady) {
+			// eslint-disable-next-line react/no-find-dom-node
 			this.editorContainerNode = ReactDOM.findDOMNode(this.editorContainerRef.current);
+			// eslint-disable-next-line react/no-find-dom-node
 			this.previewNode = ReactDOM.findDOMNode(this.markdownViewRef.current);
 			// render separator when all node refs are available
 			if (this.editorContainerNode && this.previewNode) this.setState({ nodesReady: true });
