@@ -43,7 +43,7 @@ export default class App extends React.PureComponent {
 			showHighlights: false,
 			loggedIn: false,
 			tokenChecked: false,
-			dayRecord: {},
+			dayRecord: null,
 		};
 	}
 
@@ -105,8 +105,9 @@ export default class App extends React.PureComponent {
 					{loggedIn && (
 						<Layout key="posed-layout-831276">
 							<GlobalContext.Provider value={{
-								dayRecord,
-								updateDayRecord: newDayRecord => this.setState({ dayRecord: newDayRecord }),
+								GLOBAL_DAYRECORD: dayRecord,
+								GLOBAL_READMODE: readMode,
+								UPDATE_GLOBAL_DAYRECORD: newDayRecord => this.setState({ dayRecord: newDayRecord }),
 							}}
 							>
 								<Navigation

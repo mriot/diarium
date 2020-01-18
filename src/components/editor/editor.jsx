@@ -82,9 +82,8 @@ export default class Editor extends React.PureComponent {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		const { markdown } = this.state;
 		const { isReadModeActive } = this.props;
-		const { dayRecord } = this.context;
+		const { GLOBAL_DAYRECORD } = this.context;
 
 		this.setUpSeparator();
 
@@ -100,15 +99,17 @@ export default class Editor extends React.PureComponent {
 
 	// eslint-disable-next-line react/sort-comp
 	saveContent() {
-		if (!this.context.dayRecord) throw new Error("Can't save to not existing entry!");
+		const { GLOBAL_DAYRECORD, UPDATE_GLOBAL_DAYRECORD } = this.context;
+
+		if (!GLOBAL_DAYRECORD) throw new Error("Can't save to not existing entry!");
 		this.setState({ saveStatusText: "Speichern..." });
 
-		updateExistingEntryById(this.context.dayRecord.id, {
+		updateExistingEntryById(GLOBAL_DAYRECORD.id, {
 			content: this.state.markdown,
 		})
 			.then(result => {
 				if (!result.error) {
-					this.context.updateDayRecord(result);
+					UPDATE_GLOBAL_DAYRECORD(result);
 					this.setState({ saveStatusText: "Gespeichert!" });
 				} else {
 					this.setState({ saveStatusText: `Speichern fehlgeschlagen! ${result.error}` });

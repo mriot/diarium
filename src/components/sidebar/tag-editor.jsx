@@ -62,16 +62,16 @@ export default class TagEditor extends React.PureComponent {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (this.context.dayRecord) {
+		if (this.context.GLOBAL_DAYRECORD) {
 			this.setState({ checkboxDisabled: this.props.isReadModeActive });
 		}
 	}
 
 	_updateSelectedTags(newSelectedTags) {
-		updateExistingEntryById(this.context.dayRecord.id, { tags: newSelectedTags })
+		updateExistingEntryById(this.context.GLOBAL_DAYRECORD.id, { tags: newSelectedTags })
 			.then(result => {
 				if (!result.error) {
-					this.context.updateDayRecord(result);
+					this.context.UPDATE_GLOBAL_DAYRECORD(result);
 				} else {
 					toast.error("Die Tags konnten leider nicht geupdated werden... 😟");
 				}
@@ -84,19 +84,19 @@ export default class TagEditor extends React.PureComponent {
 		if (this.state.spinnerActive) return;
 		this.setState({ spinnerActive: true });
 
-		this._updateSelectedTags([...this.context.dayRecord.tags, tag]);
+		this._updateSelectedTags([...this.context.GLOBAL_DAYRECORD.tags, tag]);
 	}
 
 	removeFromSelectedTags(tag) {
 		if (this.state.spinnerActive) return;
 		this.setState({ spinnerActive: true });
 
-		this._updateSelectedTags(this.context.dayRecord.tags.filter(oldTag => oldTag !== tag));
+		this._updateSelectedTags(this.context.GLOBAL_DAYRECORD.tags.filter(oldTag => oldTag !== tag));
 	}
 
 	render() {
 		const { definedTags } = this.state;
-		const selectedTags = this.context.dayRecord ? this.context.dayRecord.tags : [];
+		const selectedTags = this.context.GLOBAL_DAYRECORD ? this.context.GLOBAL_DAYRECORD.tags : [];
 
 		return (
 			<TagEditorContainer>
