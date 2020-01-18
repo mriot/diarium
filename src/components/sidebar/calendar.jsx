@@ -126,8 +126,9 @@ class Calendar extends React.PureComponent {
 
 				<StyledCalendar
 					className="calendar-dark-theme"
-					key={forceUpdateCalendar}
+					key="diarium_calendar_key"
 					value={selectedDay}
+					forceUpdateCalendar={forceUpdateCalendar}
 					minDetail={!GLOBAL_READMODE ? "month" : "decade"}
 					minDate={!GLOBAL_READMODE ? moment(selectedDay).toDate() : null}
 					maxDate={!GLOBAL_READMODE ? moment(selectedDay).toDate() : null}
@@ -138,12 +139,11 @@ class Calendar extends React.PureComponent {
 
 						const currentTilesDate = moment(date).format("YYYY-MM-DD");
 
-						// current dayRecord (via context) did change
+						// global dayRecord (via context) did change — e.g. created
 						if (GLOBAL_DAYRECORD && moment(currentTilesDate).isSame(GLOBAL_DAYRECORD.assignedDay)) {
 							return [...GLOBAL_DAYRECORD.tags, "marked"].flat(Infinity);
 						}
 
-						// this runs for any other than the selected tile
 						const { entries } = fetchedEntries;
 						const holidays = fetchedHolidays;
 						const classNamesArray = [];

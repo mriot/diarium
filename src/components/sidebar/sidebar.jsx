@@ -48,7 +48,7 @@ export default class Sidebar extends React.PureComponent {
 			}
 		}, 1000 * 60); // 1 min
 
-		// check after user inactivity
+		// check date after user inactivity ended
 		document.addEventListener("visibilitychange", () => {
 			if (!document.hidden && moment(this.state.dateToday).diff(moment(), "days") > 0) {
 				console.log("'todaysDate' is one day behind — updating...");
@@ -82,9 +82,7 @@ export default class Sidebar extends React.PureComponent {
 					showLoadingbar={status => this.setState({ loadingbar: status })}
 				/>
 
-				<TagEditor
-					isReadModeActive={this.props.isReadModeActive}
-				/>
+				<TagEditor />
 
 				<Progress />
 			</StyledSidebar>
