@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 import ReactDOM from "react-dom";
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
+import styled from "styled-components";
+import PropTypes from "prop-types";
 import ReactMarkdown from "react-markdown";
-import "../../themes/markdown-ceres.css"
-import "../../themes/markdown-vesta.css"
+import "../../themes/markdown-ceres.css";
+import "../../themes/markdown-vesta.css";
 
 const RenderedMarkdownContainer = styled.div `
 	width: 50%;
@@ -21,7 +21,15 @@ const RenderedMarkdownContainer = styled.div `
 		width: 0 !important;
 		padding: 0;
 	}
-`
+`;
+const DefaultMarkdown = styled(ReactMarkdown) `
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	width: fit-content;
+	transform: translateX(-50%);
+	text-align: center;
+`;
 
 export default class MarkdownView extends React.PureComponent {
 	constructor(props) {
@@ -36,26 +44,36 @@ export default class MarkdownView extends React.PureComponent {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (this.props.isScrollSyncActive)
+		if (this.props.isScrollSyncActive) {
 			this.markdownOutputNode.scrollTop = this.props.scrollSyncPos;
+		}
 	}
 	
 	render() {
+		const { isReadModeActive, markdown } = this.props;
 		return (
 			<RenderedMarkdownContainer
 				ref={this.markdownOutputRef}
 				className="markdown-body"
-				isReadModeActive={this.props.isReadModeActive}	
+				isReadModeActive={isReadModeActive}
 			>
-				<ReactMarkdown source={this.props.markdown} />
+				{!markdown && (
+					<DefaultMarkdown source={
+						"## Für diesen Tag gibt es noch keinen Eintrag.\n\n### Leg' doch einen an! 😇"
+					}
+					/>
+				)}
+				<ReactMarkdown source={markdown} />
 			</RenderedMarkdownContainer>
 		);
 	}
 }
 
 MarkdownView.propTypes = {
-	markdown: PropTypes.string,
-	scrollSyncPos: PropTypes.number,
-	isReadModeActive: PropTypes.bool,
-	isScrollSyncActive: PropTypes.bool,
-}
+	markdown: PropTypes.string.isRequired,
+	scrollSyncPos: PropTypes.number.isRequired,
+	isReadModeActive: PropTypes.bool.isRequired,
+	isScrollSyncActive: PropTypes.bool.isRequired,
+};
+
+MarkdownView.defaultProps = {};
