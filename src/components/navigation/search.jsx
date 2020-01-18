@@ -10,7 +10,7 @@ import { searchResultAnimation } from "./animations";
 
 const StyledSearch = styled.div `
 	position: relative;
-	margin: 0 20px;
+	margin: 0 30px;
 `;
 const StyledTextInput = styled(TextInput) `
 	width: 20vw;
