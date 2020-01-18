@@ -70,7 +70,7 @@
 }
 
 .react-calendar__month-view__weekdays abbr[title] {
-	/* remove dotted underline of "MO", "DI", "MI", etc */
+	/* remove dotted underline below "MO", "DI", "MI", etc */
   text-decoration: none;
 }
 
@@ -113,6 +113,9 @@
   color: #00ff8b !important;
   box-shadow: inset 0 0 0 1px rgba(0, 255, 139, 0.3);
   transition: all 0.2s;
+}
+.calendar-dark-theme .react-calendar__tile.marked:disabled:not(.react-calendar__tile--active) {
+  color: darkgreen !important;
 }
 
 .calendar-dark-theme .react-calendar__tile.vacation > abbr::before {

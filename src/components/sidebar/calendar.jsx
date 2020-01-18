@@ -62,7 +62,7 @@ class Calendar extends React.PureComponent {
 				moment(selectedDay).format("MM"),
 				moment(selectedDay).format("DD")
 			)
-				.then(fetchedDayRecord => this.context.updateDayRecord(fetchedDayRecord))
+				.then(fetchedDayRecord => this.context.UPDATE_GLOBAL_DAYRECORD(fetchedDayRecord))
 				.then(() => this.props.showLoadingbar(false))
 				.catch(error => console.error(error));
 	
@@ -71,7 +71,7 @@ class Calendar extends React.PureComponent {
 				.catch(error => {
 					console.error(error);
 					toast.error("Whoops! 😱 Die Einträge für diesen Monat konnten nicht geladen werden.");
-					this.setState({ fetchedEntries: {} });
+					this.setState({ fetchedEntries: null });
 				});
 	
 			const holidaysProm = fetchHolidays(selectedDay.format("YYYY"))
@@ -79,7 +79,7 @@ class Calendar extends React.PureComponent {
 				.catch(error => {
 					console.error(error);
 					toast.error("Whoops! 😱 Die Feiertage konnten nicht geladen werden.");
-					this.setState({ fetchedHolidays: {} });
+					this.setState({ fetchedHolidays: null });
 				});
 	
 			// hide loadingbar if all of above have finished
@@ -93,6 +93,8 @@ class Calendar extends React.PureComponent {
 	}
 
 	resetCalendarToToday(today = moment().toDate()) {
+		if (!this.context.GLOBAL_READMODE) return;
+		
 		this.props.showLoadingbar(true);
 
 		this.setState({
@@ -115,7 +117,7 @@ class Calendar extends React.PureComponent {
 			fetchedEntries, fetchedHolidays,
 		} = this.state;
 
-		const { dayRecord } = this.context;
+		const { GLOBAL_DAYRECORD, GLOBAL_READMODE } = this.context;
 		
 		if (!selectedDay) return null;
 		return (
@@ -126,8 +128,10 @@ class Calendar extends React.PureComponent {
 					className="calendar-dark-theme"
 					key={forceUpdateCalendar}
 					value={selectedDay}
-					minDetail="decade"
-					minDate={moment("2019-01-01").toDate()}
+					minDetail={!GLOBAL_READMODE ? "month" : "decade"}
+					minDate={!GLOBAL_READMODE ? moment(selectedDay).toDate() : null}
+					maxDate={!GLOBAL_READMODE ? moment(selectedDay).toDate() : null}
+					tileDisabled={() => !GLOBAL_READMODE}
 					tileClassName={({ activeStartDate, date, view }) => {
 						if (view !== "month") return false;
 						if (!fetchedEntries || !fetchedHolidays) return false;
@@ -135,8 +139,8 @@ class Calendar extends React.PureComponent {
 						const currentTilesDate = moment(date).format("YYYY-MM-DD");
 
 						// current dayRecord (via context) did change
-						if (dayRecord && moment(currentTilesDate).isSame(dayRecord.assignedDay)) {
-							return [...dayRecord.tags, "marked"].flat(Infinity);
+						if (GLOBAL_DAYRECORD && moment(currentTilesDate).isSame(GLOBAL_DAYRECORD.assignedDay)) {
+							return [...GLOBAL_DAYRECORD.tags, "marked"].flat(Infinity);
 						}
 
 						// this runs for any other than the selected tile
@@ -198,7 +202,7 @@ class Calendar extends React.PureComponent {
 						this.setState({ selectedDay: activeStartDate });
 
 						getRecordForDay(date.format("YYYY"), date.format("MM"), date.format("DD"))
-							.then(fetchedDayRecord => this.context.updateDayRecord(fetchedDayRecord))
+							.then(fetchedDayRecord => this.context.UPDATE_GLOBAL_DAYRECORD(fetchedDayRecord))
 							.then(() => this.props.showLoadingbar(false))
 							.catch(error => console.error(error));
 					}}
