@@ -39,6 +39,7 @@ export default class MarkdownView extends React.PureComponent {
 	}
 	
 	componentDidMount() {
+		// eslint-disable-next-line react/no-find-dom-node
 		this.markdownOutputNode = ReactDOM.findDOMNode(this.markdownOutputRef.current);
 		this.markdownOutputNode.scrollTop = this.props.scrollSyncPos;
 	}
@@ -57,7 +58,7 @@ export default class MarkdownView extends React.PureComponent {
 				className="markdown-body"
 				isReadModeActive={isReadModeActive}
 			>
-				{!markdown && (
+				{!markdown && isReadModeActive && (
 					<DefaultMarkdown source={
 						"## Für diesen Tag gibt es noch keinen Eintrag.\n\n### Leg' doch einen an! 😇"
 					}
