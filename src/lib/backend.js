@@ -184,3 +184,17 @@ export const updateExistingEntryById = (id, newBodyObj) => {
 		});
 };
 /* */
+
+// DELETE ====================================================
+/* */
+export const deleteEntryById = id => {
+	return fetch(`${BACKEND_URL}/entries?id=${id}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${GLOBAL_TOKEN}`,
+		},
+	})
+		.then(response => response.json())
+		.catch(error => console.error(error));
+};

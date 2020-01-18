@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import posed, { PoseGroup } from "react-pose";
 import moment from "moment";
@@ -11,7 +11,7 @@ import Editor from "./components/editor/editor";
 import Highlights from "./components/highlights/highlights";
 import "moment/locale/de";
 import Login from "./components/login/login";
-import { isLoggedIn, createNewEntry } from "./lib/backend";
+import { isLoggedIn, createNewEntry, deleteEntryById } from "./lib/backend";
 import { GlobalContext } from "./contexts";
 import { mainLayoutContainerAnimation, loginContainerAnimation } from "./animations";
 
@@ -87,6 +87,25 @@ export default class App extends React.PureComponent {
 				}
 			});
 	}
+
+	async deleteEntryFromSelectedDay() {
+		// NOTE: security check is made on button press in <Navigation />
+		if (!this.state.dayRecord) return false;
+		const result = await deleteEntryById(this.state.dayRecord.id);
+
+		if (result.error) {
+			toast.error(`Der Eintrag konnte nicht gelöscht werden. 🙈 Der Server antwortete mit: ${result.error}`);
+			console.error(result.error);
+			return false;
+		}
+		toast.info("Der Eintrag wurde gelöscht! 💀");
+		console.log("The deleted entry:", result);
+		this.setState({
+			readMode: true,
+			dayRecord: null,
+		});
+		return true;
+	}
   
 	render() {
 		const {
@@ -125,6 +144,7 @@ export default class App extends React.PureComponent {
 									setLoggedIn={bool => this.setLoggedIn(bool)}
 									isCreateButtonVisible={!dayRecord}
 									createNewEntry={() => this.createNewEntryForSelectedDay()}
+									deleteEntry={() => this.deleteEntryFromSelectedDay()}
 								/>
 
 								<Sidebar
@@ -156,12 +176,12 @@ export default class App extends React.PureComponent {
 
 				<ToastContainer
 					// hideProgressBar={true}
-					position="bottom-left"
+					position="bottom-right"
 					autoClose={10000}
 					newestOnTop
 					progressStyle={{ background: "linear-gradient(to right, #00b7ff, #5ac8fa, #007aff, #34aadc)" }}
 					style={{
-						left: 0,
+						right: 0,
 					}}
 				/>
 			</BrowserRouter>
