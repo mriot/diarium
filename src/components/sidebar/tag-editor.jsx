@@ -62,9 +62,7 @@ export default class TagEditor extends React.PureComponent {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (this.context.GLOBAL_DAYRECORD) {
-			this.setState({ checkboxDisabled: this.props.isReadModeActive });
-		}
+		this.setState({ checkboxDisabled: this.context.GLOBAL_READMODE });
 	}
 
 	_updateSelectedTags(newSelectedTags) {
@@ -122,9 +120,7 @@ export default class TagEditor extends React.PureComponent {
 	}
 }
 
-TagEditor.propTypes = {
-	isReadModeActive: PropTypes.bool.isRequired,
-};
+TagEditor.propTypes = {};
 
 TagEditor.defaultProps = {};
 
