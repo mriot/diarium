@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 import Tag from "./tag";
 import { updateExistingEntryById } from "../../lib/backend";
-import { DayRecordContext } from "../../contexts";
+import { GlobalContext } from "../../contexts";
 
 const rotate = keyframes `
 	from {
@@ -128,4 +128,4 @@ TagEditor.propTypes = {
 
 TagEditor.defaultProps = {};
 
-TagEditor.contextType = DayRecordContext;
+TagEditor.contextType = GlobalContext;

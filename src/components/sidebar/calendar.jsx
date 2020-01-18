@@ -8,7 +8,7 @@ import { Redirect, withRouter } from "react-router-dom";
 import "../../themes/calendar-eros.css";
 import { fetchHolidays } from "../../lib/external";
 import { getRecordsInRange, getRecordForDay } from "../../lib/backend";
-import { DayRecordContext } from "../../contexts";
+import { GlobalContext } from "../../contexts";
 
 const StyledCalendar = styled(ReactCalendar) `
   border-bottom: 1px solid #191919;
@@ -222,6 +222,6 @@ Calendar.propTypes = {
 
 Calendar.defaultProps = {};
 
-Calendar.contextType = DayRecordContext;
+Calendar.contextType = GlobalContext;
 
 export default withRouter(Calendar);

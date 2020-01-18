@@ -1,7 +1,6 @@
 import React from "react";
 
-const DayRecordContext = React.createContext();
-DayRecordContext.displayName = "DayRecordContext";
+const GlobalContext = React.createContext();
+GlobalContext.displayName = "GlobalContext";
 
-
-export { DayRecordContext };
+export { GlobalContext };

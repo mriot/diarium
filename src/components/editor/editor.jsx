@@ -8,7 +8,7 @@ import MarkdownView from "./markdown-view";
 import MarkdownEditor from "./markdown-editor";
 import Toolbar from "./toolbar";
 import { editorAnimation } from "./animations";
-import { DayRecordContext } from "../../contexts";
+import { GlobalContext } from "../../contexts";
 import { updateExistingEntryById } from "../../lib/backend";
 
 const PosedEditorContainer = posed.div(editorAnimation);
@@ -92,13 +92,6 @@ export default class Editor extends React.PureComponent {
 		if (isReadModeActive) {
 			this.setState({ markdown: dayRecord ? dayRecord.content : "" });
 		}
-
-		// if (dayRecord && markdown && prevState.markdown !== markdown) {
-		// 	console.log(this.state.markdown);
-		// 	let timeout;
-		// 	clearTimeout(timeout);
-		// 	timeout = setTimeout(() => this.saveContent(), 2000);
-		// }
 
 		if (prevProps.isReadModeActive !== isReadModeActive) {
 			this.setState({ readMode: isReadModeActive });
@@ -256,4 +249,4 @@ Editor.propTypes = {
 
 Editor.defaultProp = {};
 
-Editor.contextType = DayRecordContext;
+Editor.contextType = GlobalContext;
