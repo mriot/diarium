@@ -59,16 +59,6 @@ export default class Navigation extends React.PureComponent {
 				<Logo>DIARIUM</Logo>
 				<RightSide>
 					<ButtonContainer>
-						{isCreateButtonVisible && (
-							<NavButton
-								value="Erstellen"
-								icon={faPlusSquare}
-								onClick={() => {
-									createNewEntry();
-									if (isReadModeActive) setHighlightsView(false);
-								}}
-							/>
-						)}
 						{!isCreateButtonVisible && !isReadModeActive && (
 							<NavButton
 								icon={faTrash}
@@ -93,6 +83,16 @@ export default class Navigation extends React.PureComponent {
 								active={!isReadModeActive}
 								onClick={() => {
 									setReadMode(!isReadModeActive);
+									if (isReadModeActive) setHighlightsView(false);
+								}}
+							/>
+						)}
+						{isCreateButtonVisible && (
+							<NavButton
+								value="Erstellen"
+								icon={faPlusSquare}
+								onClick={() => {
+									createNewEntry();
 									if (isReadModeActive) setHighlightsView(false);
 								}}
 							/>
