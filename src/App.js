@@ -49,6 +49,13 @@ export default class App extends React.PureComponent {
 
 	componentDidMount() {
 		this.setLoggedIn(isLoggedIn());
+
+		// check login status after user inactivity ended
+		document.addEventListener("visibilitychange", () => {
+			if (!document.hidden) {
+				this.setLoggedIn(isLoggedIn());
+			}
+		});
 	}
 
 	componentDidUpdate(prevProps, prevState) {
