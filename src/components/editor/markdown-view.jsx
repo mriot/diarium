@@ -71,10 +71,12 @@ export default class MarkdownView extends React.PureComponent {
 }
 
 MarkdownView.propTypes = {
-	markdown: PropTypes.string.isRequired,
+	markdown: PropTypes.string,
 	scrollSyncPos: PropTypes.number.isRequired,
 	isReadModeActive: PropTypes.bool.isRequired,
 	isScrollSyncActive: PropTypes.bool.isRequired,
 };
 
-MarkdownView.defaultProps = {};
+MarkdownView.defaultProps = {
+	markdown: "",
+};
