@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import posed, { PoseGroup } from "react-pose";
 import moment from "moment";
@@ -30,7 +30,6 @@ const Main = styled.main `
   position: relative;
   overflow-x: hidden;
   height: 100%;
-  /* perspective: 1000px; */
 `;
 const LoginContainer = posed.div(loginContainerAnimation);
 export default class App extends React.PureComponent {
@@ -83,7 +82,10 @@ export default class App extends React.PureComponent {
 	}
   
 	render() {
-		const { tokenChecked, loggedIn, dayRecord, readMode, showHighlights } = this.state;
+		const {
+			tokenChecked, loggedIn, dayRecord,
+			readMode, showHighlights,
+		} = this.state;
 
 		// prevent flashing '/login' in URL on page load when user is logged in
 		if (!tokenChecked) return null;
