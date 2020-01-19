@@ -47,8 +47,6 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.codeMirrorRef = React.createRef();
 		this.CodeMirrorInstance = null;
 
-		this.saveTimeout = null;
-
 		this.editorConfig = {
 			mode: "gfm", // github flavored markdown
 			theme: "callisto",
@@ -126,9 +124,6 @@ export default class MarkdownEditor extends React.PureComponent {
 				onChange={markdown => {
 					this.props.change(markdown);
 					this.props.getEditorHistory(this.CodeMirrorInstance.historySize());
-
-					clearTimeout(this.saveTimeout);
-					this.saveTimeout = setTimeout(() => this.props.saveContent(), 2000);
 				}}
 			/>
 		);
@@ -140,7 +135,6 @@ MarkdownEditor.propTypes = {
 	scrollPosChange: PropTypes.func.isRequired,
 	change: PropTypes.func.isRequired,
 	getEditorHistory: PropTypes.func.isRequired,
-	saveContent: PropTypes.func.isRequired,
 };
 
 MarkdownEditor.defaultProps = {

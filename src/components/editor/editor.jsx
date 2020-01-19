@@ -46,13 +46,16 @@ export default class Editor extends React.PureComponent {
 		this.editorContainerRef = React.createRef();
 		this.markdownViewRef = React.createRef();
 
+		this.lastDayRecordID = 0;
+		this.wasInEditMode = false;
+		this.saveTimeout = null;
+
 		this.backup = {
 			scrollSyncPreference: true,
 		};
 
 		this.state = {
 			markdown: "",
-			readMode: this.props.isReadModeActive,
 			zenMode: false,
 			nodesReady: false,
 			preview: true,
@@ -66,13 +69,13 @@ export default class Editor extends React.PureComponent {
 
 	componentDidMount() {
 		this.setUpSeparator();
-		
+
 		// whether to show preview or not
-		if (!this.state.readMode && localStorage.getItem("preview-hidden") === "true") {
+		if (!this.context.GLOBAL_READMODE && localStorage.getItem("preview-hidden") === "true") {
 			this.hidePreview();
 		}
 
-		// always focus editor on 'tab'
+		// focus editor on pressing TAB key
 		document.addEventListener("keydown", event => {
 			if (event.which === 9 && this.markdownEditorRef) {
 				event.preventDefault();
@@ -82,19 +85,36 @@ export default class Editor extends React.PureComponent {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		const { isReadModeActive } = this.props;
-		const { GLOBAL_DAYRECORD } = this.context;
+		const { GLOBAL_DAYRECORD, GLOBAL_READMODE } = this.context;
+			
+		if (GLOBAL_DAYRECORD) {
+			if (this.saveTimeout && GLOBAL_READMODE && this.wasInEditMode) {
+				console.log("Autosave on leaving edit mode...");
+				clearTimeout(this.saveTimeout);
+				this.saveContent();
+			}
+		}
 
-		this.setUpSeparator();
+		// selected day has changed -> load content / placeholder into state
+		if (!GLOBAL_DAYRECORD || this.lastDayRecordID !== GLOBAL_DAYRECORD.id) {
+			this.setState({ markdown: GLOBAL_DAYRECORD ? GLOBAL_DAYRECORD.content : "" });
+		}
 
-		this.setState({ markdown: GLOBAL_DAYRECORD ? GLOBAL_DAYRECORD.content : "" });
+		this.lastDayRecordID = GLOBAL_DAYRECORD ? GLOBAL_DAYRECORD.id : 0;
+		this.wasInEditMode = !GLOBAL_READMODE;
+	}
 
-		if (prevProps.isReadModeActive !== isReadModeActive) {
-			this.setState({ readMode: isReadModeActive });
+	setUpSeparator() {
+		if (!this.state.nodesReady) {
+			// eslint-disable-next-line react/no-find-dom-node
+			this.editorContainerNode = ReactDOM.findDOMNode(this.editorContainerRef.current);
+			// eslint-disable-next-line react/no-find-dom-node
+			this.previewNode = ReactDOM.findDOMNode(this.markdownViewRef.current);
+			// render separator when all node refs are available
+			if (this.editorContainerNode && this.previewNode) this.setState({ nodesReady: true });
 		}
 	}
 
-	// eslint-disable-next-line react/sort-comp
 	saveContent() {
 		const { GLOBAL_DAYRECORD, UPDATE_GLOBAL_DAYRECORD } = this.context;
 
@@ -116,15 +136,16 @@ export default class Editor extends React.PureComponent {
 			.catch(error => console.log(error));
 	}
 
-	setUpSeparator() {
-		if (!this.state.nodesReady) {
-			// eslint-disable-next-line react/no-find-dom-node
-			this.editorContainerNode = ReactDOM.findDOMNode(this.editorContainerRef.current);
-			// eslint-disable-next-line react/no-find-dom-node
-			this.previewNode = ReactDOM.findDOMNode(this.markdownViewRef.current);
-			// render separator when all node refs are available
-			if (this.editorContainerNode && this.previewNode) this.setState({ nodesReady: true });
-		}
+	handleContentChange(editedMarkdown) {
+		this.setState({ markdown: editedMarkdown });
+		// clear timeout while the user is typing
+		clearTimeout(this.saveTimeout);
+		// after X time of not typing, save content
+		this.saveTimeout = setTimeout(() => {
+			this.saveContent();
+			// does not work with clearTimeout() ...
+			this.saveTimeout = undefined; // ¯\_(ツ)_/¯
+		}, 1000);
 	}
 
 	showPreview() {
@@ -176,9 +197,11 @@ export default class Editor extends React.PureComponent {
 
 	render() {
 		const {
-			readMode, zenMode, preview, scrollSync, editorHistory, saveStatusText,
+			zenMode, preview, scrollSync, editorHistory, saveStatusText,
 			markdown, nodesReady, forceUpdateSeparator, scrollSyncPosition,
 		} = this.state;
+
+		const { GLOBAL_READMODE } = this.context;
 
 		return (
 			<EditorContainer
@@ -200,7 +223,7 @@ export default class Editor extends React.PureComponent {
 					resetEditorLayout={() => this.resetEditorLayout()}
 					// provides everything the Toolbar needs to know
 					toolbarStatus={{
-						readModeActive: readMode,
+						readModeActive: GLOBAL_READMODE,
 						zenModeActive: zenMode,
 						previewActive: preview,
 						scrollSyncActive: scrollSync,
@@ -210,18 +233,18 @@ export default class Editor extends React.PureComponent {
 				/>
 
 				<InnerEditorContainer>
-					{!readMode && (
+					{!GLOBAL_READMODE && (
 						<MarkdownEditor
 							ref={ref => (this.markdownEditorRef = ref)}
 							content={markdown}
-							change={editedMarkdown => this.setState({ markdown: editedMarkdown })}
+							change={editedMarkdown => this.handleContentChange(editedMarkdown)}
 							saveContent={() => this.saveContent()}
 							scrollPosChange={pos => this.setState({ scrollSyncPosition: pos })}
 							getEditorHistory={history => this.setState({ editorHistory: history })}
 						/>
 					)}
 
-					{!readMode && nodesReady && preview && (
+					{!GLOBAL_READMODE && nodesReady && preview && (
 						<SeparatorHandle
 							forceUpdateSeparator={forceUpdateSeparator}
 							containerNode={this.editorContainerNode}
@@ -232,7 +255,7 @@ export default class Editor extends React.PureComponent {
 					<MarkdownView
 						ref={this.markdownViewRef}
 						markdown={markdown}
-						isReadModeActive={readMode}
+						isReadModeActive={GLOBAL_READMODE}
 						isScrollSyncActive={scrollSync}
 						scrollSyncPos={scrollSyncPosition}
 					/>
@@ -243,7 +266,6 @@ export default class Editor extends React.PureComponent {
 }
 
 Editor.propTypes = {
-	isReadModeActive: PropTypes.bool.isRequired,
 	pose: PropTypes.string.isRequired,
 };
 
