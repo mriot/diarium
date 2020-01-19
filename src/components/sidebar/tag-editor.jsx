@@ -4,6 +4,7 @@ import styled, { keyframes } from "styled-components";
 import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks, faCross, faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
+import moment from "moment";
 import Tag from "./tag";
 import { updateExistingEntryById } from "../../lib/backend";
 import { GlobalContext } from "../../contexts";
@@ -94,8 +95,9 @@ export default class TagEditor extends React.PureComponent {
 
 	render() {
 		const { definedTags } = this.state;
-		const selectedTags = this.context.GLOBAL_DAYRECORD ? this.context.GLOBAL_DAYRECORD.tags : [];
+		const { GLOBAL_DAYRECORD } = this.context;
 
+		const selectedTags = GLOBAL_DAYRECORD ? GLOBAL_DAYRECORD.tags : [];
 		return (
 			<TagEditorContainer>
 				<Heading>
@@ -115,6 +117,13 @@ export default class TagEditor extends React.PureComponent {
 						/>
 					))}
 				</TagContainer>
+				<div>
+					Zuletzt geändert am: <br />
+					{GLOBAL_DAYRECORD ? moment(GLOBAL_DAYRECORD.updatedAt).format("dd, D.MM.YYYY — HH:mm:ss") : null}
+					<br />
+					Erstellt am:<br />
+					{GLOBAL_DAYRECORD ? moment(GLOBAL_DAYRECORD.createdAt).format("dd, D.MM.YYYY — HH:mm:ss") : null}
+				</div>
 			</TagEditorContainer>
 		);
 	}
