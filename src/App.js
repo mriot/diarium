@@ -158,10 +158,7 @@ export default class App extends React.PureComponent {
 										)}
 									</PoseGroup>
 
-									<Editor
-										isReadModeActive={readMode}
-										pose={showHighlights ? "hidden" : "visible"}
-									/>
+									<Editor pose={showHighlights ? "hidden" : "visible"} />
 								</Main>
 							</GlobalContext.Provider>
 						</Layout>
