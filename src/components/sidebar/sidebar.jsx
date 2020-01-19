@@ -90,6 +90,4 @@ export default class Sidebar extends React.PureComponent {
 	}
 }
 
-Sidebar.propTypes = {
-	isReadModeActive: PropTypes.bool.isRequired,
-};
+Sidebar.propTypes = {};

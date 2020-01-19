@@ -96,6 +96,4 @@ export default class Highlights extends React.PureComponent {
 	}
 }
 
-Highlights.propTypes = {
-	_pose: PropTypes.any.isRequired,
-};
+Highlights.propTypes = {};
