@@ -6,6 +6,7 @@ import Progress from "./progress";
 import Calendar from "./calendar";
 import Loadingbar from "../common/loadingbar";
 import TagEditor from "./tag-editor";
+import MetaData from "./meta-data";
 
 const StyledSidebar = styled.aside `
   position: relative;
@@ -83,6 +84,8 @@ export default class Sidebar extends React.PureComponent {
 				/>
 
 				<TagEditor />
+
+				<MetaData />
 
 				<Progress />
 			</StyledSidebar>
