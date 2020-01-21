@@ -5,59 +5,34 @@ import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const StyledTag = styled.div `
-	display: block;
 	position: relative;
 	user-select: none;
-	display: flex;
 	align-items: center;
 	line-height: 2;
 	color: ${props => (props.checked && "#00ff8b") || (props.disabled && "#aaa")};
 	cursor: ${props => (props.disabled ? "default" : "pointer")};
+	border-radius: 50px;
 	font-size: 15px;
 	transform-origin: left;
-	transition: all 200ms;
+	padding: 0 5px;
+	transition: all 100ms;
 
 	&:${props => !props.disabled && "hover"} {
 		background-color: rgba(0, 0, 0, 0.2);
 
-		svg, span {
-			${props => !props.disabled && "transform: scale(1.15)"};
-		}
-	}
-
-	&::after {
-		content: "";
-		position: relative;
-		width: 20px;
-		height: 20px;
-		display: block;
-		opacity: 0.6;
-		margin-left: 10px;
-		${props => !props.disabled && "border: 1px solid #6cc0e5;"};
-		transition: all 200ms, border-color 100ms;
-
-		${props => !props.checked} {
-			width: 8px;
-			top: -3px;
-			left: -3px;
-			opacity: 1;
-			margin-left: 22px;
-			border-radius: 0;
-			border: 1px solid #6cc0e5;
-			border-top-color: transparent;
-			border-left-color: transparent;
-			transform: rotate(45deg);
+		span, svg {
+			transform: scale(1.15);
 		}
 	}
 `;
 const Icon = styled(FontAwesomeIcon) `
-	width: 10% !important;
-	margin-right: 5px;
+	width: 15% !important;
+	margin-right: 7px;
 	transform-origin: left;
 	transition: all 100ms;
 `;
 const Text = styled.span `
-	width: 25%;
+	display: inline-block;
 	transform-origin: left;
 	transition: all 100ms;
 `;

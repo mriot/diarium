@@ -4,7 +4,6 @@ import styled, { keyframes } from "styled-components";
 import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks, faCross, faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
-import moment from "moment";
 import Tag from "./tag";
 import { updateExistingEntryById } from "../../lib/backend";
 import { GlobalContext } from "../../contexts";
@@ -21,8 +20,7 @@ const rotate = keyframes `
 const TagEditorContainer = styled.div `
 	color: #fff;
 	width: 100%;
-	flex: 1;
-	padding: 15px 0;
+	padding: 10px 0;
 	box-sizing: border-box;
 	border-bottom: 1px solid #191919;
 	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
@@ -41,8 +39,9 @@ const Spinner = styled(FontAwesomeIcon) `
 	animation: 1s ${rotate} linear infinite;
 `;
 const TagContainer = styled.div ` 
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-gap: 3px;
+	grid-template-columns: repeat(2, 1fr);
 `;
 
 export default class TagEditor extends React.PureComponent {
@@ -117,13 +116,6 @@ export default class TagEditor extends React.PureComponent {
 						/>
 					))}
 				</TagContainer>
-				<div>
-					Zuletzt geändert am: <br />
-					{GLOBAL_DAYRECORD ? moment(GLOBAL_DAYRECORD.updatedAt).format("dd, D.MM.YYYY — HH:mm:ss") : null}
-					<br />
-					Erstellt am:<br />
-					{GLOBAL_DAYRECORD ? moment(GLOBAL_DAYRECORD.createdAt).format("dd, D.MM.YYYY — HH:mm:ss") : null}
-				</div>
 			</TagEditorContainer>
 		);
 	}
