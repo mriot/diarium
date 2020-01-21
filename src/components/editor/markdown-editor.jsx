@@ -60,11 +60,12 @@ export default class MarkdownEditor extends React.PureComponent {
 			scrollPastEnd: true,
 			styleActiveLine: true,
 			autoCloseBrackets: true,
-			scrollbarStyle: "overlay",
+			// scrollbarStyle: "overlay",
 		};
 	}
 
 	componentDidMount() {
+		// eslint-disable-next-line react/no-find-dom-node
 		this.CodeMirrorNode = ReactDOM.findDOMNode(this.codeMirrorRef.current);
 		this.CodeMirrorInstance = this.codeMirrorRef.current.getCodeMirror();
 
