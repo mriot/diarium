@@ -22,7 +22,6 @@ export const highlightsAnimation = {
 		translateX: "100%",
 
 		applyAtStart: { position: "absolute" },
-		applyAtEnd: { position: "relative" },
 
 		transition: {
 			duration: 500,
