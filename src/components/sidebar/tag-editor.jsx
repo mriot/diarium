@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import Tag from "./tag";
 import { updateExistingEntryById } from "../../lib/backend";
 import { GlobalContext } from "../../contexts";
+import { WHITE } from "../../themes/diarium-theme";
 
 const rotate = keyframes `
 	from {
@@ -18,7 +19,7 @@ const rotate = keyframes `
 `;
 
 const TagEditorContainer = styled.div `
-	color: #fff;
+	color: ${WHITE};
 	width: 100%;
 	padding: 10px 0;
 	box-sizing: border-box;

@@ -7,6 +7,7 @@ import Calendar from "./calendar";
 import Loadingbar from "../common/loadingbar";
 import TagEditor from "./tag-editor";
 import MetaData from "./meta-data";
+import { WHITE } from "../../themes/diarium-theme";
 
 const StyledSidebar = styled.aside `
   position: relative;
@@ -18,7 +19,7 @@ const StyledSidebar = styled.aside `
   background-color: #20232a;
 `;
 const Today = styled.div `
-	color: #fff;
+	color: ${WHITE};
   font-size: 18px;
   padding: 10px;
   cursor: pointer;
