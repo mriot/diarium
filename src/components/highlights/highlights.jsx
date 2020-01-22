@@ -24,30 +24,30 @@ const HighlightsContainer = styled(PosedHighlightsContainer) `
 	backface-visibility: hidden;
 `;
 
+const cards = [
+	{
+		date: moment("2010-12-12"),
+		desc: "Hello World",
+		tags: ["lorem", "ipsum"],
+	},
+	{
+		date: moment("2010-11-11"),
+		desc: "Hello World 2",
+		tags: ["lorem", "ipsum"],
+	},
+	{
+		date: moment("2010-08-08"),
+		desc: "Hello World 3",
+		tags: ["lorem", "ipsum"],
+	},
+	{
+		date: moment("2010-01-01"),
+		tags: ["lorem", "ipsum"],
+	},
+];
+
 export default class Highlights extends React.PureComponent {
 	render() {
-		const cards = [
-			{
-				date: moment("2010-12-12"),
-				desc: "Hello World",
-				tags: ["lorem", "ipsum"],
-			},
-			{
-				date: moment("2010-11-11"),
-				desc: "Hello World 2",
-				tags: ["lorem", "ipsum"],
-			},
-			{
-				date: moment("2010-08-08"),
-				desc: "Hello World 3",
-				tags: ["lorem", "ipsum"],
-			},
-			{
-				date: moment("2010-01-01"),
-				tags: ["lorem", "ipsum"],
-			},
-		];
-
 		return (
 			<HighlightsContainer {...this.props}>
 				<YearAccordion year={2021} render={accordionOpen => (
