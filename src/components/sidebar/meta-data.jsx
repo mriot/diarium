@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import moment from "moment";
 import { GlobalContext } from "../../contexts";
+import { WHITE } from "../../themes/diarium-theme";
 
 const StyledMetaData = styled.div `
 	display: flex;
@@ -15,9 +16,11 @@ const StyledMetaData = styled.div `
 	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
 `;
 const MetaInfoBlock = styled.div `
-	color: #fff;
+	color: ${WHITE};
+	padding: 5px 0;
 
 	span {
+		opacity: 0.5;
 		display: block;
 	}
 `;
@@ -29,13 +32,17 @@ export default class MetaData extends React.PureComponent {
 		return (
 			<StyledMetaData>
 				<MetaInfoBlock>
-					<span>Zuletzt bearbeitet:</span>
-					{GLOBAL_DAYRECORD ? moment(GLOBAL_DAYRECORD.updatedAt).format("dd, D.MM.YYYY HH:mm:ss") : "n/a"}
+					Zuletzt bearbeitet:
+					<span>
+						{GLOBAL_DAYRECORD ? `${moment(GLOBAL_DAYRECORD.updatedAt).format("dd, D.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
+					</span>
 				</MetaInfoBlock>
 
 				<MetaInfoBlock>
-					<span>Erstellt:</span>
-					{GLOBAL_DAYRECORD ? moment(GLOBAL_DAYRECORD.createdAt).format("dd, D.MM.YYYY — HH:mm:ss") : "n/a"}
+					Erstellt:
+					<span>
+						{GLOBAL_DAYRECORD ? `${moment(GLOBAL_DAYRECORD.createdAt).format("dd, D.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
+					</span>
 				</MetaInfoBlock>
 			</StyledMetaData>
 		);
