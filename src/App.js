@@ -152,7 +152,7 @@ export default class App extends React.PureComponent {
 								/>
 
 								<Main>
-									<PoseGroup>
+									<PoseGroup withParent={false}>
 										{showHighlights && (
 											<Highlights key="highlights" />
 										)}
