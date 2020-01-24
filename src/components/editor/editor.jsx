@@ -86,7 +86,8 @@ export default class Editor extends React.PureComponent {
 
 	componentDidUpdate(prevProps, prevState) {
 		const { GLOBAL_DAYRECORD, GLOBAL_READMODE } = this.context;
-			
+		
+		// handling autosave on leaving edit mode
 		if (GLOBAL_DAYRECORD) {
 			if (this.saveTimeout && GLOBAL_READMODE && this.wasInEditMode) {
 				console.log("Autosave on leaving edit mode...");
@@ -143,8 +144,7 @@ export default class Editor extends React.PureComponent {
 		// after X time of not typing, save content
 		this.saveTimeout = setTimeout(() => {
 			this.saveContent();
-			// does not work with clearTimeout() ...
-			this.saveTimeout = undefined; // ¯\_(ツ)_/¯
+			this.saveTimeout = undefined;
 		}, 1000);
 	}
 
