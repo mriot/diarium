@@ -46,7 +46,7 @@ export default class Editor extends React.PureComponent {
 		this.editorContainerRef = React.createRef();
 		this.markdownViewRef = React.createRef();
 
-		this.lastDayRecordID = 0;
+		this.lastDayRecordID = -1;
 		this.wasInEditMode = false;
 		this.saveTimeout = null;
 
@@ -101,7 +101,7 @@ export default class Editor extends React.PureComponent {
 			this.setState({ markdown: GLOBAL_DAYRECORD ? GLOBAL_DAYRECORD.content : "" });
 		}
 
-		this.lastDayRecordID = GLOBAL_DAYRECORD ? GLOBAL_DAYRECORD.id : 0;
+		this.lastDayRecordID = GLOBAL_DAYRECORD ? GLOBAL_DAYRECORD.id : -1;
 		this.wasInEditMode = !GLOBAL_READMODE;
 	}
 
