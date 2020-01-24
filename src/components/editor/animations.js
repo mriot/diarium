@@ -7,7 +7,7 @@ export const editorAnimation = {
 	visible: {
 		opacity: 1,
 
-		applyAtStart: { display: "flex" },
+		applyAtEnd: { opacity: 1 },
 
 		transition: {
 			duration: 500,
@@ -18,7 +18,7 @@ export const editorAnimation = {
 	hidden: {
 		opacity: 0,
 
-		applyAtEnd: { display: "none" },
+		applyAtEnd: { opacity: 0 },
 		
 		transition: {
 			duration: 500,

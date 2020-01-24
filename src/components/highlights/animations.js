@@ -8,9 +8,6 @@ export const highlightsAnimation = {
 	enter: {
 		translateX: 0,
 
-		applyAtStart: { position: "absolute" },
-		applyAtEnd: { position: "relative" },
-
 		transition: {
 			duration: 500,
 			ease: "anticipate",
@@ -20,8 +17,6 @@ export const highlightsAnimation = {
 
 	exit: {
 		translateX: "100%",
-
-		applyAtStart: { position: "absolute" },
 
 		transition: {
 			duration: 500,

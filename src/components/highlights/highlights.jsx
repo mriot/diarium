@@ -12,7 +12,7 @@ const HighlightsContainer = styled(PosedHighlightsContainer) `
 	width: 100%;
 	height: 100%;
 	color: #fff;
-	position: relative;
+	position: absolute;
 	z-index: 1; /* place on top of editor */
 	display: grid;
 	gap: 5px;
