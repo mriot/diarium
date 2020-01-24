@@ -78,9 +78,9 @@ export default class MarkdownEditor extends React.PureComponent {
 		const { content } = this.props;
 
 		if (prevProps.content !== content) {
-			// this.editorFocus();
-			// this.CodeMirrorInstance.setValue(content);
-			// this.CodeMirrorInstance.execCommand("goLineEnd");
+			this.CodeMirrorInstance.setValue(content);
+			this.CodeMirrorInstance.execCommand("goDocEnd");
+			this.editorFocus();
 		}
 	}
 
