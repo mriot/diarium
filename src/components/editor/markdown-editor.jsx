@@ -70,7 +70,6 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.CodeMirrorInstance = this.codeMirrorRef.current.getCodeMirror();
 
 		this.editorFocus();
-		this.CodeMirrorInstance.execCommand("goLineEnd");
 
 		this.CodeMirrorInstance.on("scroll", event => {
 			this.props.scrollPosChange(event.doc.scrollTop);
@@ -78,12 +77,9 @@ export default class MarkdownEditor extends React.PureComponent {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		const { content } = this.props;
-
-		if (prevProps.content !== content) {
-			this.CodeMirrorInstance.setValue(content);
-			this.CodeMirrorInstance.execCommand("goDocEnd");
-			this.editorFocus();
+		// only fire on newly created entries
+		if (prevProps.content.length < 1 && prevProps.content !== this.props.content) {
+			this.CodeMirrorInstance.setValue(this.props.content);
 		}
 	}
 
