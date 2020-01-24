@@ -69,6 +69,9 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.CodeMirrorNode = ReactDOM.findDOMNode(this.codeMirrorRef.current);
 		this.CodeMirrorInstance = this.codeMirrorRef.current.getCodeMirror();
 
+		this.editorFocus();
+		this.CodeMirrorInstance.execCommand("goLineEnd");
+
 		this.CodeMirrorInstance.on("scroll", event => {
 			this.props.scrollPosChange(event.doc.scrollTop);
 		});
