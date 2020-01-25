@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import ReactMarkdown from "react-markdown";
 import "../../themes/markdown-ceres.css";
 import "../../themes/markdown-vesta.css";
+import MarkdownParser from "./markdown-parser";
 
 const RenderedMarkdownContainer = styled.div `
 	width: 50%;
@@ -21,14 +21,6 @@ const RenderedMarkdownContainer = styled.div `
 		width: 0 !important;
 		padding: 0;
 	}
-`;
-const DefaultMarkdown = styled(ReactMarkdown) `
-	position: absolute;
-	top: 30%;
-	left: 50%;
-	width: fit-content;
-	transform: translateX(-50%);
-	text-align: center;
 `;
 
 export default class MarkdownView extends React.PureComponent {
@@ -58,13 +50,7 @@ export default class MarkdownView extends React.PureComponent {
 				className="markdown-body"
 				isReadModeActive={isReadModeActive}
 			>
-				{!markdown && isReadModeActive && (
-					<DefaultMarkdown source={
-						"## Für diesen Tag gibt es noch keinen Eintrag.\n\n### Leg' doch einen an! 😇"
-					}
-					/>
-				)}
-				<ReactMarkdown source={markdown} />
+				<MarkdownParser markdown={markdown} isReadModeActive={isReadModeActive} />
 			</RenderedMarkdownContainer>
 		);
 	}
