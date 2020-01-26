@@ -216,6 +216,7 @@ export default class Editor extends React.PureComponent {
 					editorRedo={() => this.markdownEditorRef.editorRedo()}
 					insertCode={() => this.markdownEditorRef.insertCode()}
 					insertLink={() => this.markdownEditorRef.insertLink()}
+					insertEmoji={() => this.markdownEditorRef.insertEmoji()}
 					// called directly here
 					toggleZenMode={() => this.toggleZenMode()}
 					togglePreview={preview ? () => this.hidePreview() : () => this.showPreview()}
