@@ -47,7 +47,7 @@ export default class MarkdownView extends React.PureComponent {
 		return (
 			<RenderedMarkdownContainer
 				ref={this.markdownOutputRef}
-				className="markdown-body"
+				className="markdown-body" // required — don't change w/o checking the deps
 				isReadModeActive={isReadModeActive}
 			>
 				<MarkdownParser markdown={markdown} isReadModeActive={isReadModeActive} />
