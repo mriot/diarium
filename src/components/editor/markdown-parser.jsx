@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import marked from "marked";
 import { withRouter } from "react-router-dom";
+import emoji from "node-emoji";
 
 const placeholderText = "## Für diesen Tag gibt es noch keinen Eintrag.\n\n### Leg' doch einen an! 😇";
 const ParsedMarkdown = styled.div `
@@ -23,9 +24,14 @@ renderer.link = (href, title, text) => {
 	);
 };
 
+renderer.text = text => {
+	const replacer = match => emoji.emojify(match);
+	return text.replace(/(:.*:)/, replacer);
+};
+
 class MarkdownParser extends React.PureComponent {
 	componentDidMount() {
-		document.addEventListener("click", event => {
+		document.querySelector(".markdown-body").addEventListener("click", event => {
 			if (event.target !== document.querySelector("a.hotlink")) return;
 			event.preventDefault();
 			if (!this.props.isReadModeActive) return;

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import CodeMirror from "react-codemirror";
+import EmojiPicker from "./emoji-picker";
 import "codemirror/lib/codemirror.css";
 import "../../themes/codemirror-callisto.css";
 import "codemirror/mode/gfm/gfm";
@@ -45,6 +46,7 @@ export default class MarkdownEditor extends React.PureComponent {
 		super(props);
 
 		this.codeMirrorRef = React.createRef();
+		this.emojiPickerRef = React.createRef();
 		this.CodeMirrorInstance = null;
 
 		this.editorConfig = {
@@ -61,6 +63,10 @@ export default class MarkdownEditor extends React.PureComponent {
 			styleActiveLine: true,
 			autoCloseBrackets: true,
 			// scrollbarStyle: "overlay",
+		};
+
+		this.state = {
+			emojiPickerOpen: false,
 		};
 	}
 
@@ -92,14 +98,17 @@ export default class MarkdownEditor extends React.PureComponent {
 	}
 
 	editorUndo() {
+		this.editorFocus();
 		this.CodeMirrorInstance.undo();
 	}
 
 	editorRedo() {
+		this.editorFocus();
 		this.CodeMirrorInstance.redo();
 	}
 
 	insertCode() {
+		this.editorFocus();
 		this.CodeMirrorInstance.replaceSelection("```language\n\n````");
 		this.CodeMirrorInstance.setCursor({
 			line: this.getCursor().line - 1,
@@ -108,24 +117,48 @@ export default class MarkdownEditor extends React.PureComponent {
 	}
 
 	insertLink() {
+		this.editorFocus();
 		this.CodeMirrorInstance.replaceSelection("[]()");
 		this.CodeMirrorInstance.setCursor({
 			line: this.getCursor().line,
 			ch: this.getCursor().ch - 3,
 		});
 	}
+	
+	insertEmoji() {
+		this.editorFocus();
+		this.setState({ emojiPickerOpen: true });
+		/* * /
+		this.CodeMirrorInstance.addLineWidget(
+			this.getCursor().line, ReactDOM.findDOMNode(this.emojiPickerRef.current), {
+				above: false,
+			}
+		);
+		/* */
+
+		/* */
+		this.CodeMirrorInstance.addWidget({
+			line: this.getCursor().line, ch: this.getCursor().ch,
+		}, ReactDOM.findDOMNode(this.emojiPickerRef.current));
+		/* */
+	}
 
 	render() {
 		return (
-			<StyledCodeMirror
-				ref={this.codeMirrorRef}
-				value={this.props.content}
-				options={this.editorConfig}
-				onChange={markdown => {
-					this.props.change(markdown);
-					this.props.getEditorHistory(this.CodeMirrorInstance.historySize());
-				}}
-			/>
+			<>
+				<StyledCodeMirror
+					ref={this.codeMirrorRef}
+					value={this.props.content}
+					options={this.editorConfig}
+					onChange={markdown => {
+						this.props.change(markdown);
+						this.props.getEditorHistory(this.CodeMirrorInstance.historySize());
+					}}
+				/>
+				{this.state.emojiPickerOpen && (
+					<EmojiPicker ref={this.emojiPickerRef} />
+				)}
+			</>
 		);
 	}
 }
