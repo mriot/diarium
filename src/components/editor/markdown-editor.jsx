@@ -80,6 +80,24 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.CodeMirrorInstance.on("scroll", event => {
 			this.props.scrollPosChange(event.doc.scrollTop);
 		});
+		this.CodeMirrorInstance.on("change", (event, changeObj) => {
+			// console.log(event, changeObj);
+
+			// TODO: cm.findWordAt(pos: {line, ch}) → {anchor: {line, ch}, head: {line, ch}}
+			const lineContent = this.CodeMirrorInstance.getLine(this.getCursor().line);
+			
+			if (!lineContent.includes(":")) return;
+
+			// match words after " :" until encountering a space
+			const regex3 = /\s{1,}:([^\s]+)/ig; // ignore " :" in match
+			// TODO: remove space check before? Does not work on new lines
+			const regex4 = /\s{1,}:([^\s]+)/ig;
+
+			const result = lineContent.matchAll(regex4);
+			const resultArray = Array.from(result, arr => arr[1]); // get emoji names
+
+			console.log(resultArray);
+		});
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -136,7 +154,7 @@ export default class MarkdownEditor extends React.PureComponent {
 		);
 		/* */
 
-		/* */
+		/* * /
 		this.CodeMirrorInstance.addWidget({
 			line: this.getCursor().line, ch: this.getCursor().ch,
 		}, ReactDOM.findDOMNode(this.emojiPickerRef.current));
