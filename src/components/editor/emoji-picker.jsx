@@ -2,40 +2,34 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { emojiIndex } from "emoji-mart";
-import TextInput from "../common/textinput";
 
 const StyledEmojiPicker = styled.div `
 	position: absolute;
 	display: flex;
 	flex-wrap: wrap;
-	/* width: 75%;
-	height: 50px; */
+	padding: 5px 10px;
+	border-radius: 3px;
 	background-color: #333;
 	z-index: 9999;
 `;
-const StyledTextInput = styled(TextInput) `
-	width: 100%;
-`;
 const EmojiPreviewContainer = styled.div `
-
+	span.emoji {
+		font-size: 25px;
+		margin: 5px;
+    cursor: pointer;
+    border-radius: 3px;
+		/* active: box-shadow: 0 0 0 2px rgba(0,165,244,.4); */
+	}
 `;
 
 export default class EmojiPicker extends React.PureComponent {
-	constructor(props) {
-		super(props);
-	
-		this.state = {
-			emojis: null,
-		};
-	}
-
 	render() {
 		return (
 			<StyledEmojiPicker>
 				<EmojiPreviewContainer>
 					{
-						emojiIndex.search(this.props.emojiQuery || "sad").map(o => {
-							return <span className="emoji" key={o.id}>{o.native}</span>;
+						emojiIndex.search(this.props.emojiQuery).map(emoji => {
+							return <span className="emoji" key={emoji.id}>{emoji.native}</span>;
 						})
 					}
 				</EmojiPreviewContainer>
@@ -49,5 +43,5 @@ EmojiPicker.propTypes = {
 };
 
 EmojiPicker.defaultProps = {
-	emojiQuery: "sad",
+	emojiQuery: "",
 };

@@ -85,7 +85,10 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.CodeMirrorInstance.on("cursorActivity", () => {
 			const cursorPos = this.getCursor();
 			const lineContent = this.CodeMirrorInstance.getLine(cursorPos.line);
-			if (!lineContent.includes(":")) return;
+			if (!lineContent.includes(":")) {
+				this.setState({ emojiPickerOpen: false });
+				return;
+			}
 			
 			// iterate over each char to the left of the current cursor position
 			for (let charCounter = cursorPos.ch; charCounter >= 0; charCounter--) {
@@ -103,7 +106,15 @@ export default class MarkdownEditor extends React.PureComponent {
 
 				// the query is everything between colon and cursor
 				const emojiQuery = this.CodeMirrorInstance.getRange(queryStartPos, cursorPos);
-				this.setState({ emojiQuery });
+				if (emojiQuery.length < 1) {
+					this.setState({ emojiPickerOpen: false });
+					return;
+				}
+
+				this.setState({
+					emojiQuery,
+					emojiPickerOpen: true,
+				});
 
 				// move/append widget(= emoji picker) to where the cursor is
 				this.CodeMirrorInstance.addWidget({
@@ -176,7 +187,9 @@ export default class MarkdownEditor extends React.PureComponent {
 						this.props.getEditorHistory(this.CodeMirrorInstance.historySize());
 					}}
 				/>
-				<EmojiPicker emojiQuery={this.state.emojiQuery} ref={this.emojiPickerRef} />
+				{this.state.emojiPickerOpen && (
+					<EmojiPicker emojiQuery={this.state.emojiQuery} ref={this.emojiPickerRef} />
+				)}
 			</>
 		);
 	}
