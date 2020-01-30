@@ -82,52 +82,37 @@ export default class MarkdownEditor extends React.PureComponent {
 			this.props.scrollPosChange(event.doc.scrollTop);
 		});
 		
-		this.CodeMirrorInstance.on("cursorActivity", (...args) => {
-			const lineContent = this.CodeMirrorInstance.getLine(this.getCursor().line);
+		this.CodeMirrorInstance.on("cursorActivity", () => {
+			const cursorPos = this.getCursor();
+			const lineContent = this.CodeMirrorInstance.getLine(cursorPos.line);
 			if (!lineContent.includes(":")) return;
+			
+			// iterate over each char to the left of the current cursor position
+			for (let charCounter = cursorPos.ch; charCounter >= 0; charCounter--) {
+				const char = this.CodeMirrorInstance.getRange(
+					{ line: cursorPos.line, ch: charCounter },
+					{ line: cursorPos.line, ch: charCounter + 1 }
+				);
+				
+				if (char !== ":") continue;
+				
+				const queryStartPos = {
+					line: cursorPos.line,
+					ch: charCounter + 1, // skip colon char
+				};
 
-			let counter = this.getCursor().ch;
+				// the query is everything between colon and cursor
+				const emojiQuery = this.CodeMirrorInstance.getRange(queryStartPos, cursorPos);
+				this.setState({ emojiQuery });
 
-			do {
-				const content = this.CodeMirrorInstance.getRange({
-					line: this.getCursor().line,
-					ch: counter,
-				}, {
-					line: this.getCursor().line,
-					ch: counter + 1,
-				});
+				// move/append widget(= emoji picker) to where the cursor is
+				this.CodeMirrorInstance.addWidget({
+					line: cursorPos.line, ch: cursorPos.ch,
+				}, ReactDOM.findDOMNode(this.emojiPickerRef.current));
 
-				// console.log(counter, content);
-				counter--;
-
-				if (content === ":") {
-					const colonPos = {
-						line: this.getCursor().line,
-						ch: counter + 2, // skip colon char
-					};
-					// console.log("FOUND CLOSEST COLON AT", colonPos);
-
-					const emojiQuery = this.CodeMirrorInstance.getRange(colonPos, this.getCursor());
-					// console.log({ emojiQuery });
-					this.setState({ emojiQuery });
-
-					/* * /
-					this.CodeMirrorInstance.addLineWidget(
-						this.getCursor().line, ReactDOM.findDOMNode(this.emojiPickerRef.current), {
-							above: false,
-						}
-					);
-					/* */
-
-					/* * /
-					this.CodeMirrorInstance.addWidget({
-						line: this.getCursor().line, ch: this.getCursor().ch,
-					}, ReactDOM.findDOMNode(this.emojiPickerRef.current));
-					/* */
-
-					break;
-				}
-			} while (counter >= 0);
+				// we've found what we were looking for — stop the loop
+				break;
+			}
 		});
 	}
 
