@@ -129,35 +129,6 @@ export default class MarkdownEditor extends React.PureComponent {
 				}
 			} while (counter >= 0);
 		});
-
-		/*
-		this.CodeMirrorInstance.on("change", (event, changeObj) => {
-			// console.log(event, changeObj);
-
-			const lineContent = this.CodeMirrorInstance.getLine(this.getCursor().line);
-			// if (changeObj.text === ":") {
-			// 	console.log(": inserted");
-			// 	this.lastTypedColonPosition;
-			// }
-			if (!lineContent.includes(":")) return;
-
-			// find pos of last ":" in line which is BEFORE the cursor pos
-			// query from : position to current cursor postion 
-			// const query = this.CodeMirrorInstance.getRange({
-
-			// }, this.getCursor());
-
-			// match words after " :" until encountering a space
-			const regex3 = /\s{1,}:([^\s]+)/ig; // ignore " :" in match
-			// TODO: remove space check before? Does not work on new lines
-			const regex4 = /\s{1,}:([^\s]+)/ig;
-
-			const result = lineContent.matchAll(regex4);
-			const resultArray = Array.from(result, arr => arr[1]); // get emoji names
-
-			// console.log(resultArray);
-		});
-		*/
 	}
 
 	componentDidUpdate(prevProps, prevState) {
