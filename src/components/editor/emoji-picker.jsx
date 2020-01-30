@@ -31,16 +31,12 @@ export default class EmojiPicker extends React.PureComponent {
 	render() {
 		return (
 			<StyledEmojiPicker>
-				<TextInput onChange={event => {
-					this.setState({
-						emojis: emojiIndex.search(event.currentTarget.value).map(o => (
-							<span className="emoji">{o.native}</span>
-						)),
-					});
-				}}
-				/>
 				<EmojiPreviewContainer>
-					{this.state.emojis}
+					{
+						emojiIndex.search(this.props.emojiQuery || "sad").map(o => {
+							return <span className="emoji" key={o.id}>{o.native}</span>;
+						})
+					}
 				</EmojiPreviewContainer>
 			</StyledEmojiPicker>
 		);
@@ -48,9 +44,9 @@ export default class EmojiPicker extends React.PureComponent {
 }
 
 EmojiPicker.propTypes = {
-	
+	emojiQuery: PropTypes.string,
 };
 
 EmojiPicker.defaultProps = {
-	
+	emojiQuery: "sad",
 };

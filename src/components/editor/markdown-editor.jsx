@@ -67,6 +67,7 @@ export default class MarkdownEditor extends React.PureComponent {
 
 		this.state = {
 			emojiPickerOpen: false,
+			emojiQuery: "",
 		};
 	}
 
@@ -80,13 +81,71 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.CodeMirrorInstance.on("scroll", event => {
 			this.props.scrollPosChange(event.doc.scrollTop);
 		});
+		
+		this.CodeMirrorInstance.on("cursorActivity", (...args) => {
+			const lineContent = this.CodeMirrorInstance.getLine(this.getCursor().line);
+			if (!lineContent.includes(":")) return;
+
+			let counter = this.getCursor().ch;
+
+			do {
+				const content = this.CodeMirrorInstance.getRange({
+					line: this.getCursor().line,
+					ch: counter,
+				}, {
+					line: this.getCursor().line,
+					ch: counter + 1,
+				});
+
+				// console.log(counter, content);
+				counter--;
+
+				if (content === ":") {
+					const colonPos = {
+						line: this.getCursor().line,
+						ch: counter + 2, // skip colon char
+					};
+					// console.log("FOUND CLOSEST COLON AT", colonPos);
+
+					const emojiQuery = this.CodeMirrorInstance.getRange(colonPos, this.getCursor());
+					// console.log({ emojiQuery });
+					this.setState({ emojiQuery });
+
+					/* * /
+					this.CodeMirrorInstance.addLineWidget(
+						this.getCursor().line, ReactDOM.findDOMNode(this.emojiPickerRef.current), {
+							above: false,
+						}
+					);
+					/* */
+
+					/* * /
+					this.CodeMirrorInstance.addWidget({
+						line: this.getCursor().line, ch: this.getCursor().ch,
+					}, ReactDOM.findDOMNode(this.emojiPickerRef.current));
+					/* */
+
+					break;
+				}
+			} while (counter >= 0);
+		});
+
+		/*
 		this.CodeMirrorInstance.on("change", (event, changeObj) => {
 			// console.log(event, changeObj);
 
-			// TODO: cm.findWordAt(pos: {line, ch}) → {anchor: {line, ch}, head: {line, ch}}
 			const lineContent = this.CodeMirrorInstance.getLine(this.getCursor().line);
-			
+			// if (changeObj.text === ":") {
+			// 	console.log(": inserted");
+			// 	this.lastTypedColonPosition;
+			// }
 			if (!lineContent.includes(":")) return;
+
+			// find pos of last ":" in line which is BEFORE the cursor pos
+			// query from : position to current cursor postion 
+			// const query = this.CodeMirrorInstance.getRange({
+
+			// }, this.getCursor());
 
 			// match words after " :" until encountering a space
 			const regex3 = /\s{1,}:([^\s]+)/ig; // ignore " :" in match
@@ -96,8 +155,9 @@ export default class MarkdownEditor extends React.PureComponent {
 			const result = lineContent.matchAll(regex4);
 			const resultArray = Array.from(result, arr => arr[1]); // get emoji names
 
-			console.log(resultArray);
+			// console.log(resultArray);
 		});
+		*/
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -146,19 +206,6 @@ export default class MarkdownEditor extends React.PureComponent {
 	insertEmoji() {
 		this.editorFocus();
 		this.setState({ emojiPickerOpen: true });
-		/* * /
-		this.CodeMirrorInstance.addLineWidget(
-			this.getCursor().line, ReactDOM.findDOMNode(this.emojiPickerRef.current), {
-				above: false,
-			}
-		);
-		/* */
-
-		/* * /
-		this.CodeMirrorInstance.addWidget({
-			line: this.getCursor().line, ch: this.getCursor().ch,
-		}, ReactDOM.findDOMNode(this.emojiPickerRef.current));
-		/* */
 	}
 
 	render() {
@@ -173,9 +220,7 @@ export default class MarkdownEditor extends React.PureComponent {
 						this.props.getEditorHistory(this.CodeMirrorInstance.historySize());
 					}}
 				/>
-				{this.state.emojiPickerOpen && (
-					<EmojiPicker ref={this.emojiPickerRef} />
-				)}
+				<EmojiPicker emojiQuery={this.state.emojiQuery} ref={this.emojiPickerRef} />
 			</>
 		);
 	}
