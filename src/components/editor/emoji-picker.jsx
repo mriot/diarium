@@ -11,6 +11,7 @@ const StyledEmojiPicker = styled.div `
 	/* width: 75%;
 	height: 50px; */
 	background-color: #333;
+	z-index: 9999;
 `;
 const StyledTextInput = styled(TextInput) `
 	width: 100%;
