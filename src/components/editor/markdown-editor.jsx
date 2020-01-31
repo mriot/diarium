@@ -78,6 +78,24 @@ export default class MarkdownEditor extends React.PureComponent {
 
 		this.editorFocus();
 
+		this.CodeMirrorInstance.on("keydown", (cm, event) => {
+			if (this.state.emojiPickerOpen) {
+				switch (event.which) {
+				case 37: // left arrow
+					event.preventDefault();
+					break;
+				case 39: // right arrow
+					event.preventDefault();
+					break;
+				case 27: // ESC
+					this.setState({ emojiPickerOpen: false });
+					break;
+				default:
+					break;
+				}
+			}
+		});
+
 		this.CodeMirrorInstance.on("scroll", event => {
 			this.props.scrollPosChange(event.doc.scrollTop);
 		});
@@ -187,9 +205,11 @@ export default class MarkdownEditor extends React.PureComponent {
 						this.props.getEditorHistory(this.CodeMirrorInstance.historySize());
 					}}
 				/>
-				{this.state.emojiPickerOpen && (
-					<EmojiPicker emojiQuery={this.state.emojiQuery} ref={this.emojiPickerRef} />
-				)}
+				<EmojiPicker
+					pickerOpen={this.state.emojiPickerOpen}
+					emojiQuery={this.state.emojiQuery}
+					ref={this.emojiPickerRef}
+				/>
 			</>
 		);
 	}
