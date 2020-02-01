@@ -7,21 +7,19 @@ const StyledEmojiPicker = styled.div `
 	position: absolute;
 	display: ${props => (props.pickerOpen ? "flex" : "none")};
 	flex-wrap: wrap;
-	padding: 5px 10px;
+	padding: 5px;
 	border-radius: 3px;
 	background-color: #333;
 	z-index: 9999;
 `;
-const EmojiPreviewContainer = styled.div `
-	span.emoji {
-		font-size: 25px;
-		margin: 5px;
-    cursor: pointer;
-    border-radius: 3px;
-	}
-`;
 
 const Emoji = styled.span `
+	display: inline-block;
+	font-size: 25px;
+	margin: 5px;
+	cursor: pointer;
+	border-radius: 3px;
+
 	${props => props.active && `
 		box-shadow: 0 0 0 2px rgba(0, 165, 244, 0.4);
 	`}
@@ -49,39 +47,50 @@ export default class EmojiPicker extends React.PureComponent {
 	}
 	
 	handleKeyEvent(key) {
-		console.log({ key });
+		if (!this.props.pickerOpen) return;
 
 		// ENTER
-		if (key === 13) {
-			// TODO: insert emoji (replace query)
+		if (key === 13 && this.state.emojis?.length) {
+			this.props.insertEmoji(this.state.emojis[this.state.highlightIndex]);
 		}
 
 		// left arrow
-		if (key === 37 && this.state.highlightIndex >= 0) {
-			this.setState(prevState => ({ highlightIndex: prevState.highlightIndex - 1 }));
+		if (key === 37) {
+			this.setState(prevState => ({
+				highlightIndex: Math.max(prevState.highlightIndex - 1, 0),
+			}));
 		}
 		
 		// right arrow
-		if (key === 39 && this.state.highlightIndex <= this.state.emojis?.length) {
-			this.setState(prevState => ({ highlightIndex: prevState.highlightIndex + 1 }));
+		if (key === 39) {
+			this.setState(prevState => ({
+				highlightIndex: Math.min(prevState.highlightIndex + 1, prevState.emojis?.length - 1),
+			}));
 		}
 	}
 
-	searchEmojis(query) {
+	searchEmojis() {
 		if (!this.props.pickerOpen) return;
 		
-		const emojis = emojiIndex.search(this.props.emojiQuery);
+		const emojis = emojiIndex.search(this.props.emojiQuery).slice(0, 10);
 		this.setState({ emojis });
 	}
 
 	render() {
+		const { pickerOpen } = this.props;
+		const { emojis, highlightIndex } = this.state;
+
 		return (
-			<StyledEmojiPicker pickerOpen={this.props.pickerOpen}>
-				<EmojiPreviewContainer>
-					{this.props.pickerOpen && this.state.emojis?.map((emoji, index) => (
-						<Emoji className="emoji" active={this.state.highlightIndex === index} key={emoji.id}>{emoji.native}</Emoji>
-					))}
-				</EmojiPreviewContainer>
+			<StyledEmojiPicker pickerOpen={pickerOpen && emojis?.length}>
+				{pickerOpen && emojis?.length && emojis.map((emoji, index) => (
+					<Emoji
+						key={emoji.id}
+						title={emoji.name}
+						active={highlightIndex === index}
+					>
+						{emoji.native}
+					</Emoji>
+				))}
 			</StyledEmojiPicker>
 		);
 	}
@@ -90,6 +99,7 @@ export default class EmojiPicker extends React.PureComponent {
 EmojiPicker.propTypes = {
 	emojiQuery: PropTypes.string,
 	pickerOpen: PropTypes.bool.isRequired,
+	insertEmoji: PropTypes.func.isRequired,
 };
 
 EmojiPicker.defaultProps = {

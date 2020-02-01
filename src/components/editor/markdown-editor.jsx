@@ -90,6 +90,9 @@ export default class MarkdownEditor extends React.PureComponent {
 				case 27: // ESC
 					this.setState({ emojiPickerOpen: false });
 					break;
+				case 13: // ENTER
+					event.preventDefault();
+					break;
 				default:
 					break;
 				}
@@ -119,11 +122,17 @@ export default class MarkdownEditor extends React.PureComponent {
 				
 				const queryStartPos = {
 					line: cursorPos.line,
-					ch: charCounter + 1, // skip colon char
+					ch: charCounter,
 				};
 
-				// the query is everything between colon and cursor
-				const emojiQuery = this.CodeMirrorInstance.getRange(queryStartPos, cursorPos);
+				// used later to replace the query with the choosen emoji
+				this.queryRange = {
+					start: queryStartPos,
+					end: cursorPos,
+				};
+
+				// the query is everything between colon and cursor (we cut the first colon off)
+				const emojiQuery = this.CodeMirrorInstance.getRange(queryStartPos, cursorPos).slice(1);
 				if (emojiQuery.length < 1) {
 					this.setState({ emojiPickerOpen: false });
 					return;
@@ -170,6 +179,15 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.CodeMirrorInstance.redo();
 	}
 
+	insertEmoji(emoji) {
+		this.editorFocus();
+		this.CodeMirrorInstance.replaceRange(emoji.native, this.queryRange.start, this.queryRange.end);
+		this.setState({
+			emojiQuery: "",
+			emojiPickerOpen: false,
+		});
+	}
+
 	insertCode() {
 		this.editorFocus();
 		this.CodeMirrorInstance.replaceSelection("```language\n\n````");
@@ -188,11 +206,6 @@ export default class MarkdownEditor extends React.PureComponent {
 		});
 	}
 	
-	insertEmoji() {
-		this.editorFocus();
-		this.setState({ emojiPickerOpen: true });
-	}
-
 	render() {
 		return (
 			<>
@@ -208,6 +221,7 @@ export default class MarkdownEditor extends React.PureComponent {
 				<EmojiPicker
 					pickerOpen={this.state.emojiPickerOpen}
 					emojiQuery={this.state.emojiQuery}
+					insertEmoji={emoji => this.insertEmoji(emoji)}
 					ref={this.emojiPickerRef}
 				/>
 			</>
