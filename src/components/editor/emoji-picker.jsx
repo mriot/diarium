@@ -73,11 +73,12 @@ export default class EmojiPicker extends React.PureComponent {
 		if (!this.props.pickerOpen) return;
 		
 		const emojis = emojiIndex.search(this.props.emojiQuery).slice(0, 10);
+		this.props.emojiSearchResultCount(emojis.length || 0);
 		this.setState({ emojis });
 	}
 
 	render() {
-		const { pickerOpen } = this.props;
+		const { pickerOpen, insertEmoji } = this.props;
 		const { emojis, highlightIndex } = this.state;
 
 		return (
@@ -87,6 +88,7 @@ export default class EmojiPicker extends React.PureComponent {
 						key={emoji.id}
 						title={emoji.name}
 						active={highlightIndex === index}
+						onClick={() => insertEmoji(this.state.emojis[index])}
 					>
 						{emoji.native}
 					</Emoji>
@@ -100,6 +102,7 @@ EmojiPicker.propTypes = {
 	emojiQuery: PropTypes.string,
 	pickerOpen: PropTypes.bool.isRequired,
 	insertEmoji: PropTypes.func.isRequired,
+	emojiSearchResultCount: PropTypes.func.isRequired,
 };
 
 EmojiPicker.defaultProps = {

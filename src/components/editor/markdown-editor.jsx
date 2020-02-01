@@ -47,7 +47,10 @@ export default class MarkdownEditor extends React.PureComponent {
 
 		this.codeMirrorRef = React.createRef();
 		this.emojiPickerRef = React.createRef();
+
 		this.CodeMirrorInstance = null;
+		this.queryRange = null;
+		this.emojiSearchResultCount = 0;
 
 		this.editorConfig = {
 			mode: "gfm", // github flavored markdown
@@ -79,7 +82,7 @@ export default class MarkdownEditor extends React.PureComponent {
 		this.editorFocus();
 
 		this.CodeMirrorInstance.on("keydown", (cm, event) => {
-			if (this.state.emojiPickerOpen) {
+			if (this.state.emojiPickerOpen && this.emojiSearchResultCount > 0) {
 				switch (event.which) {
 				case 37: // left arrow
 					event.preventDefault();
@@ -117,21 +120,33 @@ export default class MarkdownEditor extends React.PureComponent {
 					{ line: cursorPos.line, ch: charCounter },
 					{ line: cursorPos.line, ch: charCounter + 1 }
 				);
-				
-				if (char !== ":") continue;
+				if (char !== ":") {
+					this.setState({ emojiPickerOpen: false });
+					continue;
+				}
+
+				const charB4Colon = this.CodeMirrorInstance.getRange(
+					{ line: cursorPos.line, ch: charCounter - 1 },
+					{ line: cursorPos.line, ch: charCounter }
+				);
+				// charB4Colon has to be either a "not word boundary", a tab or a space
+				if (!charB4Colon.match(/\B|\s+|\t+/)) {
+					this.setState({ emojiPickerOpen: false });
+					continue;
+				}
 				
 				const queryStartPos = {
 					line: cursorPos.line,
-					ch: charCounter,
+					ch: charCounter, // at colon
 				};
-
+					
 				// used later to replace the query with the choosen emoji
 				this.queryRange = {
 					start: queryStartPos,
 					end: cursorPos,
 				};
 
-				// the query is everything between colon and cursor (we cut the first colon off)
+				// the query is everything between colon and cursor (we cut the colon off)
 				const emojiQuery = this.CodeMirrorInstance.getRange(queryStartPos, cursorPos).slice(1);
 				if (emojiQuery.length < 1) {
 					this.setState({ emojiPickerOpen: false });
@@ -221,6 +236,7 @@ export default class MarkdownEditor extends React.PureComponent {
 				<EmojiPicker
 					pickerOpen={this.state.emojiPickerOpen}
 					emojiQuery={this.state.emojiQuery}
+					emojiSearchResultCount={count => (this.emojiSearchResultCount = count || 0)}
 					insertEmoji={emoji => this.insertEmoji(emoji)}
 					ref={this.emojiPickerRef}
 				/>
