@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faArrowsAltH } from "@fortawesome/free-solid-svg-icons";
-import { faSmile } from "@fortawesome/free-regular-svg-icons";
 import posed from "react-pose";
 import { toolbarItemsAnimation } from "./animations";
 
@@ -106,11 +105,6 @@ export default class Toolbar extends React.PureComponent {
 					title: "Code einfügen",
 					onClick: () => this.props.insertCode(),
 					icon: faCode,
-				},
-				{
-					title: "Emoji einfügen",
-					onClick: () => this.props.insertEmoji(),
-					icon: faSmile,
 				},
 				{ separator: true },
 				{
@@ -234,7 +228,6 @@ Toolbar.propTypes = {
 	editorRedo: PropTypes.func.isRequired,
 	insertCode: PropTypes.func.isRequired,
 	insertLink: PropTypes.func.isRequired,
-	insertEmoji: PropTypes.func.isRequired,
 	toggleZenMode: PropTypes.func.isRequired,
 	togglePreview: PropTypes.func.isRequired,
 	toggleScrollSync: PropTypes.func.isRequired,
