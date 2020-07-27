@@ -15,7 +15,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 2018,
+    ecmaVersion: 2020,
     sourceType: 'module',
   },
   plugins: [
@@ -54,6 +54,9 @@ module.exports = {
     "no-underscore-dangle": ["warn", {"allowAfterThis": true}],
     "class-methods-use-this": ["off"],
     "no-alert": ["off"],
+    "no-plusplus": ["off"],
+    "no-continue": ["off"],
+    "react/no-find-dom-node": ["warn"],
 
     "react/jsx-indent": ["error", "tab"],
     "react/require-default-props": ["warn"],
