@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import CodeMirror from "react-codemirror";
+import { createPopper } from "@popperjs/core";
 import EmojiPicker from "./emoji-picker";
 import "codemirror/lib/codemirror.css";
 import "../../themes/codemirror-callisto.css";
@@ -75,9 +76,9 @@ export default class MarkdownEditor extends React.PureComponent {
 	}
 
 	componentDidMount() {
-		// eslint-disable-next-line react/no-find-dom-node
-		this.CodeMirrorNode = ReactDOM.findDOMNode(this.codeMirrorRef.current);
 		this.CodeMirrorInstance = this.codeMirrorRef.current.getCodeMirror();
+		this.CodeMirrorNode = ReactDOM.findDOMNode(this.codeMirrorRef.current);
+		this.emojiPickerNode = ReactDOM.findDOMNode(this.emojiPickerRef.current);
 
 		this.editorFocus();
 
@@ -137,7 +138,7 @@ export default class MarkdownEditor extends React.PureComponent {
 				
 				const queryStartPos = {
 					line: cursorPos.line,
-					ch: charCounter, // at colon
+					ch: charCounter, // incl. colon
 				};
 					
 				// used later to replace the query with the choosen emoji
@@ -161,7 +162,19 @@ export default class MarkdownEditor extends React.PureComponent {
 				// move/append widget(= emoji picker) to where the cursor is
 				this.CodeMirrorInstance.addWidget({
 					line: cursorPos.line, ch: cursorPos.ch,
-				}, ReactDOM.findDOMNode(this.emojiPickerRef.current));
+				}, this.emojiPickerNode, true);
+
+				// this.CodeMirrorInstance.addLineWidget(cursorPos.line, this.emojiPickerNode, {
+				// 	coverGutter: false,
+				// 	noHScroll: true,
+				// 	above: false,
+				// 	handleMouseEvents: true,
+				// });
+
+				const cursorCoords = this.CodeMirrorInstance.cursorCoords(true, "local");
+				console.log(cursorCoords);
+				this.emojiPickerNode.style.top = `${cursorCoords.top + 25}px`;
+				this.emojiPickerNode.style.left = `${cursorCoords.left}px`;
 
 				// we've found what we were looking for — stop the loop
 				break;
@@ -214,11 +227,11 @@ export default class MarkdownEditor extends React.PureComponent {
 
 	insertLink() {
 		this.editorFocus();
-		this.CodeMirrorInstance.replaceSelection("[]()");
-		this.CodeMirrorInstance.setCursor({
-			line: this.getCursor().line,
-			ch: this.getCursor().ch - 3,
-		});
+		// this.CodeMirrorInstance.replaceSelection("[]()");
+		// this.CodeMirrorInstance.setCursor({
+		// 	line: this.getCursor().line,
+		// 	ch: this.getCursor().ch - 3,
+		// });
 	}
 	
 	render() {
