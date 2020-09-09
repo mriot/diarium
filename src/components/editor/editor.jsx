@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import styled from "styled-components";
 import posed from "react-pose";
 import PropTypes from "prop-types";
+import { Editor as DraftEditor, EditorState, RichUtils } from "draft-js";
 import SeparatorHandle from "./separator-handle";
 import MarkdownView from "./markdown-view";
 import MarkdownEditor from "./markdown-editor";
@@ -10,6 +11,7 @@ import Toolbar from "./toolbar";
 import { editorAnimation } from "./animations";
 import { GlobalContext } from "../../contexts";
 import { updateExistingEntryById } from "../../lib/backend";
+import "draft-js/dist/Draft.css";
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer) `
@@ -64,7 +66,10 @@ export default class Editor extends React.PureComponent {
 			scrollSyncPosition: 0,
 			editorHistory: { undo: 0, redo: 0 },
 			saveStatusText: "",
+			editorState: EditorState.createEmpty(),
 		};
+
+		this.onChange = editorState => this.setState({ editorState });
 	}
 
 	componentDidMount() {
@@ -82,6 +87,10 @@ export default class Editor extends React.PureComponent {
 				this.markdownEditorRef.editorFocus();
 			}
 		});
+
+		setInterval(() => {
+			console.log("Editor contents", this.state.editorState);
+		}, 1000);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -195,6 +204,10 @@ export default class Editor extends React.PureComponent {
 		this.setState(prevState => ({ forceUpdateSeparator: prevState.forceUpdateSeparator + 1 }));
 	}
 
+	_onBoldClick() {
+		this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, "BOLD"));
+	}
+
 	render() {
 		const {
 			zenMode, preview, scrollSync, editorHistory, saveStatusText,
@@ -231,6 +244,9 @@ export default class Editor extends React.PureComponent {
 						saveStatusText,
 					}}
 				/>
+
+				<button onClick={this._onBoldClick.bind(this)}>Bold</button>
+				<DraftEditor editorState={this.state.editorState} onChange={this.onChange} />
 
 				<InnerEditorContainer>
 					{!GLOBAL_READMODE && (
