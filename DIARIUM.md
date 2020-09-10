@@ -7,6 +7,7 @@
 - Using Node as dev environment
 - React + Ecosystem
 - JSX
+- Draft.js (WYSIWYG Framework)
 - Serviceworker (offline capabilities)
 - Many libraries and modules
 
@@ -39,3 +40,4 @@
   - Object destructuring
   - Spread operator
 - Using a JS linter (eslint) with a (slightly) customized styleguide from Airbnb
+- How hard it is to find a good WYSIWYG-Editor
