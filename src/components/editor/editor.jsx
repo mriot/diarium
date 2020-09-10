@@ -144,7 +144,6 @@ export default class Editor extends React.PureComponent {
 					}}
 				/>
 
-				<button onClick={() => this._onBoldClick()}>Bold</button>
 				<DraftEditor editorState={this.state.editorState} onChange={this.onChange} />
 
 			</EditorContainer>

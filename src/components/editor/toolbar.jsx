@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faArrowsAltH } from "@fortawesome/free-solid-svg-icons";
+import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faArrowsAltH, faBold, faItalic, faUnderline, faFont, faListUl, faListOl, faDivide, faRulerHorizontal, faMinus, faRemoveFormat } from "@fortawesome/free-solid-svg-icons";
 import posed from "react-pose";
 import { toolbarItemsAnimation } from "./animations";
 
@@ -76,6 +76,25 @@ export default class Toolbar extends React.PureComponent {
 			inFullscreenMode: false,
 			readMode: false && this.props.toolbarStatus.readModeActive,
 		};
+
+		/**
+		 * Paragraph
+		 * Heading 1-6
+		 * Monospace
+		 * Quote
+		 * 
+		 * Strikethrough
+		 * Sub/Superscript
+		 * Clear formatting
+		 * 
+		 * Table ?!
+		 * HR
+		 * 
+		 * Align
+		 * 
+		 * Indent
+		 * 
+		 */
 		
 		this.toolbarItems = {
 			left: [
@@ -93,6 +112,43 @@ export default class Toolbar extends React.PureComponent {
 				},
 				{ separator: true },
 				{
+					title: "Fett",
+					onClick: null,
+					icon: faBold,
+				},
+				{
+					title: "Kursiv",
+					onClick: null,
+					icon: faItalic,
+				},
+				{
+					title: "Unterstreichen",
+					onClick: null,
+					icon: faUnderline,
+				},
+				{
+					title: "Schriftfarbe",
+					onClick: null,
+					icon: faFont,
+				},
+				{ separator: true },
+				{
+					title: "Trenner",
+					onClick: null,
+					icon: faMinus,
+				},
+				{
+					title: "UL",
+					onClick: null,
+					icon: faListUl,
+				},
+				{
+					title: "OL",
+					onClick: null,
+					icon: faListOl,
+				},
+				{ separator: true },
+				{
 					title: "Bild einfügen",
 					onClick: null,
 					icon: faImage,
@@ -106,6 +162,12 @@ export default class Toolbar extends React.PureComponent {
 					title: "Code einfügen",
 					onClick: () => this.props.insertCode(),
 					icon: faCode,
+				},
+				{ separator: true },
+				{
+					title: "Formatierung entfernen",
+					onClick: null,
+					icon: faRemoveFormat,
 				},
 			],
 			
