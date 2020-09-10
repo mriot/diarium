@@ -74,7 +74,7 @@ export default class Toolbar extends React.PureComponent {
 
 		this.state = {
 			inFullscreenMode: false,
-			readMode: this.props.toolbarStatus.readModeActive,
+			readMode: false && this.props.toolbarStatus.readModeActive,
 		};
 		
 		this.toolbarItems = {
@@ -91,6 +91,7 @@ export default class Toolbar extends React.PureComponent {
 					isDisabled: () => this.props.toolbarStatus.editorHistory.redo <= 0,
 					icon: faShare,
 				},
+				{ separator: true },
 				{
 					title: "Bild einfügen",
 					onClick: null,
@@ -106,13 +107,6 @@ export default class Toolbar extends React.PureComponent {
 					onClick: () => this.props.insertCode(),
 					icon: faCode,
 				},
-				{ separator: true },
-				{
-					title: "Scrollen synchronisieren",
-					onClick: () => this.props.toggleScrollSync(),
-					isActive: () => this.props.toolbarStatus.scrollSyncActive,
-					icon: faArrowsAltH,
-				},
 			],
 			
 			right: [
@@ -123,13 +117,6 @@ export default class Toolbar extends React.PureComponent {
 					icon: faVihara,
 				},
 				{
-					title: "Ansicht splitten",
-					onClick: () => this.props.togglePreview(),
-					isActive: () => this.props.toolbarStatus.previewActive,
-					icon: faColumns,
-					hiddenInReadMode: true,
-				},
-				{
 					title: "Vollbild",
 					onClick: () => {
 						this.toggleFullScreen();
@@ -137,15 +124,6 @@ export default class Toolbar extends React.PureComponent {
 					},
 					isActive: () => this.state.inFullscreenMode,
 					icon: this.state.inFullscreenMode ? faCompress : faExpand,
-				},
-				{
-					title: "Layout des Editors zurücksetzen",
-					onClick: () => {
-						this.props.resetEditorLayout();
-						if (this.state.inFullscreenMode) this.toggleFullScreen();
-					},
-					icon: faUndoAlt,
-					hiddenInReadMode: true,
 				},
 			],
 		};
@@ -197,7 +175,7 @@ export default class Toolbar extends React.PureComponent {
 						item.separator && <ButtonSeparator key={index} pose={this.state.readMode ? "hide" : "show"} />,
 					])}
 
-					<ButtonSeparator pose={this.state.readMode ? "hide" : "show"} />
+					{/* <ButtonSeparator pose={this.state.readMode ? "hide" : "show"} /> */}
 
 					<SaveStatusText>
 						{this.props.toolbarStatus.saveStatusText}
@@ -223,22 +201,21 @@ export default class Toolbar extends React.PureComponent {
 }
 
 Toolbar.propTypes = {
-	editorFocus: PropTypes.func.isRequired,
-	editorUndo: PropTypes.func.isRequired,
-	editorRedo: PropTypes.func.isRequired,
-	insertCode: PropTypes.func.isRequired,
-	insertLink: PropTypes.func.isRequired,
-	toggleZenMode: PropTypes.func.isRequired,
-	togglePreview: PropTypes.func.isRequired,
-	toggleScrollSync: PropTypes.func.isRequired,
-	resetEditorLayout: PropTypes.func.isRequired,
+	// editorUndo: PropTypes.func.isRequired,
+	// editorRedo: PropTypes.func.isRequired,
+	// insertCode: PropTypes.func.isRequired,
+	// insertLink: PropTypes.func.isRequired,
+	// toggleZenMode: PropTypes.func.isRequired,
+	// togglePreview: PropTypes.func.isRequired,
+	// toggleScrollSync: PropTypes.func.isRequired,
+	// resetEditorLayout: PropTypes.func.isRequired,
 
-	toolbarStatus: PropTypes.shape({
-		readModeActive: PropTypes.bool,
-		zenModeActive: PropTypes.bool,
-		previewActive: PropTypes.bool,
-		scrollSyncActive: PropTypes.bool,
-		editorHistory: PropTypes.object,
-		saveStatusText: PropTypes.string,
-	}).isRequired,
+	// toolbarStatus: PropTypes.shape({
+	// 	readModeActive: PropTypes.bool,
+	// 	zenModeActive: PropTypes.bool,
+	// 	previewActive: PropTypes.bool,
+	// 	scrollSyncActive: PropTypes.bool,
+	// 	editorHistory: PropTypes.object,
+	// 	saveStatusText: PropTypes.string,
+	// }).isRequired,
 };
