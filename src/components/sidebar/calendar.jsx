@@ -153,7 +153,7 @@ class Calendar extends React.PureComponent {
 
 						// generate classnames from tags
 						classNamesArray.push(
-							entries.map(entry => {
+							entries?.map(entry => {
 								return moment(currentTilesDate).isSame(entry.assignedDay) ? [...entry.tags, "marked"] : [];
 							})
 						);
