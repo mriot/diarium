@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const StyledTextInput = styled.input `
+const StyledTextInput = styled.input`
   appearance: none;
   width: 55%;
   color: ${props => (props.light ? "#000" : "#9e9e9e")};
@@ -30,16 +30,8 @@ const StyledTextInput = styled.input `
   }
 `;
 
-export default class TextInput extends React.PureComponent {
-	constructor(props) {
-		super(props);
-
-		this.textInputRef = React.createRef();
-	}
-
-	render() {
-		return (
-			<StyledTextInput {...this.props} ref={this.textInputRef} />
-		);
-	}
+export default function TextInput(props) {
+  return (
+    <StyledTextInput {...props} />
+  );
 }

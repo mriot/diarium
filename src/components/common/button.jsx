@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-const StyledButton = styled.div `
+const StyledButton = styled.div`
   position: relative;
   color: #fff;
   background-color: #363b47;
@@ -41,17 +41,14 @@ const StyledButton = styled.div `
   }
 `;
 
-export default class Button extends React.PureComponent {
-	render() {
-		return (
-			<StyledButton {...this.props}>
-				{this.props.children}
-			</StyledButton>
-		);
-	}
+export default function Button(props) {
+  return (
+    <StyledButton {...props}>
+      {props.children}
+    </StyledButton>
+  );
 }
 
 Button.propTypes = {
-	children: PropTypes.any,
-  
+  children: PropTypes.any
 };
