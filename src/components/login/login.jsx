@@ -1,21 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
-import PropTypes from "prop-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faArrowsAltH } from "@fortawesome/free-solid-svg-icons";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import TextInput from "../common/textinput";
-import Button from "../common/button";
-import { auth } from "../../lib/backend";
 import Select from "../common/select";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import Button from "../common/button";
+import { loggedInSelector } from "../../atoms";
+import { useSetRecoilState } from "recoil";
+import { auth } from "../../lib/backend";
 
 const LoginMaskContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
-	justify-content: center;
-	flex-direction: column;
+  justify-content: center;
+  flex-direction: column;
 `;
 
 const LoginMask = styled.div`
@@ -30,14 +30,14 @@ const LoginMask = styled.div`
 `;
 
 const LoginFooter = styled.div`
-	width: auto;
-	color: #ddd;
-	display: flex;
-	justify-content: space-between;
+  width: auto;
+  color: #ddd;
+  display: flex;
+  justify-content: space-between;
 
-	a {
-		color: #ddd;
-	}
+  a {
+    color: #ddd;
+  }
 `;
 
 const Row = styled.div`
@@ -49,10 +49,10 @@ const Row = styled.div`
 `;
 
 const Heading = styled.h1`
-	color: #353a47;
-	font-size: 45px;
-	letter-spacing: 2px;
-	margin: 0 5px 5px;
+  color: #353a47;
+  font-size: 45px;
+  letter-spacing: 2px;
+  margin: 0 5px 5px;
 `;
 
 const shakeAnimation = keyframes`
@@ -88,126 +88,110 @@ const Label = styled.span`
   margin-right: 10px;
 `;
 
-export default class Login extends React.PureComponent {
-  constructor(props) {
-    super(props);
+export default function Login() {
+  const setLoggedIn = useSetRecoilState(loggedInSelector);
+  const [loginFailed, setLoginFailed] = useState(0);
+  let username = "";
+  let password = "";
 
-    this.username = "";
-    this.password = "";
-
-    this.state = {
-      loginFailed: 0
-    };
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     if (!localStorage.getItem("federal_state")) {
       localStorage.setItem("federal_state", "HE");
     }
-  }
+  }, []);
 
-  handleKeyStrokes(nativeEvent) {
-    // enter key
-    if (nativeEvent.which === 13) {
-      this.doLogin();
+  const handleKeyStrokes = (nativeEvent) => {
+    if (nativeEvent.which === 13) { // enter key
+      doLogin();
     }
-  }
+  };
 
-  doLogin() {
-    auth(this.username, this.password)
-      .then(response => {
-        if (!response) {
-          this.setState(prevState => ({ loginFailed: prevState.loginFailed + 1 }));
-          return;
-        }
-        this.props.setLoggedIn(true);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
+  const doLogin = async () => {
+    const response = await auth(username, password);
 
-  render() {
-    return (
-      <LoginMaskContainer>
-        <div>
-          <LoginMask>
-            <Row style={{ margin: "0 auto 30px" }}>
-              <Heading>DIARIUM</Heading>
+    if (!response) {
+      setLoginFailed(loginFailed + 1);
+      return;
+    }
+
+    setLoggedIn(true);
+  };
+
+  return (
+    <LoginMaskContainer>
+      <div>
+        <LoginMask>
+          <Row style={{ margin: "0 auto 30px" }}>
+            <Heading>DIARIUM</Heading>
+          </Row>
+          <Row>
+            <Label>Benutzername:</Label>
+            <TextInput
+              light
+              onChange={event => (username = event.currentTarget.value)}
+              onKeyPress={event => handleKeyStrokes(event.nativeEvent)}
+            />
+          </Row>
+          <Row>
+            <Label>Passwort:</Label>
+            <TextInput
+              light
+              type="password"
+              onChange={event => (password = event.currentTarget.value)}
+              onKeyPress={event => handleKeyStrokes(event.nativeEvent)}
+            />
+          </Row>
+          <Row style={{ marginBottom: "25px" }}>
+            <Label
+              title="Nur um dir die richtigen Feiertage anzeigen zu können. =)"
+              style={{ cursor: "help" }}
+            >
+              Bundesland: <span role="img" aria-label="warum?">🤔</span>?
+            </Label>
+            <Select
+              defaultValue={localStorage.getItem("federal_state") || "HE"}
+              onChange={event => {
+                localStorage.setItem("federal_state", event.currentTarget.value);
+              }}
+            >
+              <option value="BB">Brandenburg</option>
+              <option value="BE">Berlin</option>
+              <option value="BW">Baden-Württemberg</option>
+              <option value="BY">Bayern</option>
+              <option value="HB">Bremen</option>
+              <option value="HE">Hessen</option>
+              <option value="HH">Hamburg</option>
+              <option value="MV">Mecklenburg-Vorpommern</option>
+              <option value="NI">Niedersachsen</option>
+              <option value="NW">Nordrhein-Westfalen</option>
+              <option value="RP">Rheinland-Pfalz</option>
+              <option value="SH">Schleswig-Holstein</option>
+              <option value="SL">Saarland</option>
+              <option value="SN">Sachsen</option>
+              <option value="ST">Sachsen-Anhalt</option>
+              <option value="TH">Thüringen</option>
+            </Select>
+          </Row>
+          {loginFailed > 0 && (
+            <Row key={loginFailed}>
+              <ErrorMessage>
+                Da ist etwas schief gegangen :/
+              </ErrorMessage>
             </Row>
-            <Row>
-              <Label>Benutzername:</Label>
-              <TextInput
-                light
-                onChange={event => (this.username = event.currentTarget.value)}
-                onKeyPress={event => this.handleKeyStrokes(event.nativeEvent)}
-              />
-            </Row>
-            <Row>
-              <Label>Passwort:</Label>
-              <TextInput
-                light
-                type="password"
-                onChange={event => (this.password = event.currentTarget.value)}
-                onKeyPress={event => this.handleKeyStrokes(event.nativeEvent)}
-              />
-            </Row>
-            <Row style={{ marginBottom: "25px" }}>
-              <Label
-                title="Nur um dir die richtigen Feiertage anzeigen zu können. =)"
-                style={{ cursor: "help" }}
-              >
-							Bundesland: <span role="img" aria-label="warum?">🤔</span>?
-              </Label>
-              <Select
-                defaultValue={localStorage.getItem("federal_state") || "HE"}
-                onChange={event => {
-                  localStorage.setItem("federal_state", event.currentTarget.value);
-                }}
-              >
-                <option value="BB">Brandenburg</option>
-                <option value="BE">Berlin</option>
-                <option value="BW">Baden-Württemberg</option>
-                <option value="BY">Bayern</option>
-                <option value="HB">Bremen</option>
-                <option value="HE">Hessen</option>
-                <option value="HH">Hamburg</option>
-                <option value="MV">Mecklenburg-Vorpommern</option>
-                <option value="NI">Niedersachsen</option>
-                <option value="NW">Nordrhein-Westfalen</option>
-                <option value="RP">Rheinland-Pfalz</option>
-                <option value="SH">Schleswig-Holstein</option>
-                <option value="SL">Saarland</option>
-                <option value="SN">Sachsen</option>
-                <option value="ST">Sachsen-Anhalt</option>
-                <option value="TH">Thüringen</option>
-              </Select>
-            </Row>
-            {this.state.loginFailed > 0 && (
-              <Row key={this.state.loginFailed}>
-                <ErrorMessage>
-                Anmeldedaten fehlerhaft.
-                </ErrorMessage>
-              </Row>
-            )}
-            <Row alignedRight>
-              <Button onClick={() => this.doLogin()}>
+          )}
+          <Row alignedRight>
+            <Button onClick={() => doLogin()}>
               Einloggen
-              </Button>
-            </Row>
-          </LoginMask>
-          {/* <LoginFooter>
-						<span>by mriot</span>
-						<a href="https://github.com/mriot/diarium">
-							<FontAwesomeIcon icon={faGithub} />
-						</a>
-					</LoginFooter> */}
-        </div>
-      </LoginMaskContainer>
-    );
-  }
+            </Button>
+          </Row>
+        </LoginMask>
+        <LoginFooter>
+          <span>by mriot</span>
+          <a href="https://github.com/mriot/diarium">
+            <FontAwesomeIcon icon={faGithub} />
+          </a>
+        </LoginFooter>
+      </div>
+    </LoginMaskContainer>
+  );
 }
-
-Login.propTypes = {
-  // setLoggedIn: PropTypes.func.isRequired,
-};
