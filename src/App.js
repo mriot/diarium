@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -7,13 +7,14 @@ import posed, { PoseGroup } from "react-pose";
 import moment from "moment";
 import Navigation from "./components/navigation/navigation";
 import Sidebar from "./components/sidebar/sidebar";
-import Editor from "./components/editor/feditor";
+import Editor from "./components/editor/editor";
 import Highlights from "./components/highlights/highlights";
 import "moment/locale/de";
 import Login from "./components/login/login";
-import { isLoggedIn, createNewEntry, deleteEntryById } from "./lib/backend";
-import { GlobalContext } from "./contexts";
+import { isTokenValid, createNewEntry, deleteEntryById } from "./lib/backend";
 import { mainLayoutContainerAnimation, loginContainerAnimation } from "./animations";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
+import { dayRecordAtom, isLoggedInAtom, loggedInSelector, readModeAtom, selectedDayAtom } from "./atoms";
 
 const PosedLayout = posed.div(mainLayoutContainerAnimation);
 const Layout = styled(PosedLayout)`
@@ -32,156 +33,123 @@ const Main = styled.main`
   height: 100%;
 `;
 const LoginContainer = posed.div(loginContainerAnimation);
-export default class App extends React.PureComponent {
-  constructor(props) {
-    super(props);
 
+export default function App() {
+  const isLoggedIn = useRecoilValue(isLoggedInAtom);
+  const selectedDay = useRecoilValue(selectedDayAtom);
+  const [readMode, setReadMode] = useRecoilState(readModeAtom);
+  const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
+  const [showHighlights, setShowHighlights] = useState(false);
+  const setLoggedIn = useSetRecoilState(loggedInSelector);
+
+  useEffect(() => {
+    // set default locale of momentjs
     moment().locale("de");
 
-    this.state = {
-      readMode: true,
-      showHighlights: false,
-      loggedIn: false,
-      tokenChecked: false,
-      dayRecord: null
-    };
-  }
-
-  componentDidMount() {
-    this.setLoggedIn(isLoggedIn());
+    // wether the user is logged in when the component mounts
+    setLoggedIn(isTokenValid());
 
     // check login status after user inactivity ended
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
-        this.setLoggedIn(isLoggedIn());
+        setLoggedIn(isTokenValid());
       }
     });
-  }
+  }, []);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (!isLoggedIn()) {
-      this.setLoggedIn(false);
-      this.setState({ dayRecord: null });
-    }
-  }
+  useEffect(() => {
+    // clear current dayRecord when the user logs off
+    setDayRecord(null);
+  }, [isLoggedIn]);
 
-  setLoggedIn(status) {
-    this.setState({ loggedIn: status, tokenChecked: true });
-  }
-
-  createNewEntryForSelectedDay() {
-    const selectedDay = moment(window.location.pathname, "YYYY/MM/DD");
-
-    createNewEntry({
+  const createNewEntryForSelectedDay = async () => {
+    const result = await createNewEntry({
       assignedDay: moment(selectedDay).format("YYYY-MM-DD"),
-      content: `# ${selectedDay.format("dddd, D. MMMM YYYY")}\n\n`,
-      contentType: "text/markdown",
+      content: `<h1>${selectedDay.format("dddd, D. MMMM YYYY")}</h1>\n\n`,
+      contentType: "text/html",
       tags: []
-    })
-      .then(result => {
-        if (result.ok) {
-          this.setState({
-            readMode: false,
-            dayRecord: result.body
-          });
-        }
-      });
-  }
+    });
 
-  async deleteEntryFromSelectedDay() {
+    if (result.ok) {
+      setReadMode(false);
+      setDayRecord(result.body);
+    }
+  };
+
+  const deleteEntryFromSelectedDay = async () => {
     // NOTE: security check is made on button press in <Navigation />
-    if (!this.state.dayRecord) return false;
-    const result = await deleteEntryById(this.state.dayRecord.id);
+    if (!dayRecord) return false;
+    const result = await deleteEntryById(dayRecord.id);
 
     if (result.error) {
       toast.error(`Der Eintrag konnte nicht gelöscht werden. 🙈 Der Server antwortete mit: ${result.error}`);
       console.error(result.error);
       return false;
     }
+
     toast.info("Der Eintrag wurde gelöscht! 💀");
     console.log("The deleted entry:", result);
-    this.setState({
-      readMode: true,
-      dayRecord: null
-    });
+    setReadMode(true);
+    setDayRecord(null);
     return true;
-  }
+  };
 
-  render() {
-    const {
-      tokenChecked, loggedIn, dayRecord,
-      readMode, showHighlights
-    } = this.state;
+  // todo: prevent flashing '/login' in URL on page load when user is logged in
+  // if (!tokenChecked) return null;
 
-    // prevent flashing '/login' in URL on page load when user is logged in
-    if (!tokenChecked) return null;
-
-    return (
-      <BrowserRouter>
-        <PoseGroup>
-          {!loggedIn && (
-            <LoginContainer key="posed-login-container-771634">
-              <Redirect to="/login" />
-              <Route path="/login" exact>
-                <Login setLoggedIn={status => this.setLoggedIn(status)} />
-              </Route>
-            </LoginContainer>
-          )}
-
-          {loggedIn && (
-            <Layout key="posed-layout-831276">
-              <GlobalContext.Provider value={{
-                GLOBAL_DAYRECORD: dayRecord,
-                GLOBAL_READMODE: readMode,
-                UPDATE_GLOBAL_DAYRECORD: newDayRecord => this.setState({ dayRecord: newDayRecord })
-              }}
-              >
-                <Navigation
-                  isReadModeActive={readMode}
-                  setReadMode={bool => this.setState({ readMode: bool })}
-                  isHighlightsViewActive={showHighlights}
-                  setHighlightsView={bool => this.setState({ showHighlights: bool })}
-                  setLoggedIn={bool => this.setLoggedIn(bool)}
-                  isCreateButtonVisible={!dayRecord}
-                  createNewEntry={() => this.createNewEntryForSelectedDay()}
-                  deleteEntry={() => this.deleteEntryFromSelectedDay()}
-                />
-
-                <Sidebar
-                  isReadModeActive={readMode}
-                />
-
-                <Main>
-                  <PoseGroup withParent={false}>
-                    {showHighlights && (
-                      <Highlights key="highlights" />
-                    )}
-                  </PoseGroup>
-
-                  <Editor pose={showHighlights ? "hidden" : "visible"} />
-                </Main>
-              </GlobalContext.Provider>
-            </Layout>
-          )}
-        </PoseGroup>
-
-        {loggedIn && (
-          <Switch>
-            <Redirect from="/login" to="/" exact />
-          </Switch>
+  return (
+    <BrowserRouter>
+      <PoseGroup>
+        {!isLoggedIn && (
+          <LoginContainer key="posed-login-container-771634">
+            <Redirect to="/login" />
+            <Route path="/login" exact>
+              <Login />
+            </Route>
+          </LoginContainer>
         )}
 
-        <ToastContainer
-          // hideProgressBar={true}
-          position="bottom-right"
-          autoClose={10000}
-          newestOnTop
-          progressStyle={{ background: "linear-gradient(to right, #00b7ff, #5ac8fa, #007aff, #34aadc)" }}
-          style={{
-            right: 0
-          }}
-        />
-      </BrowserRouter>
-    );
-  }
+        {isLoggedIn && (
+          <Layout key="posed-layout-831276">
+            <Navigation
+              isHighlightsViewActive={showHighlights}
+              setHighlightsView={bool => this.setState({ showHighlights: bool })}
+              isCreateButtonVisible={!dayRecord}
+              createNewEntry={() => this.createNewEntryForSelectedDay()}
+              deleteEntry={() => this.deleteEntryFromSelectedDay()}
+            />
+
+            <Sidebar/>
+
+            <Main>
+              <PoseGroup withParent={false}>
+                {showHighlights && (
+                  <Highlights key="highlights" />
+                )}
+              </PoseGroup>
+
+              <Editor pose={showHighlights ? "hidden" : "visible"} />
+            </Main>
+          </Layout>
+        )}
+      </PoseGroup>
+
+      {isLoggedIn && (
+        <Switch>
+          <Redirect from="/login" to="/" exact />
+        </Switch>
+      )}
+
+      <ToastContainer
+        // hideProgressBar={true}
+        position="bottom-right"
+        autoClose={10000}
+        newestOnTop
+        progressStyle={{ background: "linear-gradient(to right, #00b7ff, #5ac8fa, #007aff, #34aadc)" }}
+        style={{
+          right: 0
+        }}
+      />
+    </BrowserRouter>
+  );
 }
