@@ -4,8 +4,10 @@ import PropTypes from "prop-types";
 import { faSignOutAlt, faStar, faPen, faPlusSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import NavButton from "./nav-button";
 import Search from "./search";
+import { useRecoilState } from "recoil";
+import { readModeAtom } from "../../atoms";
 
-const Nav = styled.nav `
+const Nav = styled.nav`
   width: 100%;
   height: auto;
   padding: 5px;
@@ -19,112 +21,99 @@ const Nav = styled.nav `
   box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
   grid-column: 1/3;
 `;
-const Logo = styled.span `
+const Logo = styled.span`
   color: #fff;
   font-size: 24px;
   z-index: 1;
 `;
-const RightSide = styled.div `
+const RightSide = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
 `;
-const ButtonContainer = styled.div `
+const ButtonContainer = styled.div`
   position: relative;
   display: flex;
   /* margin-right: 20px; */
 `;
-const Separator = styled.div `
+const Separator = styled.div`
   width: 2px;
   align-self: stretch;
   margin: 5px 0;
   background-color: #414247;
 `;
 
-export default class Navigation extends React.PureComponent {
-	logout() {
-		localStorage.removeItem("token");
-		this.props.setLoggedIn(false);
-	}
+export default function Navigation(props) {
+  const [readMode, setReadMode] = useRecoilState(readModeAtom);
 
-	render() {
-		const {
-			isCreateButtonVisible, createNewEntry, isReadModeActive,
-			setHighlightsView, setReadMode, isHighlightsViewActive,
-		} = this.props;
+  return (
+    <Nav>
+      <Logo>DIARIUM</Logo>
+      <RightSide>
+        <ButtonContainer>
+          {!props.isCreateButtonVisible && !readMode && (
+            <NavButton
+              icon={faTrash}
+              onClick={() => {
+                if (prompt(
+                  // eslint-disable-next-line prefer-template
+                  "Bist du dir sicher, dass du diesen Eintrag löschen möchtest? 😐\n" +
+                  "Gib zum Bestätigen bitte 'ok' ein"
+                ) === "ok") {
+                  this.props.deleteEntry();
+                }
+              }}
+            />
+          )}
+          {!props.isCreateButtonVisible && (
+            <NavButton
+              value="Bearbeiten"
+              icon={faPen}
+              active={!readMode}
+              onClick={() => {
+                setReadMode(!readMode);
+                if (readMode) props.setHighlightsView(false);
+              }}
+            />
+          )}
+          {props.isCreateButtonVisible && (
+            <NavButton
+              value="Erstellen"
+              icon={faPlusSquare}
+              onClick={() => {
+                props.createNewEntry();
+                if (readMode) props.setHighlightsView(false);
+              }}
+            />
+          )}
+          <NavButton
+            value="Highlights"
+            icon={faStar}
+            active={props.isHighlightsViewActive}
+            onClick={() => {
+              props.setHighlightsView(!props.isHighlightsViewActive);
+              if (!props.isHighlightsViewActive) setReadMode(true);
+            }}
+          />
+        </ButtonContainer>
 
-		return (
-			<Nav>
-				<Logo>DIARIUM</Logo>
-				<RightSide>
-					<ButtonContainer>
-						{!isCreateButtonVisible && !isReadModeActive && (
-							<NavButton
-								icon={faTrash}
-								onClick={() => {
-									if (prompt(
-										// eslint-disable-next-line prefer-template
-										"Bist du dir sicher, dass du diesen Eintrag löschen möchtest? 😐\n" +
-										"Gib zum Bestätigen bitte 'ok' ein"
-									) === "ok") {
-										this.props.deleteEntry();
-									}
-								}}
-							/>
-						)}
-						{!isCreateButtonVisible && (
-							<NavButton
-								value="Bearbeiten"
-								icon={faPen}
-								active={!isReadModeActive}
-								onClick={() => {
-									setReadMode(!isReadModeActive);
-									if (isReadModeActive) setHighlightsView(false);
-								}}
-							/>
-						)}
-						{isCreateButtonVisible && (
-							<NavButton
-								value="Erstellen"
-								icon={faPlusSquare}
-								onClick={() => {
-									createNewEntry();
-									if (isReadModeActive) setHighlightsView(false);
-								}}
-							/>
-						)}
-						<NavButton
-							value="Highlights"
-							icon={faStar}
-							active={isHighlightsViewActive}
-							onClick={() => {
-								setHighlightsView(!isHighlightsViewActive);
-								if (!isHighlightsViewActive) setReadMode(true);
-							}}
-						/>
-					</ButtonContainer>
+        <Search placeholder="Suchen..." />
 
-					<Search placeholder="Suchen..." />
+        <Separator />
 
-					<Separator />
-          
-					<NavButton
-						icon={faSignOutAlt}
-						onClick={() => this.logout()}
-					/>
-				</RightSide>
-			</Nav>
-		);
-	}
+        <NavButton
+          icon={faSignOutAlt}
+          onClick={() => this.logout()}
+        />
+      </RightSide>
+    </Nav>
+  );
 }
 
 Navigation.propTypes = {
-	isReadModeActive: PropTypes.bool.isRequired,
-	setReadMode: PropTypes.func.isRequired,
-	isHighlightsViewActive: PropTypes.bool.isRequired,
-	setHighlightsView: PropTypes.func.isRequired,
-	setLoggedIn: PropTypes.func.isRequired,
-	isCreateButtonVisible: PropTypes.bool.isRequired,
-	createNewEntry: PropTypes.func.isRequired,
-	deleteEntry: PropTypes.func.isRequired,
+  isHighlightsViewActive: PropTypes.bool.isRequired,
+  setHighlightsView: PropTypes.func.isRequired,
+  isCreateButtonVisible: PropTypes.bool.isRequired,
+  createNewEntry: PropTypes.func.isRequired,
+  deleteEntry: PropTypes.func.isRequired
 };

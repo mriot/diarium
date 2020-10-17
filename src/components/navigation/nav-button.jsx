@@ -3,7 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const NavItem = styled.div `
+const NavItem = styled.div`
   position: relative;
   cursor: pointer;
   color: #9e9e9e;
@@ -30,30 +30,28 @@ const NavItem = styled.div `
     border-radius: 3px 3px 0 0;
   }
 `;
-const StyledFontAwesomeIcon = styled(FontAwesomeIcon) `
+const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   position: relative;
   top: 1px;
 `;
 
-export default class NavButton extends React.PureComponent {
-	render() {
-		return (
-			<NavItem active={this.props.active} {...this.props}>
-				{this.props.icon && <StyledFontAwesomeIcon icon={this.props.icon} />}
-				<span>{this.props.value}</span>
-			</NavItem>
-		);
-	}
+export default function NavButton(props) {
+  return (
+    <NavItem active={props.active} {...props}>
+      {props.icon && <StyledFontAwesomeIcon icon={props.icon} />}
+      <span>{props.value}</span>
+    </NavItem>
+  );
 }
 
 NavButton.propTypes = {
-	active: PropTypes.bool,
-	value: PropTypes.string,
-	icon: PropTypes.object,
+  active: PropTypes.bool,
+  value: PropTypes.string,
+  icon: PropTypes.object
 };
 
 NavButton.defaultProps = {
-	active: false,
-	value: "",
-	icon: null,
+  active: false,
+  value: "",
+  icon: null
 };
