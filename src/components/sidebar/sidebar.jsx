@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import moment from "moment";
@@ -9,7 +9,7 @@ import TagEditor from "./tag-editor";
 import MetaData from "./meta-data";
 import { WHITE } from "../../themes/diarium-theme";
 
-const StyledSidebar = styled.aside `
+const StyledSidebar = styled.aside`
   position: relative;
   width: 300px;
   display: flex;
@@ -18,80 +18,64 @@ const StyledSidebar = styled.aside `
   box-sizing: border-box;
   background-color: #20232a;
 `;
-const Today = styled.div `
-	color: ${WHITE};
+const Today = styled.div`
+  color: ${WHITE};
   font-size: 18px;
   padding: 10px;
   cursor: pointer;
-	text-align: center;
+  text-align: center;
 
   &:hover {
     text-decoration: underline;
   }
 `;
 
-export default class Sidebar extends React.PureComponent {
-	constructor(props) {
-		super(props);
+export default function Sidebar(props) {
+  const [dateToday, setDateToday] = useState(moment());
+  const [loadingbar, setLoadingbar] = useState(false);
 
-		this.sharedMethods = {};
+  useEffect(() => {
+    // run "today updater" each minute
+    setInterval(() => {
+      if (moment(dateToday).diff(moment(), "days") > 0) {
+        console.log("'todaysDate' is one day behind — updating...");
+        setDateToday(moment());
+      }
+    }, 1000 * 60); // 1 min
 
-		this.state = {
-			dateToday: moment(),
-			loadingbar: false,
-		};
-	}
+    // check date after user inactivity ended
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && moment(dateToday).diff(moment(), "days") > 0) {
+        console.log("'todaysDate' is one day behind — updating...");
+        setDateToday(moment());
+      }
+    });
+  }, []);
 
-	componentDidMount() {
-		setInterval(() => {
-			if (moment(this.state.dateToday).diff(moment(), "days") > 0) {
-				console.log("'todaysDate' is one day behind — updating...");
-				this.updateTodaysDate();
-			}
-		}, 1000 * 60); // 1 min
+  return (
+    <StyledSidebar>
+      <Today onClick={() => {
+        // this.sharedMethods.resetCalendarToToday();
+        setDateToday(moment());
+      }}
+      >
+        {moment(dateToday).format("dddd, D. MMMM YYYY")}
+      </Today>
 
-		// check date after user inactivity ended
-		document.addEventListener("visibilitychange", () => {
-			if (!document.hidden && moment(this.state.dateToday).diff(moment(), "days") > 0) {
-				console.log("'todaysDate' is one day behind — updating...");
-				this.updateTodaysDate();
-			}
-		});
-	}
+      <Loadingbar active={loadingbar} />
 
-	updateTodaysDate() {
-		this.setState({ dateToday: moment() },
-			() => console.log("Updated 'todaysDate' 👍"));
-	}
-  
-	render() {
-		const { dateToday, loadingbar } = this.state;
+      <Calendar
+        // shareMethods={sharedMethods => (this.sharedMethods = sharedMethods)}
+        showLoadingbar={status => setLoadingbar(status)}
+      />
 
-		return (
-			<StyledSidebar>
-				<Today onClick={() => {
-					this.sharedMethods.resetCalendarToToday();
-					this.updateTodaysDate();
-				}}
-				>
-					{moment(dateToday).format("dddd, D. MMMM YYYY")}
-				</Today>
+      {/* <TagEditor /> */}
 
-				<Loadingbar active={loadingbar} />
+      {/* <MetaData /> */}
 
-				<Calendar
-					shareMethods={sharedMethods => (this.sharedMethods = sharedMethods)}
-					showLoadingbar={status => this.setState({ loadingbar: status })}
-				/>
-
-				<TagEditor />
-
-				<MetaData />
-
-				<Progress />
-			</StyledSidebar>
-		);
-	}
+      {/* <Progress /> */}
+    </StyledSidebar>
+  );
 }
 
 Sidebar.propTypes = {};

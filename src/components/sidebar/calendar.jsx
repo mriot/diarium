@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Calendar as ReactCalendar } from "react-calendar";
@@ -8,224 +8,162 @@ import { Redirect, withRouter } from "react-router-dom";
 import "../../themes/calendar-eros.css";
 import { fetchHolidays } from "../../lib/external";
 import { getRecordsInRange, getRecordForDay } from "../../lib/backend";
-import { GlobalContext } from "../../contexts";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { dayRecordAtom, readModeAtom, selectedDayAtom } from "../../atoms";
 
-const StyledCalendar = styled(ReactCalendar) `
+const StyledCalendar = styled(ReactCalendar)`
   border-bottom: 1px solid #191919;
-	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
 `;
 
-class Calendar extends React.PureComponent {
-	constructor(props) {
-		super(props);
+export default function Calendar() {
+  const readMode = useRecoilValue(readModeAtom);
+  const [selectedDay, setSelectedDay] = useRecoilState(selectedDayAtom);
+  const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
+  const [fetchedEntries, setFetchedEntries] = useState(null);
+  const [fetchedHolidays, setFetchedHolidays] = useState(null);
+  const [forceUpdateCalendar, setForceUpdateCalendar] = useState(0);
 
-		this.historyUnlisten = null;
-	
-		this.state = {
-			selectedDay: null,
-			fetchedEntries: null,
-			fetchedHolidays: null,
-			forceUpdateCalendar: 0,
-		};
-	}
-	
-	componentDidMount() {
-		this.props.shareMethods({
-			resetCalendarToToday: () => this.resetCalendarToToday(),
-		});
-		
-		const parsedInitDate = moment(window.location.pathname, "YYYY/MM/DD");
-		this.setState({
-			selectedDay: parsedInitDate.isValid() ? parsedInitDate.toDate() : moment().toDate(),
-		});
+  console.log(selectedDay);
 
-		// listen for history changes
-		this.historyUnlisten = this.props.history.listen((location, action) => {
-			const parsedDate = moment(location.pathname, "YYYY/MM/DD");
-			if (parsedDate.isSame(this.state.selectedDay)) return;
+  useEffect(() => {
+    const parsedInitDate = moment(window.location.pathname, "YYYY/MM/DD");
+    setSelectedDay(parsedInitDate.isValid() ? parsedInitDate.toDate() : moment().toDate());
 
-			// parse date from URL — fallback is current date
-			this.setState({ selectedDay: parsedDate.isValid() ? parsedDate.toDate() : moment().toDate() });
-		});
-	}
+    // todo listen for history changes
+    /*
+    const historyUnlisten = props.history.listen((location, action) => {
+      const parsedDate = moment(location.pathname, "YYYY/MM/DD");
+      if (parsedDate.isSame(this.state.selectedDay)) return;
 
-	componentDidUpdate(prevProps, prevState) {
-		if (prevState.selectedDay !== this.state.selectedDay) {
-			this.props.showLoadingbar(true);
-			const selectedDay = moment(this.state.selectedDay);
-			// NOTE: using moment() here again, because startOf/endOf would mutate the original object
-			const start = moment(selectedDay).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
-			const end = moment(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
-	
-			const dayRecordProm = getRecordForDay(
-				moment(selectedDay).format("YYYY"),
-				moment(selectedDay).format("MM"),
-				moment(selectedDay).format("DD")
-			)
-				.then(fetchedDayRecord => this.context.UPDATE_GLOBAL_DAYRECORD(fetchedDayRecord))
-				.then(() => this.props.showLoadingbar(false))
-				.catch(error => console.error(error));
-	
-			const rangeRecordsProm = getRecordsInRange(start, end, ["assignedDay", "tags"])
-				.then(fetchedEntries => this.setState({ fetchedEntries }))
-				.catch(error => {
-					console.error(error);
-					toast.error("Whoops! 😱 Die Einträge für diesen Monat konnten nicht geladen werden.");
-					this.setState({ fetchedEntries: null });
-				});
-	
-			const holidaysProm = fetchHolidays(selectedDay.format("YYYY"))
-				.then(result => this.setState({ fetchedHolidays: result }))
-				.catch(error => {
-					console.error(error);
-					toast.error("Whoops! 😱 Die Feiertage konnten nicht geladen werden.");
-					this.setState({ fetchedHolidays: null });
-				});
-	
-			// hide loadingbar if all of above have finished
-			Promise.all([dayRecordProm, rangeRecordsProm, holidaysProm])
-				.then(() => this.props.showLoadingbar(false));
-		}
-	}
+      // parse date from URL — fallback is current date
+      this.setState({ selectedDay: parsedDate.isValid() ? parsedDate.toDate() : moment().toDate() });
+    });
+    */
 
-	componentWillUnmount() {
-		this.historyUnlisten();
-	}
+    return () => {
+      // todo: cleanup: unlisten for history changes
+    };
+  }, []);
 
-	resetCalendarToToday(today = moment().toDate()) {
-		if (!this.context.GLOBAL_READMODE) return;
-		
-		this.props.showLoadingbar(true);
+  useEffect(() => {
+    // todo: show loading bar
+    // NOTE: using moment() on the date, because startOf/endOf would mutate the state object
+    const start = moment(selectedDay).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+    const end = moment(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
-		this.setState({
-			forceUpdateCalendar: Math.random(),
-			selectedDay: today,
-		});
+    (async function fetchDayRecord() {
+      const record = await getRecordForDay(
+        moment(selectedDay).format("YYYY"),
+        moment(selectedDay).format("MM"),
+        moment(selectedDay).format("DD")
+      );
 
-		const start = moment(today).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
-		const end = moment(today).endOf("month").add(7, "days").format("YYYY-MM-DD");
+      setDayRecord(record);
+      // todo: error handling?
+    })();
 
-		getRecordsInRange(start, end, ["assignedDay", "tags"])
-			.then(fetchedEntries => this.setState({ fetchedEntries }))
-			.then(() => this.props.showLoadingbar(false))
-			.catch(error => console.error(error));
-	}
+    (async function fetchDayRecordsInCalendarRange() {
+      const records = await getRecordsInRange(start, end, ["assignedDay", "tags"]);
 
-	render() {
-		const {
-			forceUpdateCalendar, selectedDay,
-			fetchedEntries, fetchedHolidays,
-		} = this.state;
+      setFetchedEntries(records);
+      // todo: error handling?
+    })();
 
-		const { GLOBAL_DAYRECORD, GLOBAL_READMODE } = this.context;
-		
-		if (!selectedDay) return null;
-		return (
-			<>
-				<Redirect push to={`/${moment(selectedDay).format("YYYY/MM/DD")}`} />
+    (async function fetchHolidaysForYear() {
+      const records = await fetchHolidays(moment(selectedDay).format("YYYY"));
 
-				<StyledCalendar
-					className="calendar-dark-theme"
-					key="diarium_calendar_key"
-					value={selectedDay}
-					forceUpdateCalendar={forceUpdateCalendar}
-					minDetail={!GLOBAL_READMODE ? "month" : "decade"}
-					minDate={!GLOBAL_READMODE ? moment(selectedDay).toDate() : null}
-					maxDate={!GLOBAL_READMODE ? moment(selectedDay).toDate() : null}
-					tileDisabled={() => !GLOBAL_READMODE}
-					tileClassName={({ activeStartDate, date, view }) => {
-						if (view !== "month") return false;
-						if (!fetchedEntries || !fetchedHolidays) return false;
+      setFetchedHolidays(records);
+      // todo: error handling?
+    })();
 
-						const currentTilesDate = moment(date).format("YYYY-MM-DD");
+    // todo: hide loading bar when all finished
+    console.log(selectedDay);
+  }, [selectedDay]);
 
-						// global dayRecord (via context) did change — e.g. created
-						if (GLOBAL_DAYRECORD && moment(currentTilesDate).isSame(GLOBAL_DAYRECORD.assignedDay)) {
-							return [...GLOBAL_DAYRECORD.tags, "marked"].flat(Infinity);
-						}
+  const resetCalendarToToday = (today = moment().toDate()) => {
+    // don't reset calendar, while in editmode
+    if (!readMode) return;
 
-						const { entries } = fetchedEntries;
-						const holidays = fetchedHolidays;
-						const classNamesArray = [];
+    // todo: show loading bar
 
-						// date found as key in holidays — congrats, it's a holiday
-						if (holidays[moment(date).format("YYYY-MM-DD")]) classNamesArray.push("holiday");
+    setForceUpdateCalendar(Math.random());
+    setSelectedDay(today);
+  };
 
-						// generate classnames from tags
-						classNamesArray.push(
-							entries?.map(entry => {
-								return moment(currentTilesDate).isSame(entry.assignedDay) ? [...entry.tags, "marked"] : [];
-							})
-						);
+  if (!selectedDay) return null;
+  return (
+    <>
+      <Redirect push to={`/${moment(selectedDay).format("YYYY/MM/DD")}`} />
 
-						return classNamesArray.flat(Infinity);
-					}}
+      <StyledCalendar
+        className="calendar-dark-theme"
+        key="diarium_calendar_key"
+        value={moment(selectedDay)}
+        forceUpdateCalendar={forceUpdateCalendar}
+        minDetail={!readMode ? "month" : "decade"}
+        minDate={!readMode ? moment(selectedDay).toDate() : null}
+        maxDate={!readMode ? moment(selectedDay).toDate() : null}
+        tileDisabled={() => !readMode}
+        tileClassName={({ activeStartDate, date, view }) => {
+          if (view !== "month") return false;
+          if (!fetchedEntries || !fetchedHolidays) return false;
 
-					// ARROW NAVIGATION
-					onActiveDateChange={changeObj => {
-						this.props.showLoadingbar(true);
-						const { activeStartDate, view } = changeObj;
-						if (view !== "month") return;
+          const currentTilesDate = moment(date).format("YYYY-MM-DD");
 
-						const start = moment(activeStartDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
-						const end = moment(activeStartDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
+          // global dayRecord (via context) did change — e.g. created
+          if (dayRecord && moment(currentTilesDate).isSame(dayRecord.assignedDay)) {
+            return [...dayRecord.tags, "marked"].flat(Infinity);
+          }
 
-						// select first day of month
-						this.setState({ selectedDay: activeStartDate });
+          const { entries } = fetchedEntries;
+          const holidays = fetchedHolidays;
+          const classNamesArray = [];
 
-						getRecordsInRange(start, end, ["assignedDay", "tags"])
-							.then(fetchedRecords => this.setState({ fetchedEntries: fetchedRecords }))
-							.then(() => this.props.showLoadingbar(false))
-							.catch(error => console.error(error));
-					}}
+          // date found as key in holidays — congrats, it's a holiday
+          if (holidays[moment(date).format("YYYY-MM-DD")]) classNamesArray.push("holiday");
 
-					// MONTH SELECTED // fetch data for month with 1 week +- offset
-					onClickMonth={activeStartDate => {
-						this.props.showLoadingbar(true);
-						const start = moment(activeStartDate).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
-						const end = moment(activeStartDate).endOf("month").add(7, "days").format("YYYY-MM-DD");
+          // generate classnames from tags
+          classNamesArray.push(
+            entries?.map(entry => {
+              return moment(currentTilesDate).isSame(entry.assignedDay) ? [...entry.tags, "marked"] : [];
+            })
+          );
 
-						// select first day of month
-						this.setState({ selectedDay: activeStartDate });
+          return classNamesArray.flat(Infinity);
+        }}
 
-						getRecordsInRange(start, end, ["assignedDay", "tags"])
-							.then(fetchedRecords => this.setState({ fetchedEntries: fetchedRecords }))
-							.then(() => this.props.showLoadingbar(false))
-							.catch(error => console.error(error));
-					}}
+        // ARROW NAVIGATION
+        onActiveDateChange={changeObj => {
+          // todo: show loading bar
+          const { activeStartDate, view } = changeObj;
+          if (view !== "month") return;
 
-					// DATE/DAY SELECTED (fetch selected day -> all data)
-					onClickDay={activeStartDate => {
-						this.props.showLoadingbar(true);
-						const date = moment(activeStartDate);
+          // select first day of month
+          setSelectedDay(activeStartDate);
+        }}
 
-						this.setState({ selectedDay: activeStartDate });
+        // MONTH SELECTED
+        onClickMonth={activeStartDate => {
+          // todo: show loading bar
 
-						getRecordForDay(date.format("YYYY"), date.format("MM"), date.format("DD"))
-							.then(fetchedDayRecord => this.context.UPDATE_GLOBAL_DAYRECORD(fetchedDayRecord))
-							.then(() => this.props.showLoadingbar(false))
-							.catch(error => console.error(error));
-					}}
-				
-					// YEAR SELECTOR
-					// onClickYear={(...args) => console.log("onClickYear", ...args)}
+          // select first day of month
+          setSelectedDay(activeStartDate);
+        }}
 
-					// GENERAL CHANGE LISTENER
-					// onChange={value => console.log("onChange:", value)}
-				/>
-			</>
-		);
-	}
+        // DATE/DAY SELECTED (fetch selected day -> all data)
+        onClickDay={activeStartDate => {
+          // todo: show loading bar
+
+          setSelectedDay(activeStartDate);
+        }}
+
+        // YEAR SELECTOR
+        // onClickYear={(...args) => console.log("onClickYear", ...args)}
+
+        // GENERAL CHANGE LISTENER
+        // onChange={value => console.log("onChange:", value)}
+      />
+    </>
+  );
 }
-
-Calendar.propTypes = {
-	showLoadingbar: PropTypes.func.isRequired,
-	shareMethods: PropTypes.func.isRequired,
-	history: PropTypes.object.isRequired, // react-router
-};
-
-Calendar.defaultProps = {};
-
-Calendar.contextType = GlobalContext;
-
-export default withRouter(Calendar);

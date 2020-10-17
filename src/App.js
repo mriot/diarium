@@ -94,7 +94,7 @@ export default function App() {
     return true;
   };
 
-  // todo: prevent flashing '/login' in URL on page load when user is logged in
+  // todo: prevent flashing '/login' in URL on page load when user is already logged in
   // if (!tokenChecked) return null;
 
   return (
