@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { faSignOutAlt, faStar, faPen, faPlusSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
-import NavButton from "./nav-button";
-import Search from "./search";
+import NavButton from "../src/components/navigation/nav-button";
+import Search from "../src/components/navigation/search";
 
 const Nav = styled.nav `
   width: 100%;

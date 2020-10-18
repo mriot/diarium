@@ -8,9 +8,9 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import { Redirect, withRouter } from "react-router-dom";
 import "../../themes/calendar-eros.css";
-import { fetchHolidays } from "../../lib/external";
-import { getRecordsInRange, getRecordForDay } from "../../lib/backend";
-import { GlobalContext } from "../../contexts";
+import { fetchHolidays } from "../src/lib/external";
+import { getRecordsInRange, getRecordForDay } from "../src/lib/backend";
+import { GlobalContext } from "../src/contexts";
 
 const StyledCalendar = styled(ReactCalendar) `
   border-bottom: 1px solid #191919;

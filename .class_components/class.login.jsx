@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faArrowsAltH } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import TextInput from "../common/textinput";
-import Button from "../common/button";
-import { auth } from "../../lib/backend";
-import Select from "../common/select";
+import TextInput from "../src/components/common/textinput";
+import Button from "../src/components/common/button";
+import { auth } from "../src/lib/backend";
+import Select from "../src/components/common/select";
 
 const LoginMaskContainer = styled.div`
   width: 100%;

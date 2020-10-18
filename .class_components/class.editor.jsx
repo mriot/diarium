@@ -4,10 +4,10 @@ import styled from "styled-components";
 import posed from "react-pose";
 import PropTypes from "prop-types";
 import { Editor as DraftEditor, EditorState, RichUtils } from "draft-js";
-import Toolbar from "./_toolbar";
-import { editorAnimation } from "./animations";
-import { GlobalContext } from "../../contexts";
-import { updateExistingEntryById } from "../../lib/backend";
+import Toolbar from "./class.toolbar";
+import { editorAnimation } from "../src/components/editor/animations";
+import { GlobalContext } from "../src/contexts";
+import { updateExistingEntryById } from "../src/lib/backend";
 import "draft-js/dist/Draft.css";
 
 const PosedEditorContainer = posed.div(editorAnimation);

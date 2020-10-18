@@ -5,15 +5,15 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import posed, { PoseGroup } from "react-pose";
 import moment from "moment";
-import Navigation from "./components/navigation/navigation";
-import Sidebar from "./components/sidebar/sidebar";
+import Navigation from "../src/components/navigation/navigation";
+import Sidebar from "../src/components/sidebar/sidebar";
 import Editor from "./components/editor/feditor";
-import Highlights from "./components/highlights/highlights";
+import Highlights from "../src/components/highlights/highlights";
 import "moment/locale/de";
-import Login from "./components/login/login";
-import { isLoggedIn, createNewEntry, deleteEntryById } from "./lib/backend";
-import { GlobalContext } from "./contexts";
-import { mainLayoutContainerAnimation, loginContainerAnimation } from "./animations";
+import Login from "../src/components/login/login";
+import { isLoggedIn, createNewEntry, deleteEntryById } from "../src/lib/backend";
+import { GlobalContext } from "../src/contexts";
+import { mainLayoutContainerAnimation, loginContainerAnimation } from "../src/animations";
 
 const PosedLayout = posed.div(mainLayoutContainerAnimation);
 const Layout = styled(PosedLayout)`
