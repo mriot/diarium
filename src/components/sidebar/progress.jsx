@@ -2,28 +2,28 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import moment from "moment";
-import { withRouter, history } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import ProgressBar from "../common/progressbar";
-import { countAllEntries, countRecordsInRange } from "../../lib/backend";
+import { countAllEntries, countRecordsInRange } from "../../backend/counters";
 
 const ProgressContainer = styled.div`
-	padding: 0 0 5px 5px;
-	border-bottom: 1px solid #191919;
-	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
+  padding: 0 0 5px 5px;
+  border-bottom: 1px solid #191919;
+  box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
 `;
 const ProgressDescription = styled.div`
-	color: #efefef;
-	font-size: 15px;
-	font-weight: 100;
-	margin: 15px 0 5px;
+  color: #efefef;
+  font-size: 15px;
+  font-weight: 100;
+  margin: 15px 0 5px;
 
-	span {
-		margin-left: 5px;
-		opacity: 0.5;
-	}
+  span {
+    margin-left: 5px;
+    opacity: 0.5;
+  }
 `;
 const TotalDescription = styled(ProgressDescription)`
-	margin: 20px 0 0;
+  margin: 20px 0 0;
 `;
 
 class Progress extends React.PureComponent {
@@ -109,24 +109,24 @@ class Progress extends React.PureComponent {
     return (
       <ProgressContainer>
         {/* <ProgressDescription>
-					Einträge in KW {moment(selectedDay).week()}: {(this.state.progressWeek / 7 * 100).toFixed(2)}%
-				</ProgressDescription>
-				<ProgressBar progress={this.state.progressWeek} /> */}
+          Einträge in KW {moment(selectedDay).week()}: {(this.state.progressWeek / 7 * 100).toFixed(2)}%
+        </ProgressDescription>
+        <ProgressBar progress={this.state.progressWeek} /> */}
 
         <ProgressDescription>
-					Einträge im {moment(selectedDay).format("MMMM")}: {progressMonth}
+          Einträge im {moment(selectedDay).format("MMMM")}: {progressMonth}
           <span>({progressMonthPercent}%)</span>
         </ProgressDescription>
         <ProgressBar progress={progressMonthPercent} />
 
         <ProgressDescription>
-					Einträge in {moment(selectedDay).year()}: {progressYear}
+          Einträge in {moment(selectedDay).year()}: {progressYear}
           <span>({progressYearPercent}%)</span>
         </ProgressDescription>
         <ProgressBar progress={progressYearPercent} />
 
         <TotalDescription>
-					Einträge gesamt: {progressTotal}
+          Einträge gesamt: {progressTotal}
         </TotalDescription>
       </ProgressContainer>
     );

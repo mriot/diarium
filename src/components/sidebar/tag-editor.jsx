@@ -5,44 +5,44 @@ import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks, faCross, faSyncAlt
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 import Tag from "./tag";
-import { updateExistingEntryById } from "../../lib/backend";
 import { GlobalContext } from "../../contexts";
 import { WHITE } from "../../themes/diarium-theme";
+import { updateExistingEntryById } from "../../backend/recordManipulation";
 
 const rotate = keyframes`
-	from {
-		transform: rotate(0)
-	}
-	to {
-		transform: rotate(360deg)
-	}
+  from {
+    transform: rotate(0)
+  }
+  to {
+    transform: rotate(360deg)
+  }
 `;
 
 const TagEditorContainer = styled.div`
-	color: ${WHITE};
-	width: 100%;
-	padding: 10px 0;
-	box-sizing: border-box;
-	border-bottom: 1px solid #191919;
-	box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
+  color: ${WHITE};
+  width: 100%;
+  padding: 10px 0;
+  box-sizing: border-box;
+  border-bottom: 1px solid #191919;
+  box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
 `;
 const Heading = styled.h3`
-	margin: 0 0 10px;
-	padding-left: 5px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid #191919;
+  margin: 0 0 10px;
+  padding-left: 5px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #191919;
 `;
 const Spinner = styled(FontAwesomeIcon)`
-	opacity: ${props => (props.spinning ? 1 : 0)};
-	font-size: 16px;
-	margin-left: 5px;
-	transition-delay: 100ms;
-	animation: 1s ${rotate} linear infinite;
+  opacity: ${props => (props.spinning ? 1 : 0)};
+  font-size: 16px;
+  margin-left: 5px;
+  transition-delay: 100ms;
+  animation: 1s ${rotate} linear infinite;
 `;
 const TagContainer = styled.div` 
-	display: grid;
-	grid-gap: 3px;
-	grid-template-columns: repeat(2, 1fr);
+  display: grid;
+  grid-gap: 3px;
+  grid-template-columns: repeat(2, 1fr);
 `;
 
 export default class TagEditor extends React.PureComponent {
@@ -101,7 +101,7 @@ export default class TagEditor extends React.PureComponent {
     return (
       <TagEditorContainer>
         <Heading>
-					Tags <Spinner icon={faSyncAlt} spinning={this.state.spinnerActive ? 1 : 0} />
+          Tags <Spinner icon={faSyncAlt} spinning={this.state.spinnerActive ? 1 : 0} />
         </Heading>
         <TagContainer>
           {Object.keys(definedTags).map((tag, index) => (

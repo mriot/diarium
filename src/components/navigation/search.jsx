@@ -5,8 +5,8 @@ import moment from "moment";
 import posed, { PoseGroup } from "react-pose";
 import { NavLink } from "react-router-dom";
 import TextInput from "../common/textinput";
-import { search } from "../../lib/backend";
 import { searchResultAnimation } from "./animations";
+import { search } from "../../backend/search";
 
 const StyledSearch = styled.div`
   position: relative;

@@ -4,12 +4,12 @@ import styled from "styled-components";
 import { Calendar as ReactCalendar } from "react-calendar";
 import moment from "moment";
 import { toast } from "react-toastify";
-import { Redirect, withRouter } from "react-router-dom";
+import { Redirect, useHistory, withRouter } from "react-router-dom";
 import "../../themes/calendar-eros.css";
 import { fetchHolidays } from "../../lib/external";
-import { getRecordsInRange, getRecordForDay } from "../../lib/backend";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { dayRecordAtom, readModeAtom, selectedDayAtom } from "../../atoms";
+import { getRecordForDay, getRecordsInRange } from "../../backend/getters";
 
 const StyledCalendar = styled(ReactCalendar)`
   border-bottom: 1px solid #191919;
