@@ -1,22 +1,8 @@
-import { atom, selector } from "recoil";
-import moment from "moment";
-
-export const tokenCheckedAtom = atom({
-  key: "tokenCheckedAtom",
-  default: false
-});
+import { atom } from "recoil";
 
 export const isLoggedInAtom = atom({
   key: "isLoggedInAtom",
-  default: false
-});
-
-export const loggedInSelector = selector({
-  key: "loggedInSelector",
-  set: ({ set }, status) => {
-    set(isLoggedInAtom, status);
-    set(tokenCheckedAtom, status);
-  }
+  default: undefined
 });
 
 export const readModeAtom = atom({
@@ -31,5 +17,5 @@ export const dayRecordAtom = atom({
 
 export const selectedDayAtom = atom({
   key: "selectedDayAtom",
-  default: moment(window.location.pathname, "YYYY/MM/DD")
+  default: null
 });

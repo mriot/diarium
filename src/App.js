@@ -13,8 +13,8 @@ import "moment/locale/de";
 import Login from "./components/login/login";
 import { isTokenValid, createNewEntry, deleteEntryById } from "./lib/backend";
 import { mainLayoutContainerAnimation, loginContainerAnimation } from "./animations";
-import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
-import { dayRecordAtom, isLoggedInAtom, loggedInSelector, readModeAtom, selectedDayAtom } from "./atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { dayRecordAtom, isLoggedInAtom, readModeAtom, selectedDayAtom } from "./atoms";
 
 const PosedLayout = posed.div(mainLayoutContainerAnimation);
 const Layout = styled(PosedLayout)`
@@ -35,31 +35,32 @@ const Main = styled.main`
 const LoginContainer = posed.div(loginContainerAnimation);
 
 export default function App() {
-  const isLoggedIn = useRecoilValue(isLoggedInAtom);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInAtom);
   const selectedDay = useRecoilValue(selectedDayAtom);
   const [readMode, setReadMode] = useRecoilState(readModeAtom);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const [showHighlights, setShowHighlights] = useState(false);
-  const setLoggedIn = useSetRecoilState(loggedInSelector);
+  const [jwtChecked, setJwtChecked] = useState(false);
 
   useEffect(() => {
     // set default locale of momentjs
     moment().locale("de");
 
     // wether the user is logged in when the component mounts
-    setLoggedIn(isTokenValid());
+    setIsLoggedIn(isTokenValid());
 
     // check login status after user inactivity ended
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
-        setLoggedIn(isTokenValid());
+        setIsLoggedIn(isTokenValid());
       }
     });
   }, []);
 
   useEffect(() => {
+    if (isLoggedIn !== undefined) setJwtChecked(true);
     // clear current dayRecord when the user logs off
-    setDayRecord(null);
+    if (!isLoggedIn) setDayRecord(null);
   }, [isLoggedIn]);
 
   const createNewEntryForSelectedDay = async () => {
@@ -94,11 +95,18 @@ export default function App() {
     return true;
   };
 
-  // todo: prevent flashing '/login' in URL on page load when user is already logged in
-  // if (!tokenChecked) return null;
+  // show nothing until token has been checked
+  // also prevents flashing '/login' in URL on page load when user is already logged in
+  if (!jwtChecked) return null;
 
   return (
     <BrowserRouter>
+      {isLoggedIn && (
+        <Switch>
+          <Redirect from="/login" to="/" exact />
+        </Switch>
+      )}
+
       <PoseGroup>
         {!isLoggedIn && (
           <LoginContainer key="posed-login-container-771634">
@@ -133,12 +141,6 @@ export default function App() {
           </Layout>
         )}
       </PoseGroup>
-
-      {isLoggedIn && (
-        <Switch>
-          <Redirect from="/login" to="/" exact />
-        </Switch>
-      )}
 
       <ToastContainer
         // hideProgressBar={true}

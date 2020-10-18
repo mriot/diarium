@@ -5,7 +5,7 @@ import Select from "../common/select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import Button from "../common/button";
-import { loggedInSelector } from "../../atoms";
+import { isLoggedInAtom } from "../../atoms";
 import { useSetRecoilState } from "recoil";
 import { auth } from "../../lib/backend";
 
@@ -89,7 +89,7 @@ const Label = styled.span`
 `;
 
 export default function Login() {
-  const setLoggedIn = useSetRecoilState(loggedInSelector);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
   const [loginFailed, setLoginFailed] = useState(0);
   let username = "";
   let password = "";
@@ -114,7 +114,7 @@ export default function Login() {
       return;
     }
 
-    setLoggedIn(true);
+    setIsLoggedIn(true);
   };
 
   return (

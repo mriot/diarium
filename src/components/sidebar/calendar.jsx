@@ -24,11 +24,10 @@ export default function Calendar() {
   const [fetchedHolidays, setFetchedHolidays] = useState(null);
   const [forceUpdateCalendar, setForceUpdateCalendar] = useState(0);
 
-  console.log(selectedDay);
-
   useEffect(() => {
-    const parsedInitDate = moment(window.location.pathname, "YYYY/MM/DD");
-    setSelectedDay(parsedInitDate.isValid() ? parsedInitDate.toDate() : moment().toDate());
+    const dateFromUrl = moment(window.location.pathname, "YYYY/MM/DD");
+    console.log(dateFromUrl);
+    setSelectedDay(dateFromUrl.isValid() ? dateFromUrl.toDate() : moment().toDate());
 
     // todo listen for history changes
     /*
@@ -47,8 +46,10 @@ export default function Calendar() {
   }, []);
 
   useEffect(() => {
+    if (!selectedDay) return;
+
     // todo: show loading bar
-    // NOTE: using moment() on the date, because startOf/endOf would mutate the state object
+    // NOTE: using moment() on the date because startOf/endOf would mutate the state object
     const start = moment(selectedDay).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
     const end = moment(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
@@ -78,7 +79,6 @@ export default function Calendar() {
     })();
 
     // todo: hide loading bar when all finished
-    console.log(selectedDay);
   }, [selectedDay]);
 
   const resetCalendarToToday = (today = moment().toDate()) => {
@@ -99,7 +99,7 @@ export default function Calendar() {
       <StyledCalendar
         className="calendar-dark-theme"
         key="diarium_calendar_key"
-        value={moment(selectedDay)}
+        value={selectedDay}
         forceUpdateCalendar={forceUpdateCalendar}
         minDetail={!readMode ? "month" : "decade"}
         minDate={!readMode ? moment(selectedDay).toDate() : null}
