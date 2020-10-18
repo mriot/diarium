@@ -4,8 +4,12 @@ import { fetch2 } from "./fetchWithTimeout";
 
 // GLOBALS ====================================================
 const BACKEND_URL = "http://localhost:5000/api";
-let GLOBAL_TOKEN = null;
+const GLOBAL_TOKEN = null;
 
+// ====================================================
+
+// ! MOVED
+/*
 // LOGIN / AUTH ====================================================
 export const auth = (username, password) => {
   return fetch(`${BACKEND_URL}/auth`, {
@@ -41,7 +45,10 @@ export const isTokenValid = () => {
   GLOBAL_TOKEN = token;
   return true;
 };
+*/
 
+// ! MOVED
+/*
 // COUNT ALL ====================================================
 export const countAllEntries = () => {
   return fetch(`${BACKEND_URL}/entries/count/`, {
@@ -50,7 +57,10 @@ export const countAllEntries = () => {
     .then(response => response.json())
     .catch(error => console.error(error));
 };
+*/
 
+// ! MOVED
+/*
 // GET ====================================================
 export const getRecordsInRange = (start, end, columns) => {
   const params = (columns.map(col => `column=${col}`).join("&"));
@@ -113,7 +123,10 @@ export const getRecordForDay = (year, month, day) => {
     .then(response => response.json())
     .catch(error => console.error(error));
 };
+*/
 
+// ! MOVED
+/*
 // SEARCH ====================================================
 export const search = query => {
   return fetch(`${BACKEND_URL}/entries/search?q=${query}`, {
@@ -126,7 +139,10 @@ export const search = query => {
     .then(response => response.json())
     .catch(error => console.error(error));
 };
+*/
 
+// ! MOVED
+/*
 // POST ====================================================
 export const createNewEntry = newBodyObj => {
   return fetch(`${BACKEND_URL}/entries`, {
@@ -142,7 +158,6 @@ export const createNewEntry = newBodyObj => {
 };
 
 // PUT ====================================================
-/* */
 export const updateExistingEntryById = (id, newBodyObj) => {
   return fetch(`${BACKEND_URL}/entries?id=${id}`, {
     method: "PUT",
@@ -155,32 +170,8 @@ export const updateExistingEntryById = (id, newBodyObj) => {
     .then(response => response.json())
     .catch(error => console.error(error));
 };
-/* */
-
-/* * /
-export const updateExistingEntryById = (id, newBodyObj) => {
-	return fetch2(`${BACKEND_URL}/entries?id=${id}`, {
-		method: "PUT",
-		headers: {
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${GLOBAL_TOKEN}`
-		},
-		body: JSON.stringify(newBodyObj),
-	}, 1000)
-		.then(response => response.json())
-		.catch(error => {
-			if (error.code === 20) {
-				console.log("The request timed out...");
-				return error;
-			}
-			console.log(error);
-			return error;
-		});
-};
-/* */
 
 // DELETE ====================================================
-/* */
 export const deleteEntryById = id => {
   return fetch(`${BACKEND_URL}/entries?id=${id}`, {
     method: "DELETE",
@@ -192,3 +183,4 @@ export const deleteEntryById = id => {
     .then(response => response.json())
     .catch(error => console.error(error));
 };
+*/
