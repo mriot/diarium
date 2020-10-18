@@ -7,7 +7,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import Button from "../common/button";
 import { isLoggedInAtom } from "../../atoms";
 import { useSetRecoilState } from "recoil";
-import { auth } from "../../lib/backend";
+import { auth } from "../../backend/auth";
 
 const LoginMaskContainer = styled.div`
   width: 100%;
@@ -91,8 +91,9 @@ const Label = styled.span`
 export default function Login() {
   const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
   const [loginFailed, setLoginFailed] = useState(0);
-  let username = "";
-  let password = "";
+  const [failMessage, setFailMessage] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     if (!localStorage.getItem("federal_state")) {
@@ -109,12 +110,27 @@ export default function Login() {
   const doLogin = async () => {
     const response = await auth(username, password);
 
-    if (!response) {
-      setLoginFailed(loginFailed + 1);
-      return;
+    console.log(response);
+
+    switch (true) {
+      case !response:
+        setFailMessage("Bist du online? Der Server ist nicht erreichbar.");
+        break;
+      case response.status === 200:
+        setIsLoggedIn(true);
+        break;
+      case response.status === 401:
+        setFailMessage("Die Anmeldedaten waren fehlerhaft.");
+        break;
+      case response.status >= 500:
+        setFailMessage("Der Server scheint gerade Probleme zu haben.");
+        break;
+      default:
+        setFailMessage("Irgendwas doofes ist passiert...");
+        console.error(response);
     }
 
-    setIsLoggedIn(true);
+    setLoginFailed(prev => prev + 1);
   };
 
   return (
@@ -128,7 +144,7 @@ export default function Login() {
             <Label>Benutzername:</Label>
             <TextInput
               light
-              onChange={event => (username = event.currentTarget.value)}
+              onChange={event => setUsername(event.currentTarget.value)}
               onKeyPress={event => handleKeyStrokes(event.nativeEvent)}
             />
           </Row>
@@ -137,7 +153,7 @@ export default function Login() {
             <TextInput
               light
               type="password"
-              onChange={event => (password = event.currentTarget.value)}
+              onChange={event => setPassword(event.currentTarget.value)}
               onKeyPress={event => handleKeyStrokes(event.nativeEvent)}
             />
           </Row>
@@ -175,7 +191,7 @@ export default function Login() {
           {loginFailed > 0 && (
             <Row key={loginFailed}>
               <ErrorMessage>
-                Da ist etwas schief gegangen :/
+                {failMessage}
               </ErrorMessage>
             </Row>
           )}

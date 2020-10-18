@@ -11,10 +11,12 @@ import Editor from "./components/editor/editor";
 import Highlights from "./components/highlights/highlights";
 import "moment/locale/de";
 import Login from "./components/login/login";
-import { isTokenValid, createNewEntry, deleteEntryById } from "./lib/backend";
+import { createNewEntry, deleteEntryById } from "./lib/backend";
+import { isTokenValid } from "./backend/auth";
 import { mainLayoutContainerAnimation, loginContainerAnimation } from "./animations";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { dayRecordAtom, isLoggedInAtom, readModeAtom, selectedDayAtom } from "./atoms";
+import "./backend/_main";
 
 const PosedLayout = posed.div(mainLayoutContainerAnimation);
 const Layout = styled(PosedLayout)`
