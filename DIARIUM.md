@@ -5,11 +5,14 @@
 ### Web Frontend
 
 - Using Node as dev environment
-- React + Ecosystem
-- JSX
+- REACT and its awesome ecosystem
+  - JSX
+  - Hooks ❤️
+  - Recoil for shared state management ❤️
 - Draft.js (WYSIWYG Framework)
-- Serviceworker (offline capabilities)
-- Many libraries and modules
+- Several libraries, most notably...
+  - Moment.js and Day.js
+- Serviceworkers (offline capabilities)
 
 ### Backend
 
@@ -26,7 +29,7 @@
 
 - Using a Raspberry PI as Webserver
 - SSH (managing the PI via CLI)
-- Creating a VPN to access the Raspberry via internet
+- Setting up a VPN to access the Raspberry via internet
 
 ### Mobile App
 
@@ -39,5 +42,5 @@
   - Promises + Async / Await
   - Object destructuring
   - Spread operator
-- Using a JS linter (eslint) with a (slightly) customized styleguide from Airbnb
+- Using a JS linter (eslint) with a (slightly) customized styleguide
 - How hard it is to find a good WYSIWYG-Editor
