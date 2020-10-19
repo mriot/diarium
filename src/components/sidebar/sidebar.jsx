@@ -71,9 +71,9 @@ export default function Sidebar(props) {
 
       <TagEditor />
 
-      {/* <MetaData /> */}
+      <MetaData />
 
-      {/* <Progress /> */}
+      <Progress />
     </StyledSidebar>
   );
 }
