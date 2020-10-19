@@ -84,13 +84,13 @@ export default function Search(props) {
       return;
     }
 
-    const result = await search(query);
-    if (result.records_found < 1) {
+    const response = await search(query);
+    if (response.data.records_found < 1) {
       setShowSearchResults(false);
       return;
     }
 
-    setSearchResults(result.records);
+    setSearchResults(response.data.records);
     setShowSearchResults(true);
   };
 
@@ -106,13 +106,13 @@ export default function Search(props) {
         <PoseGroup>
           {showSearchResults && searchResults.map(item => (
             <SearchResult
-              key={item.id}
+              key={item.entry_id}
               title={item.content}
-              to={`/${moment(item.assignedDay).format("YYYY/MM/DD")}`}
+              to={`/${moment(item.assigned_day).format("YYYY/MM/DD")}`}
             >
-              <span>{moment(item.assignedDay).format("dd, DD. MMMM YYYY")}</span>
+              <span>{moment(item.assigned_day).format("dd, DD. MMMM YYYY")}</span>
               <div>
-                {item.content}
+                {item.sanitized_content}
               </div>
             </SearchResult>
           ))}
