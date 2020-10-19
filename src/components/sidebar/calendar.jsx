@@ -26,7 +26,6 @@ export default function Calendar() {
 
   useEffect(() => {
     const dateFromUrl = moment(window.location.pathname, "YYYY/MM/DD");
-    console.log(dateFromUrl);
     setSelectedDay(dateFromUrl.isValid() ? dateFromUrl.toDate() : moment().toDate());
 
     // todo listen for history changes
@@ -54,32 +53,31 @@ export default function Calendar() {
     const end = moment(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
     (async function fetchDayRecord() {
-      const record = await getRecordForDay(
+      const response = await getRecordForDay(
         moment(selectedDay).format("YYYY"),
         moment(selectedDay).format("MM"),
         moment(selectedDay).format("DD")
       );
-
-      setDayRecord(record);
+      setDayRecord(response.data);
       // todo: error handling?
     })();
 
     (async function fetchDayRecordsInCalendarRange() {
-      const records = await getRecordsInRange(start, end, ["assignedDay", "tags"]);
+      const response = await getRecordsInRange(start, end, ["assigned_day", "tags"]);
 
-      setFetchedEntries(records);
+      setFetchedEntries(response.data);
       // todo: error handling?
     })();
 
     (async function fetchHolidaysForYear() {
-      const records = await fetchHolidays(moment(selectedDay).format("YYYY"));
+      const holidays = await fetchHolidays(moment(selectedDay).format("YYYY"));
 
-      setFetchedHolidays(records);
+      setFetchedHolidays(holidays);
       // todo: error handling?
     })();
 
     // todo: hide loading bar when all finished
-  }, [selectedDay]);
+  }, [selectedDay, setDayRecord]);
 
   const resetCalendarToToday = (today = moment().toDate()) => {
     // don't reset calendar, while in editmode
@@ -111,8 +109,8 @@ export default function Calendar() {
 
           const currentTilesDate = moment(date).format("YYYY-MM-DD");
 
-          // global dayRecord (via context) did change — e.g. created
-          if (dayRecord && moment(currentTilesDate).isSame(dayRecord.assignedDay)) {
+          // global dayRecord did change
+          if (dayRecord && moment(currentTilesDate).isSame(dayRecord.assigned_day)) {
             return [...dayRecord.tags, "marked"].flat(Infinity);
           }
 
@@ -120,13 +118,13 @@ export default function Calendar() {
           const holidays = fetchedHolidays;
           const classNamesArray = [];
 
-          // date found as key in holidays — congrats, it's a holiday
+          // date found as key in holidays -> holiday
           if (holidays[moment(date).format("YYYY-MM-DD")]) classNamesArray.push("holiday");
 
           // generate classnames from tags
           classNamesArray.push(
             entries?.map(entry => {
-              return moment(currentTilesDate).isSame(entry.assignedDay) ? [...entry.tags, "marked"] : [];
+              return moment(currentTilesDate).isSame(entry.assigned_day) ? [...entry.tags, "marked"] : [];
             })
           );
 
