@@ -69,7 +69,7 @@ export default function Sidebar(props) {
         showLoadingbar={status => setLoadingbar(status)}
       />
 
-      {/* <TagEditor /> */}
+      <TagEditor />
 
       {/* <MetaData /> */}
 

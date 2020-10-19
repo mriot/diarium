@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled, { keyframes } from "styled-components";
 import { faMapMarkerAlt, faBiohazard, faLock, faTheaterMasks, faCross, faSyncAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 import Tag from "./tag";
-import { GlobalContext } from "../../contexts";
 import { WHITE } from "../../themes/diarium-theme";
 import { updateExistingEntryById } from "../../backend/recordManipulation";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { readModeAtom, dayRecordAtom } from "../../atoms";
 
 const rotate = keyframes`
   from {
@@ -45,85 +46,75 @@ const TagContainer = styled.div`
   grid-template-columns: repeat(2, 1fr);
 `;
 
-export default class TagEditor extends React.PureComponent {
-  constructor(props) {
-    super(props);
+export default function TagEditor(props) {
+  const [checkboxDisabled, setCheckboxDisabled] = useState(true);
+  const [spinnerActive, setSpinnerActive] = useState(false);
+  const readMode = useRecoilValue(readModeAtom);
+  const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
+  const definedTags = {
+    highlight: { label: "Highlight", icon: faTheaterMasks },
+    vacation: { label: "Urlaub", icon: faMapMarkerAlt },
+    sick: { label: "Krank", icon: faBiohazard },
+    nsfw: { label: "NSFW", icon: faLock },
+    rip: { label: "RIP", icon: faCross }
+  };
 
-    this.state = {
-      definedTags: {
-        highlight: { label: "Highlight", icon: faTheaterMasks },
-        vacation: { label: "Urlaub", icon: faMapMarkerAlt },
-        sick: { label: "Krank", icon: faBiohazard },
-        nsfw: { label: "NSFW", icon: faLock },
-        rip: { label: "RIP", icon: faCross }
-      },
-      checkboxDisabled: true,
-      spinnerActive: false
-    };
-  }
+  useEffect(() => {
+    setCheckboxDisabled(readMode);
+  }, []);
 
-  componentDidUpdate(prevProps, prevState) {
-    this.setState({ checkboxDisabled: this.context.GLOBAL_READMODE });
-  }
-
-  _updateSelectedTags(newSelectedTags) {
-    updateExistingEntryById(this.context.GLOBAL_DAYRECORD.id, { tags: newSelectedTags })
+  const _updateSelectedTags = (newSelectedTags) => {
+    updateExistingEntryById(dayRecord.id, { tags: newSelectedTags })
       .then(result => {
         if (!result.error) {
-          this.context.UPDATE_GLOBAL_DAYRECORD(result);
+          setDayRecord(result);
         } else {
           toast.error("Die Tags konnten leider nicht geupdated werden... 😟");
         }
-        this.setState({ spinnerActive: false });
+        setSpinnerActive(false);
       })
       .catch(error => console.log(error));
-  }
+  };
 
-  addToSelectedTags(tag) {
-    if (this.state.spinnerActive) return;
-    this.setState({ spinnerActive: true });
+  const addToSelectedTags = (tag) => {
+    if (spinnerActive) return;
+    setSpinnerActive(true);
 
-    this._updateSelectedTags([...this.context.GLOBAL_DAYRECORD.tags, tag]);
-  }
+    _updateSelectedTags([...dayRecord.tags, tag]);
+  };
 
-  removeFromSelectedTags(tag) {
-    if (this.state.spinnerActive) return;
-    this.setState({ spinnerActive: true });
+  const removeFromSelectedTags = (tag) => {
+    if (spinnerActive) return;
+    setSpinnerActive(true);
 
-    this._updateSelectedTags(this.context.GLOBAL_DAYRECORD.tags.filter(oldTag => oldTag !== tag));
-  }
+    _updateSelectedTags(dayRecord.tags.filter(oldTag => oldTag !== tag));
+  };
 
-  render() {
-    const { definedTags } = this.state;
-    const { GLOBAL_DAYRECORD } = this.context;
+  const selectedTags = dayRecord ? dayRecord.tags : [];
 
-    const selectedTags = GLOBAL_DAYRECORD ? GLOBAL_DAYRECORD.tags : [];
-    return (
-      <TagEditorContainer>
-        <Heading>
-          Tags <Spinner icon={faSyncAlt} spinning={this.state.spinnerActive ? 1 : 0} />
-        </Heading>
-        <TagContainer>
-          {Object.keys(definedTags).map((tag, index) => (
-            <Tag
-              key={index}
-              value={tag}
-              label={definedTags[tag].label}
-              icon={definedTags[tag].icon}
-              disabled={this.state.checkboxDisabled}
-              defaultChecked={selectedTags ? selectedTags.some(sTag => sTag === tag) : false}
-              addToSelectedTags={newTag => this.addToSelectedTags(newTag)}
-              removeFromSelectedTags={oldTag => this.removeFromSelectedTags(oldTag)}
-            />
-          ))}
-        </TagContainer>
-      </TagEditorContainer>
-    );
-  }
+  return (
+    <TagEditorContainer>
+      <Heading>
+          Tags <Spinner icon={faSyncAlt} spinning={spinnerActive ? 1 : 0} />
+      </Heading>
+      <TagContainer>
+        {Object.keys(definedTags).map((tag, index) => (
+          <Tag
+            key={index}
+            value={tag}
+            label={definedTags[tag].label}
+            icon={definedTags[tag].icon}
+            disabled={checkboxDisabled}
+            defaultChecked={selectedTags ? selectedTags.some(sTag => sTag === tag) : false}
+            addToSelectedTags={newTag => addToSelectedTags(newTag)}
+            removeFromSelectedTags={oldTag => removeFromSelectedTags(oldTag)}
+          />
+        ))}
+      </TagContainer>
+    </TagEditorContainer>
+  );
 }
 
 TagEditor.propTypes = {};
 
 TagEditor.defaultProps = {};
-
-TagEditor.contextType = GlobalContext;
