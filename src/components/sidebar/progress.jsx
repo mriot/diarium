@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 import ProgressBar from "../common/progressbar";
 import { countAllEntries, countRecordsInRange } from "../../backend/counters";
+import { useRecoilValue } from "recoil";
+import { selectedDayAtom } from "../../atoms";
 
 const ProgressContainer = styled.div`
   padding: 0 0 5px 5px;
@@ -26,115 +28,99 @@ const TotalDescription = styled(ProgressDescription)`
   margin: 20px 0 0;
 `;
 
-class Progress extends React.PureComponent {
-  constructor(props) {
-    super(props);
+export default function Progress(props) {
+  const selectedDay = useRecoilValue(selectedDayAtom);
+  const [progressWeek, setProgressWeek] = useState(0);
+  const [progressMonth, setProgressMonth] = useState(0);
+  const [progressYear, setProgressYear] = useState(0);
+  const [progressTotal, setProgressTotal] = useState(0);
 
-    this.historyUnlisten = null;
-
-    this.state = {
-      selectedDay: null,
-      progressWeek: 0,
-      progressMonth: 0,
-      progressYear: 0,
-      progressTotal: 0
-    };
-  }
-
-  componentDidMount() {
-    // listen for history changes
+  useEffect(() => {
+    // todo listen for history changes
+    /*
     this.historyUnlisten = this.props.history.listen((location, action) => {
       const parsedDate = moment(location.pathname, "YYYY/MM/DD");
       if (!parsedDate.isValid() || parsedDate.isSame(this.state.selectedDay)) return;
 
       this.updateProgress(parsedDate);
     });
-  }
+    */
 
-  componentDidUpdate(prevProps, prevState) {
+    // todo unlisten on unmount
+  }, []);
+
+  useEffect(() => {
     const parsedDate = moment(window.location.pathname, "YYYY/MM/DD");
 
-    if (parsedDate.isValid() && parsedDate.isSame(this.state.selectedDay)) {
-      this.updateProgress(window.location.pathname);
+    if (parsedDate.isValid() && parsedDate.isSame(selectedDay)) {
+      updateProgress();
     }
-  }
+  }, [selectedDay]);
 
-  componentWillUnmount() {
-    this.historyUnlisten();
-  }
-
-  updateProgress(pathname) {
+  const updateProgress = (pathname) => {
     const parsedSelectedDay = moment(pathname, "YYYY/MM/DD").format("YYYY-MM-DD");
 
-    this.setState({ selectedDay: parsedSelectedDay }, () => {
-      const { selectedDay } = this.state;
+    _countAllEntries();
 
-      this._countAllEntries();
+    _countRecordsInRange(
+      moment(selectedDay).startOf("month").format("YYYY-MM-DD"),
+      moment(selectedDay).add(1, "month").startOf("month").format("YYYY-MM-DD"),
+      "progressMonth"
+    );
 
-      this._countRecordsInRange(
-        moment(selectedDay).startOf("month").format("YYYY-MM-DD"),
-        moment(selectedDay).add(1, "month").startOf("month").format("YYYY-MM-DD"),
-        "progressMonth"
-      );
+    _countRecordsInRange(
+      moment(selectedDay).startOf("year").format("YYYY-MM-DD"),
+      moment(selectedDay).add(1, "year").startOf("year").format("YYYY-MM-DD"),
+      "progressYear"
+    );
+  };
 
-      this._countRecordsInRange(
-        moment(selectedDay).startOf("year").format("YYYY-MM-DD"),
-        moment(selectedDay).add(1, "year").startOf("year").format("YYYY-MM-DD"),
-        "progressYear"
-      );
-    });
-  }
-
-  _countAllEntries() {
+  const _countAllEntries = () => {
     countAllEntries()
       .then(response => {
         this.setState({ progressTotal: response.all_records });
       })
       .catch(error => console.log(error));
-  }
+  };
 
-  _countRecordsInRange(start, end, stateKey) {
+  const _countRecordsInRange = (start, end, stateKey) => {
     countRecordsInRange(start, end)
       .then(response => {
         this.setState({ [stateKey]: response.records_in_range });
       })
       .catch(error => console.log(error));
-  }
+  };
 
-  render() {
-    const { selectedDay, progressMonth, progressYear, progressTotal } = this.state;
-    const progressYearPercent = ((progressYear / (moment(selectedDay).isLeapYear() ? 366 : 365)) * 100).toFixed(2);
-    const progressMonthPercent = ((progressMonth / moment(selectedDay).daysInMonth()) * 100).toFixed(2);
+  // todo ahhhhh fix meee
+  const progressYearPercent = ((progressYear / (moment(selectedDay).isLeapYear() ? 366 : 365)) * 100).toFixed(2);
+  const progressMonthPercent = ((progressMonth / moment(selectedDay).daysInMonth()) * 100).toFixed(2);
 
-    return (
-      <ProgressContainer>
-        {/* <ProgressDescription>
+  return (
+    <ProgressContainer>
+      {/* <ProgressDescription>
           Einträge in KW {moment(selectedDay).week()}: {(this.state.progressWeek / 7 * 100).toFixed(2)}%
         </ProgressDescription>
         <ProgressBar progress={this.state.progressWeek} /> */}
 
-        <ProgressDescription>
+      <ProgressDescription>
           Einträge im {moment(selectedDay).format("MMMM")}: {progressMonth}
-          <span>({progressMonthPercent}%)</span>
-        </ProgressDescription>
-        <ProgressBar progress={progressMonthPercent} />
+        <span>({progressMonthPercent}%)</span>
+      </ProgressDescription>
+      <ProgressBar progress={progressMonthPercent} />
 
-        <ProgressDescription>
+      <ProgressDescription>
           Einträge in {moment(selectedDay).year()}: {progressYear}
-          <span>({progressYearPercent}%)</span>
-        </ProgressDescription>
-        <ProgressBar progress={progressYearPercent} />
+        <span>({progressYearPercent}%)</span>
+      </ProgressDescription>
+      <ProgressBar progress={progressYearPercent} />
 
-        <TotalDescription>
+      <TotalDescription>
           Einträge gesamt: {progressTotal}
-        </TotalDescription>
-      </ProgressContainer>
-    );
-  }
+      </TotalDescription>
+    </ProgressContainer>
+  );
 }
 
 Progress.propTypes = {
   history: PropTypes.object.isRequired
 };
-
-export default withRouter(Progress);
