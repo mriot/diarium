@@ -16,7 +16,7 @@ const StyledCalendar = styled(ReactCalendar)`
   box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.2);
 `;
 
-export default function Calendar() {
+export default function Calendar(props) {
   const readMode = useRecoilValue(readModeAtom);
   const [selectedDay, setSelectedDay] = useRecoilState(selectedDayAtom);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
@@ -79,6 +79,17 @@ export default function Calendar() {
     // todo: hide loading bar when all finished
   }, [selectedDay, setDayRecord]);
 
+  useEffect(() => {
+    // don't reset calendar, while in editmode
+    if (!readMode) return;
+
+    // todo: show loading bar
+
+    setForceUpdateCalendar(Math.random());
+    setSelectedDay(moment().toDate());
+  }, [readMode, setSelectedDay]);
+
+  /*
   const resetCalendarToToday = (today = moment().toDate()) => {
     // don't reset calendar, while in editmode
     if (!readMode) return;
@@ -88,6 +99,7 @@ export default function Calendar() {
     setForceUpdateCalendar(Math.random());
     setSelectedDay(today);
   };
+  */
 
   if (!selectedDay) return null;
   return (
@@ -165,3 +177,7 @@ export default function Calendar() {
     </>
   );
 }
+
+Calendar.propTypes = {
+  forceReset: PropTypes.number
+};

@@ -33,6 +33,7 @@ const Today = styled.div`
 export default function Sidebar(props) {
   const [dateToday, setDateToday] = useState(moment());
   const [loadingbar, setLoadingbar] = useState(false);
+  const [forceReset, setForceReset] = useState(0);
 
   useEffect(() => {
     // run "today updater" each minute
@@ -55,7 +56,7 @@ export default function Sidebar(props) {
   return (
     <StyledSidebar>
       <Today onClick={() => {
-        // this.sharedMethods.resetCalendarToToday();
+        setForceReset(forceReset + 1);
         setDateToday(moment());
       }}
       >
@@ -65,7 +66,7 @@ export default function Sidebar(props) {
       <Loadingbar active={loadingbar} />
 
       <Calendar
-        // shareMethods={sharedMethods => (this.sharedMethods = sharedMethods)}
+        forceReset={forceReset}
         showLoadingbar={status => setLoadingbar(status)}
       />
 
