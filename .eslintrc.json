@@ -1,4 +1,9 @@
 {
+    "settings": {
+        "react": {
+          "version": "detect"
+        }
+    },
     "env": {
         "browser": true,
         "es6": true,
@@ -6,6 +11,7 @@
     },
     "extends": [
         "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
         "standardx"
     ],
     "globals": {
@@ -20,7 +26,8 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "react-hooks"
     ],
     "rules": {
         "semi": [2, "always"],
