@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { faSignOutAlt, faStar, faPen, faPlusSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import NavButton from "./nav-button";
 import Search from "./search";
-import { useRecoilState } from "recoil";
-import { readModeAtom } from "../../atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { readModeAtom, isLoggedInAtom } from "../../atoms";
 
 const Nav = styled.nav`
   width: 100%;
@@ -45,6 +45,7 @@ const Separator = styled.div`
 
 export default function Navigation(props) {
   const [readMode, setReadMode] = useRecoilState(readModeAtom);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
 
   return (
     <Nav>
@@ -103,7 +104,10 @@ export default function Navigation(props) {
 
         <NavButton
           icon={faSignOutAlt}
-          onClick={() => this.logout()}
+          onClick={() => {
+            setIsLoggedIn(false);
+            localStorage.removeItem("token");
+          }}
         />
       </RightSide>
     </Nav>
