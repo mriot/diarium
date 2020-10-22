@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import "dayjs/locale/de";
+import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import posed, { PoseGroup } from "react-pose";
-import moment from "moment";
-import Navigation from "./components/navigation/navigation";
-import Sidebar from "./components/sidebar/sidebar";
+import { createNewEntry, deleteEntryById } from "./backend/recordManipulation";
+import { dayRecordAtom, isLoggedInAtom, readModeAtom, selectedDayAtom } from "./atoms";
+import { isTokenValid } from "./backend/auth";
+import { loginContainerAnimation, mainLayoutContainerAnimation } from "./animations";
+import { useRecoilState, useRecoilValue } from "recoil";
 import Editor from "./components/editor/editor";
 import Highlights from "./components/highlights/highlights";
-import "moment/locale/de";
 import Login from "./components/login/login";
-import { isTokenValid } from "./backend/auth";
-import { mainLayoutContainerAnimation, loginContainerAnimation } from "./animations";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { dayRecordAtom, isLoggedInAtom, readModeAtom, selectedDayAtom } from "./atoms";
-import { createNewEntry, deleteEntryById } from "./backend/recordManipulation";
+import Navigation from "./components/navigation/navigation";
+import React, { useEffect, useState } from "react";
+import Sidebar from "./components/sidebar/sidebar";
+import dayjs from "dayjs";
+import posed, { PoseGroup } from "react-pose";
+import styled from "styled-components";
 
 const PosedLayout = posed.div(mainLayoutContainerAnimation);
 const Layout = styled(PosedLayout)`
