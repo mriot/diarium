@@ -60,9 +60,12 @@ export default function App() {
 
   useEffect(() => {
     if (isLoggedIn !== undefined) setJwtChecked(true);
-    // clear current dayRecord when the user logs off
-    if (!isLoggedIn) setDayRecord(null);
-  }, [isLoggedIn]);
+    // clear current dayRecord and remove token when the user logs off
+    if (!isLoggedIn && jwtChecked) {
+      setDayRecord(null);
+      localStorage.removeItem("token");
+    };
+  }, [isLoggedIn, setDayRecord, jwtChecked]);
 
   const createNewEntryForSelectedDay = async () => {
     const result = await createNewEntry({
