@@ -1,13 +1,12 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import posed from "react-pose";
-import PropTypes from "prop-types";
-import { Editor as DraftEditor, EditorState, RichUtils } from "draft-js";
-import Toolbar from "./toolbar";
-import { editorAnimation } from "./animations";
-import { updateExistingEntryById } from "../../lib/backend";
-import "draft-js/dist/Draft.css";
 import "../../themes/draftjs-ceres.css";
+import "draft-js/dist/Draft.css";
+import { Editor as DraftEditor, EditorState, RichUtils } from "draft-js";
+import { editorAnimation } from "./animations";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import Toolbar from "./toolbar";
+import posed from "react-pose";
+import styled from "styled-components";
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer)`

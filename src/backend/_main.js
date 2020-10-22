@@ -1,6 +1,3 @@
-import dayjs from "dayjs";
-import moment from "moment";
-
 export const BACKEND_URL = "http://localhost:5000/api";
 
 let TOKEN = null;
