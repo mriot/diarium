@@ -27,13 +27,17 @@
     },
     "plugins": [
         "react",
-        "react-hooks"
+        "react-hooks",
+        "sort-imports-es6-autofix"
     ],
     "rules": {
         "semi": [2, "always"],
         "quotes": [2, "double", "avoid-escape"],
-        "space-before-function-paren": [2, {
-          "named": "never"
-        }]
+        "space-before-function-paren": [2, { "named": "never" }],
+        "sort-imports-es6-autofix/sort-imports-es6": [2, {
+            "ignoreCase": false,
+            "ignoreMemberSort": false,
+            "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+          }]
       }
 }
