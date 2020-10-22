@@ -67,16 +67,15 @@ export default function App() {
   }, [isLoggedIn, setDayRecord, jwtChecked]);
 
   const createNewEntryForSelectedDay = async () => {
-    const result = await createNewEntry({
-      assignedDay: moment(selectedDay).format("YYYY-MM-DD"),
-      content: `<h1>${selectedDay.format("dddd, D. MMMM YYYY")}</h1>\n\n`,
-      contentType: "text/html",
+    const response = await createNewEntry({
+      assigned_day: dayjs(selectedDay).format("YYYY-MM-DD"),
+      content: `<h1>${dayjs(selectedDay).format("dddd, D. MMMM YYYY")}</h1>\n\n`,
       tags: []
     });
 
-    if (result.ok) {
+    if (response.ok) {
       setReadMode(false);
-      setDayRecord(result.body);
+      setDayRecord(response.data);
     }
   };
 
@@ -124,10 +123,10 @@ export default function App() {
           <Layout key="posed-layout-831276">
             <Navigation
               isHighlightsViewActive={showHighlights}
-              setHighlightsView={bool => this.setState({ showHighlights: bool })}
+              setHighlightsView={() => setShowHighlights(!showHighlights)}
               isCreateButtonVisible={!dayRecord}
-              createNewEntry={() => this.createNewEntryForSelectedDay()}
-              deleteEntry={() => this.deleteEntryFromSelectedDay()}
+              createNewEntry={() => createNewEntryForSelectedDay()}
+              deleteEntry={() => deleteEntryFromSelectedDay()}
             />
 
             <Sidebar/>
