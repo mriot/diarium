@@ -73,7 +73,7 @@ export default function Navigation(props) {
               active={!readMode}
               onClick={() => {
                 setReadMode(!readMode);
-                if (readMode) props.setHighlightsView(false);
+                // todo: change view to editor (e.g. close highlights)
               }}
             />
           )}
@@ -83,7 +83,7 @@ export default function Navigation(props) {
               icon={faPlusSquare}
               onClick={() => {
                 props.createNewEntry();
-                if (readMode) props.setHighlightsView(false);
+                // todo: change view to editor (e.g. close highlights)
               }}
             />
           )}
@@ -104,10 +104,7 @@ export default function Navigation(props) {
 
         <NavButton
           icon={faSignOutAlt}
-          onClick={() => {
-            setIsLoggedIn(false);
-            localStorage.removeItem("token");
-          }}
+          onClick={() => setIsLoggedIn(false)}
         />
       </RightSide>
     </Nav>
