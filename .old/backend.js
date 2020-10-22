@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import moment from "moment";
-import { fetch2 } from "./fetchWithTimeout";
+import { fetch2 } from "../src/lib/fetchWithTimeout";
 
 // GLOBALS ====================================================
 const BACKEND_URL = "http://localhost:5000/api";
