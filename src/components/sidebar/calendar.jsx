@@ -5,7 +5,8 @@ import { Calendar as ReactCalendar } from "react-calendar";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { Redirect, useHistory, withRouter } from "react-router-dom";
-import "../../themes/calendar-eros.css";
+import "react-calendar/dist/Calendar.css";
+import "../../themes/calendar-eros.scss";
 import { fetchHolidays } from "../../lib/external";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { dayRecordAtom, readModeAtom, selectedDayAtom } from "../../atoms";
@@ -144,7 +145,7 @@ export default function Calendar(props) {
         }}
 
         // ARROW NAVIGATION
-        onActiveDateChange={changeObj => {
+        onActiveStartDateChange={changeObj => {
           // todo: show loading bar
           const { activeStartDate, view } = changeObj;
           if (view !== "month") return;

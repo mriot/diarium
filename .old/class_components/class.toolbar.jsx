@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faArrowsAltH, faBold, faItalic, faUnderline, faFont, faListUl, faListOl, faDivide, faRulerHorizontal, faMinus, faRemoveFormat } from "@fortawesome/free-solid-svg-icons";
 import posed from "react-pose";
-import { toolbarItemsAnimation } from "../src/components/editor/animations";
+import { toolbarItemsAnimation } from "../../src/components/editor/animations";
 
 const StyledToolbar = styled.div`
 	width: 100%;
