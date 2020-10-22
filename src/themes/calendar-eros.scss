@@ -39,6 +39,10 @@
       &:enabled {
         color: #efefef;
 
+        &:focus {
+          background-color: inherit;
+        }
+
         &:hover {
           background-color: #262931;
         }
@@ -83,6 +87,7 @@
     // month/year/decade/...-tile that holds today
     &--hasActive {
       outline: none;
+      text-decoration: underline;
       background-color: inherit;
     }
 
@@ -156,8 +161,8 @@
     &__decade-view__years__year,
     &__year-view__months__month,
     &__century-view__decades__decade {
-      font-size: 12px;
-      padding: 15px;
+      font-size: 13px;
+      padding: 15px !important;
     }
     
     &__decade-view__years__year,
