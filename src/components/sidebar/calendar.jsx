@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { Calendar as ReactCalendar } from "react-calendar";
-import moment from "moment";
-import { toast } from "react-toastify";
-import { Redirect, useHistory, withRouter } from "react-router-dom";
-import "react-calendar/dist/Calendar.css";
 import "../../themes/calendar-eros.scss";
-import { fetchHolidays } from "../../lib/external";
-import { useRecoilState, useRecoilValue } from "recoil";
+import "react-calendar/dist/Calendar.css";
+import { Calendar as ReactCalendar } from "react-calendar";
+import { Redirect, useHistory, withRouter } from "react-router-dom";
 import { dayRecordAtom, readModeAtom, selectedDayAtom } from "../../atoms";
+import { fetchHolidays } from "../../lib/external";
 import { getRecordForDay, getRecordsInRange } from "../../backend/getters";
+import { toast } from "react-toastify";
+import { useRecoilState, useRecoilValue } from "recoil";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import styled from "styled-components";
 
 const StyledCalendar = styled(ReactCalendar)`
   border-bottom: 1px solid #191919;
@@ -26,8 +26,8 @@ export default function Calendar(props) {
   const [forceUpdateCalendar, setForceUpdateCalendar] = useState(0);
 
   useEffect(() => {
-    const dateFromUrl = moment(window.location.pathname, "YYYY/MM/DD");
-    setSelectedDay(dateFromUrl.isValid() ? dateFromUrl.toDate() : moment().toDate());
+    const dateFromUrl = dayjs(window.location.pathname, "YYYY/MM/DD");
+    setSelectedDay(dateFromUrl.isValid() ? dateFromUrl.toDate() : dayjs().toDate());
 
     // todo listen for history changes
     /*
@@ -49,15 +49,14 @@ export default function Calendar(props) {
     if (!selectedDay) return;
 
     // todo: show loading bar
-    // NOTE: using moment() on the date because startOf/endOf would mutate the state object
-    const start = moment(selectedDay).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
-    const end = moment(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
+    const start = dayjs(selectedDay).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
+    const end = dayjs(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
     (async function fetchDayRecord() {
       const response = await getRecordForDay(
-        moment(selectedDay).format("YYYY"),
-        moment(selectedDay).format("MM"),
-        moment(selectedDay).format("DD")
+        dayjs(selectedDay).format("YYYY"),
+        dayjs(selectedDay).format("MM"),
+        dayjs(selectedDay).format("DD")
       );
       setDayRecord(response.data);
       // todo: error handling?
@@ -71,7 +70,7 @@ export default function Calendar(props) {
     })();
 
     (async function fetchHolidaysForYear() {
-      const holidays = await fetchHolidays(moment(selectedDay).format("YYYY"));
+      const holidays = await fetchHolidays(dayjs(selectedDay).format("YYYY"));
 
       setFetchedHolidays(holidays);
       // todo: error handling?
@@ -87,7 +86,7 @@ export default function Calendar(props) {
     // todo: show loading bar
 
     setForceUpdateCalendar(Math.random());
-    setSelectedDay(moment().toDate());
+    setSelectedDay(dayjs().toDate());
   }, [readMode, setSelectedDay]);
 
   /*
@@ -105,7 +104,7 @@ export default function Calendar(props) {
   if (!selectedDay) return null;
   return (
     <>
-      <Redirect push to={`/${moment(selectedDay).format("YYYY/MM/DD")}`} />
+      <Redirect push to={`/${dayjs(selectedDay).format("YYYY/MM/DD")}`} />
 
       <StyledCalendar
         className="calendar-dark-theme"
@@ -113,17 +112,17 @@ export default function Calendar(props) {
         value={selectedDay}
         forceUpdateCalendar={forceUpdateCalendar}
         minDetail={!readMode ? "month" : "decade"}
-        minDate={!readMode ? moment(selectedDay).toDate() : null}
-        maxDate={!readMode ? moment(selectedDay).toDate() : null}
+        minDate={!readMode ? dayjs(selectedDay).toDate() : null}
+        maxDate={!readMode ? dayjs(selectedDay).toDate() : null}
         tileDisabled={() => !readMode}
         tileClassName={({ activeStartDate, date, view }) => {
           if (view !== "month") return false;
           if (!fetchedEntries || !fetchedHolidays) return false;
 
-          const currentTilesDate = moment(date).format("YYYY-MM-DD");
+          const currentTilesDate = dayjs(date).format("YYYY-MM-DD");
 
           // global dayRecord did change
-          if (dayRecord && moment(currentTilesDate).isSame(dayRecord.assigned_day)) {
+          if (dayRecord && dayjs(currentTilesDate).isSame(dayRecord.assigned_day)) {
             return [...dayRecord.tags, "marked"].flat(Infinity);
           }
 
@@ -132,12 +131,12 @@ export default function Calendar(props) {
           const classNamesArray = [];
 
           // date found as key in holidays -> holiday
-          if (holidays[moment(date).format("YYYY-MM-DD")]) classNamesArray.push("holiday");
+          if (holidays[dayjs(date).format("YYYY-MM-DD")]) classNamesArray.push("holiday");
 
           // generate classnames from tags
           classNamesArray.push(
             entries?.map(entry => {
-              return moment(currentTilesDate).isSame(entry.assigned_day) ? [...entry.tags, "marked"] : [];
+              return dayjs(currentTilesDate).isSame(entry.assigned_day) ? [...entry.tags, "marked"] : [];
             })
           );
 

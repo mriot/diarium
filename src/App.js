@@ -44,8 +44,7 @@ export default function App() {
   const [jwtChecked, setJwtChecked] = useState(false);
 
   useEffect(() => {
-    // set default locale of momentjs
-    moment().locale("de");
+    dayjs.locale("de"); // use locale globally
 
     // wether the user is logged in when the component mounts
     setIsLoggedIn(isTokenValid());

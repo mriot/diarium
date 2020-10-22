@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import moment from "moment";
-import posed, { PoseGroup } from "react-pose";
 import { NavLink } from "react-router-dom";
-import TextInput from "../common/textinput";
-import { searchResultAnimation } from "./animations";
 import { search } from "../../backend/search";
+import { searchResultAnimation } from "./animations";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import TextInput from "../common/textinput";
+import dayjs from "dayjs";
+import posed, { PoseGroup } from "react-pose";
+import styled from "styled-components";
 
 const StyledSearch = styled.div`
   position: relative;
@@ -108,9 +108,9 @@ export default function Search(props) {
             <SearchResult
               key={item.entry_id}
               title={item.content}
-              to={`/${moment(item.assigned_day).format("YYYY/MM/DD")}`}
+              to={`/${dayjs(item.assigned_day).format("YYYY/MM/DD")}`}
             >
-              <span>{moment(item.assigned_day).format("dd, DD. MMMM YYYY")}</span>
+              <span>{dayjs(item.assigned_day).format("dd, DD. MMMM YYYY")}</span>
               <div>
                 {item.sanitized_content}
               </div>

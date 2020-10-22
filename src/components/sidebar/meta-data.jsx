@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import moment from "moment";
 import { WHITE } from "../../themes/diarium-theme";
-import { useRecoilValue } from "recoil";
 import { dayRecordAtom } from "../../atoms";
+import { useRecoilValue } from "recoil";
+import PropTypes from "prop-types";
+import React from "react";
+import dayjs from "dayjs";
+import styled from "styled-components";
 
 const StyledMetaData = styled.div`
   display: flex;
@@ -34,14 +34,14 @@ export default function MetaData() {
       <MetaInfoBlock>
           Zuletzt bearbeitet:
         <span>
-          {dayRecord ? `${moment(dayRecord.updated_at).format("dd, D.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
+          {dayRecord ? `${dayjs(dayRecord.updated_at).format("dd, D.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
         </span>
       </MetaInfoBlock>
 
       <MetaInfoBlock>
           Erstellt:
         <span>
-          {dayRecord ? `${moment(dayRecord.created_at).format("dd, D.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
+          {dayRecord ? `${dayjs(dayRecord.created_at).format("dd, D.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
         </span>
       </MetaInfoBlock>
     </StyledMetaData>

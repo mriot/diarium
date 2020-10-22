@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import moment from "moment";
-import Progress from "./progress";
+import { WHITE } from "../../themes/diarium-theme";
 import Calendar from "./calendar";
 import Loadingbar from "../common/loadingbar";
-import TagEditor from "./tag-editor";
 import MetaData from "./meta-data";
-import { WHITE } from "../../themes/diarium-theme";
+import Progress from "./progress";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import TagEditor from "./tag-editor";
+import dayjs from "dayjs";
+import styled from "styled-components";
 
 const StyledSidebar = styled.aside`
   position: relative;
@@ -31,24 +31,24 @@ const Today = styled.div`
 `;
 
 export default function Sidebar(props) {
-  const [dateToday, setDateToday] = useState(moment());
+  const [dateToday, setDateToday] = useState(dayjs());
   const [loadingbar, setLoadingbar] = useState(false);
   const [forceReset, setForceReset] = useState(0);
 
   useEffect(() => {
     // run "today updater" each minute
     setInterval(() => {
-      if (moment(dateToday).diff(moment(), "days") > 0) {
+      if (dayjs(dateToday).diff(dayjs(), "days") > 0) {
         console.log("'todaysDate' is one day behind — updating...");
-        setDateToday(moment());
+        setDateToday(dayjs());
       }
     }, 1000 * 60); // 1 min
 
     // check date after user inactivity ended
     document.addEventListener("visibilitychange", () => {
-      if (!document.hidden && moment(dateToday).diff(moment(), "days") > 0) {
+      if (!document.hidden && dayjs(dateToday).diff(dayjs(), "days") > 0) {
         console.log("'todaysDate' is one day behind — updating...");
-        setDateToday(moment());
+        setDateToday(dayjs());
       }
     });
   }, []);
@@ -57,10 +57,10 @@ export default function Sidebar(props) {
     <StyledSidebar>
       <Today onClick={() => {
         setForceReset(forceReset + 1);
-        setDateToday(moment());
+        setDateToday(dayjs());
       }}
       >
-        {moment(dateToday).format("dddd, D. MMMM YYYY")}
+        {dayjs(dateToday).format("dddd, D. MMMM YYYY")}
       </Today>
 
       <Loadingbar active={loadingbar} />
