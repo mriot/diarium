@@ -13,16 +13,15 @@ const LoginMaskContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
 `;
 
 const LoginMask = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
   padding: 50px;
-  margin-top: 100px;
+  margin: auto;
   border-radius: 3px;
   background-color: #ddd;
   box-shadow: 0 20px 20px -5px rgba(0, 0, 0, 0.3), 0 -10px 20px -5px rgba(0, 0, 0, 0.1);
@@ -30,13 +29,18 @@ const LoginMask = styled.div`
 `;
 
 const LoginFooter = styled.div`
-  width: auto;
-  color: #ddd;
+  position: absolute;
+  left: 0;
+  bottom: -22px;
+  width: 100%;
+  margin: auto;
+  color: #555;
+  padding-top: 50px;
   display: flex;
   justify-content: space-between;
 
   a {
-    color: #ddd;
+    color: #555;
   }
 `;
 
@@ -110,8 +114,6 @@ export default function Login() {
   const doLogin = async () => {
     const response = await auth(username, password);
 
-    console.log(response);
-
     switch (true) {
       case !response:
         setFailMessage("Bist du online? Der Server ist nicht erreichbar.");
@@ -135,79 +137,77 @@ export default function Login() {
 
   return (
     <LoginMaskContainer>
-      <div>
-        <LoginMask>
-          <Row style={{ margin: "0 auto 30px" }}>
-            <Heading>DIARIUM</Heading>
-          </Row>
-          <Row>
-            <Label>Benutzername:</Label>
-            <TextInput
-              light
-              onChange={event => setUsername(event.currentTarget.value)}
-              onKeyPress={event => handleKeyStrokes(event.nativeEvent)}
-            />
-          </Row>
-          <Row>
-            <Label>Passwort:</Label>
-            <TextInput
-              light
-              type="password"
-              onChange={event => setPassword(event.currentTarget.value)}
-              onKeyPress={event => handleKeyStrokes(event.nativeEvent)}
-            />
-          </Row>
-          <Row style={{ marginBottom: "25px" }}>
-            <Label
-              title="Nur um dir die richtigen Feiertage anzeigen zu können. =)"
-              style={{ cursor: "help" }}
-            >
+      <LoginMask>
+        <Row style={{ margin: "0 auto 30px" }}>
+          <Heading>DIARIUM</Heading>
+        </Row>
+        <Row>
+          <Label>Benutzername:</Label>
+          <TextInput
+            light
+            onChange={event => setUsername(event.currentTarget.value)}
+            onKeyPress={event => handleKeyStrokes(event.nativeEvent)}
+          />
+        </Row>
+        <Row>
+          <Label>Passwort:</Label>
+          <TextInput
+            light
+            type="password"
+            onChange={event => setPassword(event.currentTarget.value)}
+            onKeyPress={event => handleKeyStrokes(event.nativeEvent)}
+          />
+        </Row>
+        <Row style={{ marginBottom: "25px" }}>
+          <Label
+            title="Nur um dir die richtigen Feiertage anzeigen zu können. =)"
+            style={{ cursor: "help" }}
+          >
               Bundesland: <span role="img" aria-label="warum?">🤔</span>?
-            </Label>
-            <Select
-              defaultValue={localStorage.getItem("federal_state") || "HE"}
-              onChange={event => {
-                localStorage.setItem("federal_state", event.currentTarget.value);
-              }}
-            >
-              <option value="BB">Brandenburg</option>
-              <option value="BE">Berlin</option>
-              <option value="BW">Baden-Württemberg</option>
-              <option value="BY">Bayern</option>
-              <option value="HB">Bremen</option>
-              <option value="HE">Hessen</option>
-              <option value="HH">Hamburg</option>
-              <option value="MV">Mecklenburg-Vorpommern</option>
-              <option value="NI">Niedersachsen</option>
-              <option value="NW">Nordrhein-Westfalen</option>
-              <option value="RP">Rheinland-Pfalz</option>
-              <option value="SH">Schleswig-Holstein</option>
-              <option value="SL">Saarland</option>
-              <option value="SN">Sachsen</option>
-              <option value="ST">Sachsen-Anhalt</option>
-              <option value="TH">Thüringen</option>
-            </Select>
+          </Label>
+          <Select
+            defaultValue={localStorage.getItem("federal_state") || "HE"}
+            onChange={event => {
+              localStorage.setItem("federal_state", event.currentTarget.value);
+            }}
+          >
+            <option value="BB">Brandenburg</option>
+            <option value="BE">Berlin</option>
+            <option value="BW">Baden-Württemberg</option>
+            <option value="BY">Bayern</option>
+            <option value="HB">Bremen</option>
+            <option value="HE">Hessen</option>
+            <option value="HH">Hamburg</option>
+            <option value="MV">Mecklenburg-Vorpommern</option>
+            <option value="NI">Niedersachsen</option>
+            <option value="NW">Nordrhein-Westfalen</option>
+            <option value="RP">Rheinland-Pfalz</option>
+            <option value="SH">Schleswig-Holstein</option>
+            <option value="SL">Saarland</option>
+            <option value="SN">Sachsen</option>
+            <option value="ST">Sachsen-Anhalt</option>
+            <option value="TH">Thüringen</option>
+          </Select>
+        </Row>
+        {loginFailed > 0 && (
+          <Row key={loginFailed}>
+            <ErrorMessage>
+              {failMessage}
+            </ErrorMessage>
           </Row>
-          {loginFailed > 0 && (
-            <Row key={loginFailed}>
-              <ErrorMessage>
-                {failMessage}
-              </ErrorMessage>
-            </Row>
-          )}
-          <Row alignedRight>
-            <Button onClick={() => doLogin()}>
+        )}
+        <Row alignedRight>
+          <Button onClick={() => doLogin()}>
               Einloggen
-            </Button>
-          </Row>
-        </LoginMask>
+          </Button>
+        </Row>
         <LoginFooter>
           <span>by mriot</span>
           <a href="https://github.com/mriot/diarium">
             <FontAwesomeIcon icon={faGithub} />
           </a>
         </LoginFooter>
-      </div>
+      </LoginMask>
     </LoginMaskContainer>
   );
 }

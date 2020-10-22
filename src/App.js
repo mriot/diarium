@@ -111,7 +111,7 @@ export default function App() {
         </Switch>
       )}
 
-      <PoseGroup>
+      <PoseGroup style={{ width: "100%", height: "100%" }}>
         {!isLoggedIn && (
           <LoginContainer key="posed-login-container-771634">
             <Redirect to="/login" />

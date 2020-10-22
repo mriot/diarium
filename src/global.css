@@ -16,6 +16,7 @@ code {
   font-family: 'Source Code Pro', Menlo, Monaco, Consolas, monospace;
 }
 
-a {
-  text-decoration: none;
+#root {
+  height: 100%;
+  width: 100%;
 }
