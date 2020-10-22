@@ -1,5 +1,10 @@
 import { atom } from "recoil";
 
+export const languageAtom = atom({
+  key: "languageAtom",
+  default: "de"
+});
+
 export const isLoggedInAtom = atom({
   key: "isLoggedInAtom",
   default: undefined
