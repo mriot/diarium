@@ -1,32 +1,35 @@
+import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 
 const StyledButton = styled.div`
   position: relative;
-  color: #fff;
+  display: flex;
+  align-items: center;
+  color: #efefef;
   background-color: #363b47;
   cursor: pointer;
   text-decoration: none;
   padding: 7px 10px;
   border-radius: 5px;
-  display: inline-block;
   border: none;
   user-select: none;
-  transition: all 0.2s linear;
+  transition: all 0.2s;
+  white-space: nowrap;
+  text-decoration: none;
 
   &::after {
-    content: ">";
-    position: absolute;
-    top: 50%;
-    right: 33%;
+    content: "";
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border: 1px solid transparent;
+    border-top-color: #efefef;
+    border-right-color: #efefef;
     opacity: 0;
-    transform: translateY(-50%);
-    transition: all 0.2s;
-  }
-
-  &:active {
-    box-shadow: inset 0 0px 0 -5px rgba(0, 0, 0, 0.17);
+    transform: rotate(45deg) translate(-20px, 20px);
+    transition-delay: 0;
+    transition-duration: 0;
   }
 
   &:hover {
@@ -36,8 +39,14 @@ const StyledButton = styled.div`
 
     &::after {
       opacity: 1;
-      right: 10px;
+      transform: rotate(45deg) translate(5px, -5px);
+      transition: all 200ms ease;
+      transition-delay: 100ms;
     }
+  }
+
+  &:active {
+    box-shadow: inset 0 0px 0 -5px rgba(0, 0, 0, 0.17);
   }
 `;
 
