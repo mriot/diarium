@@ -10,17 +10,45 @@
 ** CUSTOM DARK THEME for REACT-CALENDAR **
 ******************************************
 * calendar-version: 3.1.0
-* last updated: 2020-10-22
 */
 
 .calendar-dark-theme {
+  $text-color: #efefef;
+
   // NOTE: .calendar-dark-theme.react-calendar are on the same element
   &.react-calendar {
     border: none;
     border-bottom: 1px solid #191919;
     padding: 1px;
-    color: #efefef;
+    color: $text-color;
     background-color: #1f222a;
+
+    &.day-rating-enabled {
+      .react-calendar__tile {
+        color: #fff;
+        
+        &.marked,
+        &--now,
+        &--active {
+          box-shadow: none;
+          outline: none;
+        }
+
+        &:hover {
+          z-index: 2; // "--now" has 1
+          outline: 1px solid #fff;
+        }
+      }
+
+      .day-rating {
+        &-0 { background-color: #660000 !important; }
+        &-1 { background-color: #990000 !important; }
+        &-2 { background-color: #CC0000 !important; }
+        &-3 { background-color: #006600 !important; }
+        &-4 { background-color: #009900 !important; }
+        &-5 { background-color: #00CC00 !important; }
+      }
+    }
   }
   
   button:enabled:focus {
@@ -37,7 +65,7 @@
       font-size: 14px;
 
       &:enabled {
-        color: #efefef;
+        color: $text-color;
 
         &:focus {
           background-color: inherit;
@@ -169,7 +197,7 @@
     &__year-view__months__month,
     &__century-view__decades__decade,
     &__month-view__days__day {
-      color: #efefef;
+      color: $text-color;
 
       &--weekend {
         color: #ff5722;
