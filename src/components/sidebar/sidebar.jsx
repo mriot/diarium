@@ -1,9 +1,10 @@
 import { WHITE } from "../../themes/diarium-theme";
+import { selectedDayAtom } from "../../atoms";
+import { useSetRecoilState } from "recoil";
 import Calendar from "./calendar";
 import Loadingbar from "../common/loadingbar";
 import MetaData from "./meta-data";
 import Progress from "./progress";
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import TagEditor from "./tag-editor";
 import dayjs from "dayjs";
@@ -30,10 +31,9 @@ const Today = styled.div`
   }
 `;
 
-export default function Sidebar(props) {
+export default function Sidebar() {
   const [dateToday, setDateToday] = useState(dayjs());
-  const [loadingbar, setLoadingbar] = useState(false);
-  const [forceReset, setForceReset] = useState(0);
+  const setSelectedDay = useSetRecoilState(selectedDayAtom);
 
   useEffect(() => {
     // run "today updater" each minute
@@ -51,24 +51,17 @@ export default function Sidebar(props) {
         setDateToday(dayjs());
       }
     });
-  }, []);
+  }, [dateToday]);
 
   return (
     <StyledSidebar>
-      <Today onClick={() => {
-        setForceReset(forceReset + 1);
-        setDateToday(dayjs());
-      }}
-      >
+      <Today onClick={() => setSelectedDay(new Date())}>
         {dayjs(dateToday).format("dddd, D. MMMM YYYY")}
       </Today>
 
-      <Loadingbar active={loadingbar} />
+      <Loadingbar />
 
-      <Calendar
-        forceReset={forceReset}
-        showLoadingbar={status => setLoadingbar(status)}
-      />
+      <Calendar />
 
       <TagEditor />
 
