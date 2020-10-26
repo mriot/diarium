@@ -1,6 +1,7 @@
+import { isLoadingAtom } from "../../atoms";
+import { useRecoilValue } from "recoil";
 import React from "react";
 import styled, { keyframes } from "styled-components";
-import PropTypes from "prop-types";
 
 const box1 = keyframes`
   0% {
@@ -55,15 +56,13 @@ const StyledLoadingbar = styled.div`
 `;
 
 export default function Loadingbar(props) {
+  const isLoading = useRecoilValue(isLoadingAtom);
+
   return (
-    <StyledLoadingbar active={props.active} />
+    <StyledLoadingbar active={isLoading} />
   );
 }
 
-Loadingbar.propTypes = {
-  active: PropTypes.bool
-};
+Loadingbar.propTypes = {};
 
-Loadingbar.defaultProps = {
-  active: false
-};
+Loadingbar.defaultProps = {};

@@ -24,3 +24,8 @@ export const selectedDayAtom = atom({
   key: "selectedDayAtom",
   default: null
 });
+
+export const isLoadingAtom = atom({
+  key: "isLoadingAtom",
+  default: false
+});
