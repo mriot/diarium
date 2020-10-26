@@ -2,7 +2,7 @@ import "../../themes/calendar-eros.scss";
 import "react-calendar/dist/Calendar.css";
 import { Calendar as ReactCalendar } from "react-calendar";
 import { Redirect } from "react-router-dom";
-import { dayRecordAtom, isLoadingAtom, readModeAtom, selectedDayAtom } from "../../atoms";
+import { dayRecordAtom, isLoadingAtom, readModeAtom, selectedDayAtom, showHeatmapAtom } from "../../atoms";
 import { fetchHolidays } from "../../lib/external";
 import { getRecordForDay, getRecordsInRange } from "../../backend/getters";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -17,6 +17,7 @@ const StyledCalendar = styled(ReactCalendar)`
 
 export default function Calendar() {
   const readMode = useRecoilValue(readModeAtom);
+  const showHeatmap = useRecoilValue(showHeatmapAtom);
   const [selectedDay, setSelectedDay] = useRecoilState(selectedDayAtom);
   const setDayRecord = useSetRecoilState(dayRecordAtom);
   const setIsLoading = useSetRecoilState(isLoadingAtom);
@@ -60,7 +61,7 @@ export default function Calendar() {
       <Redirect push to={`/${dayjs(selectedDay).format("YYYY/MM/DD")}`} />
 
       <StyledCalendar
-        className="calendar-dark-theme"
+        className={["calendar-dark-theme", showHeatmap ? "day-rating-enabled" : ""]}
         key="diarium_calendar_key"
         value={selectedDay}
         activeStartDate={selectedDay}

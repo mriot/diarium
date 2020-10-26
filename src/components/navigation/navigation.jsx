@@ -1,11 +1,11 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { faSignOutAlt, faStar, faPen, faPlusSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
-import NavButton from "./nav-button";
-import Search from "./search";
+import { faFire, faMap, faPen, faPlusSquare, faSignOutAlt, faStar, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { isLoggedInAtom, readModeAtom, showHeatmapAtom } from "../../atoms";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { readModeAtom, isLoggedInAtom } from "../../atoms";
+import NavButton from "./nav-button";
+import PropTypes from "prop-types";
+import React from "react";
+import Search from "./search";
+import styled from "styled-components";
 
 const Nav = styled.nav`
   width: 100%;
@@ -45,6 +45,7 @@ const Separator = styled.div`
 
 export default function Navigation(props) {
   const [readMode, setReadMode] = useRecoilState(readModeAtom);
+  const [showHeatmap, setShowHeatmap] = useRecoilState(showHeatmapAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
 
   return (
@@ -87,6 +88,12 @@ export default function Navigation(props) {
               }}
             />
           )}
+          <NavButton
+            value="Heatmap"
+            icon={faFire}
+            active={showHeatmap}
+            onClick={() => setShowHeatmap(!showHeatmap)}
+          />
           <NavButton
             value="Highlights"
             icon={faStar}

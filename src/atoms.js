@@ -29,3 +29,8 @@ export const isLoadingAtom = atom({
   key: "isLoadingAtom",
   default: false
 });
+
+export const showHeatmapAtom = atom({
+  key: "showHeatmapAtom",
+  default: false
+});
