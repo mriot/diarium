@@ -80,6 +80,10 @@ export default function Calendar() {
               : []
           );
 
+          if (dayjs(selectedDay).month() === dayjs(date).month()) {
+            tileClassNames.push(`day-rating-${Math.floor(Math.random() * 6)}`);
+          }
+
           // add holiday class if date happens to be a holiday
           if (fetchedHolidays[dayjs(date).format("YYYY-MM-DD")]) tileClassNames.push("holiday");
 
