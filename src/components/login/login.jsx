@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
-import TextInput from "../common/textinput";
-import Select from "../common/select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { auth } from "../../backend/auth";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import Button from "../common/button";
 import { isLoggedInAtom } from "../../atoms";
 import { useSetRecoilState } from "recoil";
-import { auth } from "../../backend/auth";
+import Button from "../common/button";
+import React, { useEffect, useState } from "react";
+import Select from "../common/select";
+import TextInput from "../common/textinput";
+import styled, { keyframes } from "styled-components";
 
 const LoginMaskContainer = styled.div`
   width: 100%;
@@ -147,6 +147,8 @@ export default function Login() {
             light
             onChange={event => setUsername(event.currentTarget.value)}
             onKeyPress={event => handleKeyStrokes(event.nativeEvent)}
+            tabIndex={1}
+            autoFocus={true}
           />
         </Row>
         <Row>
@@ -156,6 +158,7 @@ export default function Login() {
             type="password"
             onChange={event => setPassword(event.currentTarget.value)}
             onKeyPress={event => handleKeyStrokes(event.nativeEvent)}
+            tabIndex={2}
           />
         </Row>
         <Row style={{ marginBottom: "25px" }}>
@@ -170,6 +173,7 @@ export default function Login() {
             onChange={event => {
               localStorage.setItem("federal_state", event.currentTarget.value);
             }}
+            tabIndex={3}
           >
             <option value="BB">Brandenburg</option>
             <option value="BE">Berlin</option>
@@ -197,7 +201,11 @@ export default function Login() {
           </Row>
         )}
         <Row alignedRight>
-          <Button onClick={() => doLogin()}>
+          <Button
+            onClick={() => doLogin()}
+            onKeyPress={() => doLogin()}
+            tabIndex={4}
+          >
               Einloggen
           </Button>
         </Row>
