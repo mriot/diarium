@@ -32,7 +32,8 @@ const StyledButton = styled.div`
     transition-duration: 0;
   }
 
-  &:hover {
+  &:hover,
+  &:focus {
     padding-right: 25px;
     box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
     transition: all 0.4s ease 0s;
