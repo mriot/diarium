@@ -44,7 +44,7 @@ export default function Calendar() {
 
     Promise.all([
       getRecordForDay(...dayjs(selectedDay).format("YYYY-MM-DD").split("-")),
-      getRecordsInRange(start, end, ["assigned_day", "tags"]),
+      getRecordsInRange(start, end, ["assigned_day", "tags", "day_rating"]),
       fetchHolidays(dayjs(selectedDay).format("YYYY"))
     ]).then(([dayRecord, recordsInRange, holidays]) => {
       setDayRecord(dayRecord.data);
@@ -73,19 +73,24 @@ export default function Calendar() {
           if (view !== "month") return false;
           if (!fetchedEntries || !fetchedHolidays) return false;
 
-          // classnames from tags
-          const tileClassNames = fetchedEntries.entries?.flatMap(entry =>
+          const tileMatchingEntry = fetchedEntries.entries.filter(entry =>
             dayjs(date).isSame(entry.assigned_day)
-              ? [...entry.tags, "marked"]
-              : []
-          );
+          )[0]; // <- filter returns an array. However, we only expect max 1 entry (or 0)
 
+          if (!tileMatchingEntry) return false;
+
+          // classnames from tags (+ marked = this day has content)
+          const tileClassNames = [...tileMatchingEntry.tags, "marked"];
+
+          // only apply day-rating classes for the current month
           if (dayjs(selectedDay).month() === dayjs(date).month()) {
-            tileClassNames.push(`day-rating-${Math.floor(Math.random() * 6)}`);
+            tileClassNames.push(`day-rating-${tileMatchingEntry.day_rating}`);
           }
 
           // add holiday class if date happens to be a holiday
-          if (fetchedHolidays[dayjs(date).format("YYYY-MM-DD")]) tileClassNames.push("holiday");
+          if (fetchedHolidays[dayjs(date).format("YYYY-MM-DD")]) {
+            tileClassNames.push("holiday");
+          }
 
           return tileClassNames;
         }}
