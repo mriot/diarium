@@ -73,14 +73,22 @@ export default function Calendar() {
           if (view !== "month") return false;
           if (!fetchedEntries || !fetchedHolidays) return false;
 
-          const tileMatchingEntry = fetchedEntries.entries.filter(entry =>
+          const tileClassNames = [];
+
+          // add holiday class if date happens to be a holiday
+          if (fetchedHolidays[dayjs(date).format("YYYY-MM-DD")]) {
+            tileClassNames.push("holiday");
+          }
+
+          // find entry that matches current tiles date
+          const tileMatchingEntry = fetchedEntries.entries.find(entry =>
             dayjs(date).isSame(entry.assigned_day)
-          )[0]; // <- filter returns an array. However, we only expect max 1 entry (or 0)
+          );
 
-          if (!tileMatchingEntry) return false;
+          if (!tileMatchingEntry) return tileClassNames;
 
-          // classnames from tags (+ marked = this day has content)
-          const tileClassNames = [...tileMatchingEntry.tags, "marked"];
+          // apply tags as classnames (+ 'marked'-class as this day has content)
+          tileClassNames.push(...tileMatchingEntry.tags, "marked");
 
           /** only apply day-rating classes for the current month
            * this may change in the future
@@ -88,11 +96,6 @@ export default function Calendar() {
           */
           if (tileMatchingEntry.day_rating && dayjs(selectedDay).month() === dayjs(date).month()) {
             tileClassNames.push(`day-rating-${tileMatchingEntry.day_rating}`);
-          }
-
-          // add holiday class if date happens to be a holiday
-          if (fetchedHolidays[dayjs(date).format("YYYY-MM-DD")]) {
-            tileClassNames.push("holiday");
           }
 
           return tileClassNames;
