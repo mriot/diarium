@@ -1,7 +1,7 @@
 import { BACKEND_URL, setToken } from "./_main";
-import jwt from "jsonwebtoken";
-import dayjs from "dayjs";
 import axios from "axios";
+import dayjs from "dayjs";
+import jwt from "jsonwebtoken";
 
 export const isTokenValid = () => {
   const token = localStorage.getItem("token");
@@ -17,7 +17,7 @@ export const isTokenValid = () => {
 
 export const auth = async (username, password) => {
   try {
-    const response = await axios.post(`${BACKEND_URL}/auth`, {
+    const response = await axios.post(`${BACKEND_URL}/user/auth`, {
       username,
       password
     });
