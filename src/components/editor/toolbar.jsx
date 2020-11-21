@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUndoAlt, faColumns, faImage, faLink, faCode, faExpand, faCompress, faShare, faReply, faVihara, faArrowsAltH, faBold, faItalic, faUnderline, faFont, faListUl, faListOl, faDivide, faRulerHorizontal, faMinus, faRemoveFormat } from "@fortawesome/free-solid-svg-icons";
-import posed from "react-pose";
+import { faArrowsAltH, faBold, faCode, faColumns, faCompress, faDivide, faExpand, faFont, faImage, faItalic, faLink, faListOl, faListUl, faMinus, faRemoveFormat, faReply, faRulerHorizontal, faShare, faUnderline, faUndoAlt, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { toolbarItemsAnimation } from "./animations";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import posed from "react-pose";
+import styled from "styled-components";
 
 const StyledToolbar = styled.div`
   width: 100%;
@@ -191,7 +191,7 @@ export default function Toolbar(props) {
   };
 
   return (
-    <StyledToolbar {...props}>
+    <StyledToolbar {...props} id="lorem">
       <LeftSide>
         {toolbarItems.left.map((item, index) => [
           !item.separator && (
