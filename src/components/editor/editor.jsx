@@ -74,8 +74,6 @@ export default function Editor(props) {
           height: "100%",
           width: "100%",
           resize: false,
-          // menubar: false,
-          menubar: "insert format help",
           branding: true,
           contextmenu: false,
           toolbar_sticky: true,
@@ -91,6 +89,8 @@ export default function Editor(props) {
           setup: (editor) => {
             editor.ui.registry.addSplitButton("alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
           },
+
+          menubar: "view insert format help",
 
           toolbar: `
             undo redo | formatselect | 
