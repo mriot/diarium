@@ -1,4 +1,14 @@
 // import "./LOREM/skins/ui/LOREM/skin.min.css";
+
+// ! to load tiny locally
+// import tinymce from "tinymce";
+// import "tinymce/icons/default";
+// import "tinymce/plugins/link";
+// import "tinymce/plugins/paste";
+// import "tinymce/themes/silver";
+// ...
+// import "tinymce/skins/ui/oxide/skin.css";
+
 import { Editor as TinyEditor } from "@tinymce/tinymce-react";
 import { editorAnimation } from "./animations";
 import PropTypes from "prop-types";
@@ -6,6 +16,7 @@ import React, { useState } from "react";
 import Toolbar from "./toolbar";
 import posed from "react-pose";
 import styled from "styled-components";
+import { GET_ALIGNMENT_BUTTON_CONFIG } from "./_custom";
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer)`
@@ -50,31 +61,53 @@ export default function Editor(props) {
 
       <TinyEditor
         apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
-        initialValue="<p>This is the initial content of the editor</p>"
+        initialValue="<h1>This is the initial content of the editor</h1>"
+        onEditorChange={(val) => console.log(val)}
         init={{
-          height: "100%",
-          skin: "oxide",
-          content_css: "dark",
-
-          // settings for local skin file
+          // ! settings for local skin file
           // skin: false,
           // skin_url: "LOREM",
           // content_css: "dark",
 
-          // statusbar: false,
-          branding: false, // should become visible once the premium trial ended
+          skin: "oxide",
+          // content_css: "dark",
+          height: "100%",
+          width: "100%",
           resize: false,
-          menubar: false,
-          // menubar: "file edit insert view format table tools help",
+          // menubar: false,
+          menubar: "insert format help",
+          branding: true,
+          contextmenu: false,
+          toolbar_sticky: true,
+          browser_spellcheck: true,
+          custom_undo_redo_levels: 50,
+
           plugins: [
-            "advlist autolink lists link image charmap print preview anchor",
-            "searchreplace visualblocks code fullscreen",
-            "insertdatetime media table paste code help wordcount table"
+            "anchor", "autolink", "help", "paste", "print", "searchreplace", "wordcount",
+            // formatting
+            "codesample", "hr", "image", "link", "lists", "table"
           ],
-          toolbar:
-            "undo redo | formatselect | bold italic backcolor | table | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help"
+
+          setup: (editor) => {
+            editor.ui.registry.addSplitButton("alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
+          },
+
+          toolbar: `
+            undo redo | formatselect | 
+            bold italic underline strikethrough forecolor alignment | 
+            hr link image table codesample | 
+            blockquote bullist numlist outdent indent | 
+            removeformat | help
+          `,
+
+          block_formats: `
+            Paragraph=p; 
+            Heading 1=h1; 
+            Heading 2=h2; 
+            Heading 3=h3; 
+            Preformatted=pre
+          `
         }}
-        onEditorChange={(val) => console.log(val)}
       />
     </EditorContainer>
   );
