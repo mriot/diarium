@@ -83,7 +83,7 @@ export default function Editor(props) {
           custom_undo_redo_levels: 50,
 
           plugins: [
-            "anchor", "autolink", "help", "paste", "print", "searchreplace", "wordcount",
+            "anchor", "autolink", "help", "paste", "print", "searchreplace", "wordcount", "preview",
             // formatting
             "codesample", "hr", "image", "link", "lists", "table"
           ],
