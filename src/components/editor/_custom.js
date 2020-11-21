@@ -7,7 +7,7 @@ export const GET_ALIGNMENT_BUTTON_CONFIG = (editor) => {
     onItemAction: (buttonApi, value) => {
       editor.formatter.apply(value);
     },
-    fetch: function (callback) {
+    fetch: (callback) => {
       var items = [
         {
           type: "choiceitem",
