@@ -101,12 +101,11 @@ export default function Editor(props) {
           `,
 
           block_formats: `
-            Paragraph=p; 
-            Heading 1=h1; 
-            Heading 2=h2; 
-            Heading 3=h3; 
-            Preformatted=pre
-          `
+            Paragraph=p;
+            Heading 1=h1;
+            Heading 2=h2;
+            Heading 3=h3;
+            Preformatted=pre;` // ! it doesn't work for some reason when the backtick is on the next line
         }}
       />
     </EditorContainer>
