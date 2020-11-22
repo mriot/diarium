@@ -88,6 +88,8 @@ export default function Editor(props) {
 
           setup: (editor) => {
             editor.ui.registry.addSplitButton("alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
+            editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
+            editor.ui.registry.addToggleButton("inlinecode", GET_INLINECODE_BUTTON_CONFIG(editor));
           },
 
           menubar: "view insert format help",
