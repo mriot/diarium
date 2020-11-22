@@ -105,6 +105,44 @@ export default function Editor(props) {
 
           menubar: "font table misc",
 
+          toolbar: [
+            { name: "history", items: ["undo", "redo"] },
+            { name: "format", items: ["formatselect"] },
+            {
+              name: "style",
+              items: [
+                "bold",
+                "italic",
+                "underline",
+                "strikethrough",
+                "forecolor",
+                "backcolor"
+              ]
+            },
+            {
+              name: "media",
+              items: [
+                "hr",
+                "link",
+                "image"
+                // "table",
+                // "inlinecode",
+                // "codesample"
+              ]
+            },
+            {
+              name: "indentation",
+              items: [
+                "alignment",
+                "custom_lists",
+                "outdent",
+                "indent"
+              ]
+            },
+            { name: "misc", items: ["removeformat"] },
+            { name: "rest", items: ["help"] }
+          ],
+
           block_formats: `
             Paragraph=p;
             Heading 1=h1;
