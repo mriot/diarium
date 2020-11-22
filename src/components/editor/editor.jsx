@@ -92,15 +92,18 @@ export default function Editor(props) {
             editor.ui.registry.addToggleButton("inlinecode", GET_INLINECODE_BUTTON_CONFIG(editor));
           },
 
-          menubar: "view insert format help",
+          menu: {
+            font: {
+              title: "Font",
+              items: "fontformats fontsizes lineheight"
+            },
+            misc: {
+              title: "Misc",
+              items: "codesample codeformat anchor | print"
+            }
+          },
 
-          toolbar: `
-            undo redo | formatselect | 
-            bold italic underline strikethrough forecolor alignment | 
-            hr link image table codesample | 
-            blockquote bullist numlist outdent indent | 
-            removeformat | help
-          `,
+          menubar: "font table misc",
 
           block_formats: `
             Paragraph=p;
