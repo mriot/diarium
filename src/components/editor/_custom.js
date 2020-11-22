@@ -26,15 +26,33 @@ export const GET_ALIGNMENT_BUTTON_CONFIG = (editor) => {
           icon: "align-right",
           text: "Right",
           value: "alignright"
-        },
-        {
-          type: "separator"
-        },
+
+export const GET_LIST_BUTTON_CONFIG = (editor) => {
+  return {
+    icon: "unordered-list",
+    active: false,
+    tooltip: "Bullet list",
+    onAction: () => editor.execCommand("InsertUnorderedList"),
+    onSetup: (buttonApi) => {
+      const editorEventCallback = (eventApi) => {
+        buttonApi.setActive(eventApi.element.nodeName.toLowerCase() === "li");
+      };
+      editor.on("NodeChange", editorEventCallback);
+
+      return function (buttonApi) {
+        editor.off("NodeChange", editorEventCallback);
+      };
+    },
+    onItemAction: (buttonApi, value) => {
+      editor.execCommand(value);
+    },
+    fetch: (callback) => {
+      const items = [
         {
           type: "choiceitem",
-          icon: "align-justify",
-          text: "Block",
-          value: "alignjustify"
+          icon: "ordered-list",
+          text: "Numbered",
+          value: "InsertOrderedList"
         }
       ];
       callback(items);
