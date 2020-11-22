@@ -8,13 +8,13 @@ export const GET_ALIGNMENT_BUTTON_CONFIG = (editor) => {
       editor.formatter.apply(value);
     },
     fetch: (callback) => {
-      var items = [
-        {
-          type: "choiceitem",
-          icon: "align-left",
-          text: "Left",
-          value: "alignleft"
-        },
+      const items = [
+        // {
+        //   type: "choiceitem",
+        //   icon: "align-left",
+        //   text: "Left",
+        //   value: "alignleft"
+        // },
         {
           type: "choiceitem",
           icon: "align-center",
@@ -26,6 +26,12 @@ export const GET_ALIGNMENT_BUTTON_CONFIG = (editor) => {
           icon: "align-right",
           text: "Right",
           value: "alignright"
+        }
+      ];
+      callback(items);
+    }
+  };
+};
 
 export const GET_LIST_BUTTON_CONFIG = (editor) => {
   return {
