@@ -41,3 +41,24 @@ export const GET_ALIGNMENT_BUTTON_CONFIG = (editor) => {
     }
   };
 };
+
+export const GET_INLINECODE_BUTTON_CONFIG = (editor) => {
+  return {
+    icon: "sourcecode",
+    tooltip: "Inline code",
+    active: false,
+    onAction: function (api) {
+      editor.execCommand("mceToggleFormat", false, "code");
+    },
+    onSetup: (buttonApi) => {
+      const editorEventCallback = (eventApi) => {
+        buttonApi.setActive(eventApi.element.nodeName.toLowerCase() === "code");
+      };
+      editor.on("NodeChange", editorEventCallback);
+
+      return function (buttonApi) {
+        editor.off("NodeChange", editorEventCallback);
+      };
+    }
+  };
+};
