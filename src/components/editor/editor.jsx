@@ -104,7 +104,7 @@ export default function Editor(props) {
             }
           },
 
-          menubar: "font table misc",
+          menubar: "font table misc help",
 
           toolbar: [
             { name: "history", items: ["undo", "redo"] },
@@ -140,8 +140,7 @@ export default function Editor(props) {
                 "indent"
               ]
             },
-            { name: "misc", items: ["removeformat"] },
-            { name: "rest", items: ["help"] }
+            { name: "misc", items: ["removeformat"] }
           ],
 
           block_formats: `
