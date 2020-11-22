@@ -26,6 +26,12 @@ export const GET_ALIGNMENT_BUTTON_CONFIG = (editor) => {
           icon: "align-right",
           text: "Right",
           value: "alignright"
+        },
+        {
+          type: "choiceitem",
+          icon: "align-justify",
+          text: "Block",
+          value: "alignjustify"
         }
       ];
       callback(items);
