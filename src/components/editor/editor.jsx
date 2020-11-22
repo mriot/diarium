@@ -16,7 +16,7 @@ import React, { useState } from "react";
 import Toolbar from "./toolbar";
 import posed from "react-pose";
 import styled from "styled-components";
-import { GET_ALIGNMENT_BUTTON_CONFIG } from "./_custom";
+import { GET_ALIGNMENT_BUTTON_CONFIG, GET_INLINECODE_BUTTON_CONFIG, GET_LIST_BUTTON_CONFIG } from "./_custom";
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer)`
@@ -81,7 +81,8 @@ export default function Editor(props) {
           custom_undo_redo_levels: 50,
 
           plugins: [
-            "anchor", "autolink", "help", "paste", "print", "searchreplace", "wordcount", "preview",
+            "anchor", "autolink", "help", "paste", "print",
+            "searchreplace", "wordcount", "preview",
             // formatting
             "codesample", "hr", "image", "link", "lists", "table"
           ],
