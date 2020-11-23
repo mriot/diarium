@@ -16,6 +16,11 @@ import React, { useState } from "react";
 import Toolbar from "./toolbar";
 import posed from "react-pose";
 import styled from "styled-components";
+import {
+  GET_ALIGNMENT_BUTTON_CONFIG,
+  GET_INLINECODE_BUTTON_CONFIG,
+  GET_LIST_BUTTON_CONFIG
+} from "./_custom";
 import AutoSave from "./AutoSave";
 
 const PosedEditorContainer = posed.div(editorAnimation);
@@ -42,7 +47,6 @@ export default function Editor(props) {
   const [editorState, setEditorState] = useState(null);
   const [localState, setLocalState] = useState({
     zenMode: false,
-    editorHistory: { undo: 0, redo: 0 },
     saveStatusText: ""
   });
 
@@ -55,9 +59,7 @@ export default function Editor(props) {
     >
       <Toolbar
         toolbarStatus={{
-          readModeActive: false,
           zenModeActive: false,
-          editorHistory: { undo: 0, redo: 0 },
           saveStatusText: "okay"
         }}
       />
