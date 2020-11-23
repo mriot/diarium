@@ -61,6 +61,16 @@ export default function Editor(props) {
         }}
       />
 
+      <div style={{
+        display: "flex",
+        fontSize: "14px"
+      }}>
+        <button onClick={() => autoSaver.start(0)}>save now</button>
+        <button onClick={() => autoSaver.start()}>start autosave</button>
+        <button onClick={() => console.log(editorState)}>log editor state</button>
+        <button onClick={() => console.log(editorState.getContent())}>log editor content</button>
+      </div>
+
       <TinyEditor
         apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
         initialValue="<h1>This is the initial content of the editor</h1>"
