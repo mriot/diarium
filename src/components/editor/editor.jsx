@@ -39,6 +39,7 @@ const EditorContainer = styled(PosedEditorContainer)`
 `;
 
 export default function Editor(props) {
+  const [editorState, setEditorState] = useState(null);
   const [localState, setLocalState] = useState({
     zenMode: false,
     editorHistory: { undo: 0, redo: 0 },
@@ -100,7 +101,10 @@ export default function Editor(props) {
           ],
 
           setup: (editor) => {
+            setEditorState(editor);
+
             editor.addShortcut("Meta+S", "Save editor content", () => autoSaver.start(0));
+
             editor.ui.registry.addSplitButton("alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
             editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
             editor.ui.registry.addToggleButton("inlinecode", GET_INLINECODE_BUTTON_CONFIG(editor));
