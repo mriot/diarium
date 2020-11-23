@@ -16,7 +16,7 @@ import React, { useState } from "react";
 import Toolbar from "./toolbar";
 import posed from "react-pose";
 import styled from "styled-components";
-import { GET_ALIGNMENT_BUTTON_CONFIG, GET_INLINECODE_BUTTON_CONFIG, GET_LIST_BUTTON_CONFIG } from "./_custom";
+import AutoSave from "./AutoSave";
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer)`
@@ -45,6 +45,8 @@ export default function Editor(props) {
     saveStatusText: ""
   });
 
+  const autoSaver = new AutoSave(editorState, (content) => console.log("Saved!", content));
+
   return (
     <EditorContainer
       pose={props.pose}
@@ -62,7 +64,7 @@ export default function Editor(props) {
       <TinyEditor
         apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
         initialValue="<h1>This is the initial content of the editor</h1>"
-        onEditorChange={(val) => console.log(val)}
+        onEditorChange={() => autoSaver.start()}
         init={{
           // ! settings for local skin file
           // skin: false,
@@ -88,6 +90,7 @@ export default function Editor(props) {
           ],
 
           setup: (editor) => {
+            editor.addShortcut("Meta+S", "Save editor content", () => autoSaver.start(0));
             editor.ui.registry.addSplitButton("alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
             editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
             editor.ui.registry.addToggleButton("inlinecode", GET_INLINECODE_BUTTON_CONFIG(editor));
