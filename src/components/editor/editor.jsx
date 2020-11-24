@@ -22,12 +22,16 @@ import {
   GET_LIST_BUTTON_CONFIG
 } from "./_custom";
 import AutoSave from "./AutoSave";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { dayRecordAtom, readModeAtom } from "../../atoms";
+import parse from "html-react-parser";
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer)`
   display: flex;
   width: 100%;
   height: 100%;
+  color: #fff;
   position: relative;
   flex-direction: column;
   transform-origin: center;
@@ -45,13 +49,15 @@ const EditorContainer = styled(PosedEditorContainer)`
 
 export default function Editor(props) {
   const [editorState, setEditorState] = useState(null);
+  const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
+  const readMode = useRecoilValue(readModeAtom);
   const [localState, setLocalState] = useState({
     zenMode: false,
     saveStatusText: ""
   });
 
   const autoSaver = new AutoSave(editorState, (content) => console.log("Saved!", content));
-
+  console.log(dayRecord);
   return (
     <EditorContainer
       pose={props.pose}
@@ -69,107 +75,114 @@ export default function Editor(props) {
         fontSize: "14px"
       }}>
         <button onClick={() => autoSaver.start(0)}>save now</button>
-        <button onClick={() => autoSaver.start()}>start autosave</button>
         <button onClick={() => console.log(editorState)}>log editor state</button>
         <button onClick={() => console.log(editorState.getContent())}>log editor content</button>
       </div>
 
-      <TinyEditor
-        apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
-        initialValue="<h1>This is the initial content of the editor</h1>"
-        onEditorChange={() => autoSaver.start()}
-        init={{
-          // ! settings for local skin file
-          // skin: false,
-          // skin_url: "LOREM",
-          // content_css: "dark",
+      {readMode && (
+        <div>
+          {dayRecord && parse(dayRecord?.content)}
+        </div>
+      )}
 
-          skin: "oxide",
-          // content_css: "dark",
-          height: "100%",
-          width: "100%",
-          resize: false,
-          branding: true,
-          contextmenu: false,
-          toolbar_sticky: true,
-          browser_spellcheck: true,
-          custom_undo_redo_levels: 50,
+      {!readMode && (
+        <TinyEditor
+          apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
+          initialValue={dayRecord?.content}
+          onEditorChange={() => autoSaver.start()}
+          init={{
+            // ! settings for local skin file
+            // skin: false,
+            // skin_url: "LOREM",
+            // content_css: "dark",
 
-          plugins: [
-            "anchor", "autolink", "help", "paste", "print",
-            "searchreplace", "wordcount", "preview",
-            // formatting
-            "codesample", "hr", "image", "link", "lists", "table"
-          ],
+            skin: "oxide",
+            // content_css: "dark",
+            height: "100%",
+            width: "100%",
+            resize: false,
+            branding: true,
+            contextmenu: false,
+            toolbar_sticky: true,
+            browser_spellcheck: true,
+            custom_undo_redo_levels: 50,
 
-          setup: (editor) => {
-            setEditorState(editor);
+            plugins: [
+              "anchor", "autolink", "help", "paste", "print",
+              "searchreplace", "wordcount", "preview",
+              // formatting
+              "codesample", "hr", "image", "link", "lists", "table"
+            ],
 
-            editor.addShortcut("Meta+S", "Save editor content", () => autoSaver.start(0));
+            setup: (editor) => {
+              setEditorState(editor);
 
-            editor.ui.registry.addSplitButton("alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
-            editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
-            editor.ui.registry.addToggleButton("inlinecode", GET_INLINECODE_BUTTON_CONFIG(editor));
-          },
+              editor.addShortcut("Meta+S", "Save editor content", () => autoSaver.start(0));
 
-          menu: {
-            font: {
-              title: "Font",
-              items: "fontformats fontsizes lineheight"
+              editor.ui.registry.addSplitButton("alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
+              editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
+              editor.ui.registry.addToggleButton("inlinecode", GET_INLINECODE_BUTTON_CONFIG(editor));
             },
-            misc: {
-              title: "Misc",
-              items: "codesample codeformat anchor | print"
-            }
-          },
 
-          menubar: "font table misc help",
+            menu: {
+              font: {
+                title: "Font",
+                items: "fontformats fontsizes lineheight"
+              },
+              misc: {
+                title: "Misc",
+                items: "codesample codeformat anchor | print"
+              }
+            },
 
-          toolbar: [
-            { name: "history", items: ["undo", "redo"] },
-            { name: "format", items: ["formatselect"] },
-            {
-              name: "style",
-              items: [
-                "bold",
-                "italic",
-                "underline",
-                "strikethrough",
-                "forecolor",
-                "backcolor"
-              ]
-            },
-            {
-              name: "media",
-              items: [
-                "hr",
-                "link",
-                "image"
-                // "table",
-                // "inlinecode",
-                // "codesample"
-              ]
-            },
-            {
-              name: "indentation",
-              items: [
-                "alignment",
-                "custom_lists",
-                "outdent",
-                "indent"
-              ]
-            },
-            { name: "misc", items: ["removeformat"] }
-          ],
+            menubar: "font table misc help",
 
-          block_formats: `
-            Paragraph=p;
-            Heading 1=h1;
-            Heading 2=h2;
-            Heading 3=h3;
-            Preformatted=pre;` // ! it doesn't work for some reason when the backtick is on the next line
-        }}
-      />
+            toolbar: [
+              { name: "history", items: ["undo", "redo"] },
+              { name: "format", items: ["formatselect"] },
+              {
+                name: "style",
+                items: [
+                  "bold",
+                  "italic",
+                  "underline",
+                  "strikethrough",
+                  "forecolor",
+                  "backcolor"
+                ]
+              },
+              {
+                name: "media",
+                items: [
+                  "hr",
+                  "link",
+                  "image"
+                  // "table",
+                  // "inlinecode",
+                  // "codesample"
+                ]
+              },
+              {
+                name: "indentation",
+                items: [
+                  "alignment",
+                  "custom_lists",
+                  "outdent",
+                  "indent"
+                ]
+              },
+              { name: "misc", items: ["removeformat"] }
+            ],
+
+            block_formats: `
+              Paragraph=p;
+              Heading 1=h1;
+              Heading 2=h2;
+              Heading 3=h3;
+              Preformatted=pre;` // ! it doesn't work for some reason when the backtick is on the next line
+          }}
+        />
+      )}
     </EditorContainer>
   );
 };

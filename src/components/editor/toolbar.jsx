@@ -77,27 +77,23 @@ export default function Toolbar(props) {
   const [fullscreenMode, setFullscreenMode] = useState(false);
   const [readMode, setReadMode] = useState(false); // TODO: useRecoilState
 
-  const toolbarItems = {
-    left: [],
-
-    right: [
-      {
-        title: "Zen-Mode",
-        onClick: () => props.toggleZenMode(),
-        isActive: () => props.toolbarStatus.zenModeActive,
-        icon: faVihara
+  const toolbarItems = [
+    {
+      title: "Zen-Mode",
+      onClick: () => props.toggleZenMode(),
+      isActive: () => props.toolbarStatus.zenModeActive,
+      icon: faVihara
+    },
+    {
+      title: "Vollbild",
+      onClick: () => {
+        toggleFullScreen();
+        // if (!readMode) props.editorFocus(); // TODO: implement editor focus
       },
-      {
-        title: "Vollbild",
-        onClick: () => {
-          toggleFullScreen();
-          // if (!readMode) props.editorFocus(); // TODO: implement editor focus
-        },
-        isActive: () => fullscreenMode,
-        icon: fullscreenMode ? faCompress : faExpand
-      }
-    ]
-  };
+      isActive: () => fullscreenMode,
+      icon: fullscreenMode ? faCompress : faExpand
+    }
+  ];
 
   useEffect(() => {
     // set the correct state if the user exits fullscreen by pressing the ESC key
@@ -119,32 +115,15 @@ export default function Toolbar(props) {
   };
 
   return (
-    <StyledToolbar {...props} id="lorem">
+    <StyledToolbar {...props}>
       <LeftSide>
-        {toolbarItems.left.map((item, index) => [
-          !item.separator && (
-            <IconButton
-              key={index}
-              pose={readMode ? "hide" : "show"}
-              title={item.title}
-              onClick={item.onClick}
-              isActive={item.isActive && item.isActive()}
-              isDisabled={item.isDisabled && item.isDisabled()}
-            >
-              <FontAwesomeIcon icon={item.icon} />
-            </IconButton>
-          ), // <- we're in an array
-
-          item.separator && <ButtonSeparator key={index} pose={readMode ? "hide" : "show"} />
-        ])}
-
         <SaveStatusText>
           {props.toolbarStatus.saveStatusText}
         </SaveStatusText>
       </LeftSide>
 
       <RightSide>
-        {toolbarItems.right.map((item, index) => (
+        {toolbarItems.map((item, index) => (
           <IconButton
             key={index}
             pose={item.hiddenInReadMode && readMode ? "hide" : "show"}
