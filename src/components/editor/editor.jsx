@@ -12,7 +12,7 @@
 import { Editor as TinyEditor } from "@tinymce/tinymce-react";
 import { editorAnimation } from "./animations";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Toolbar from "./toolbar";
 import posed from "react-pose";
 import styled from "styled-components";
@@ -25,6 +25,7 @@ import AutoSave from "./AutoSave";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { dayRecordAtom, readModeAtom } from "../../atoms";
 import parse from "html-react-parser";
+import { updateExistingEntryById } from "../../backend/recordManipulation";
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer)`
@@ -56,8 +57,23 @@ export default function Editor(props) {
     saveStatusText: ""
   });
 
-  const autoSaver = new AutoSave(editorState, (content) => console.log("Saved!", content));
-  console.log(dayRecord);
+  const autoSaver = new AutoSave(editorState, (content) => {
+    // todo: save status text: Saving...
+    // todo: handle backend save
+    // todo: handle editor dirty (set to false when save was successful)
+    // todo: save status text: Saved! (if successful)
+    // todo: save status text: Error! (if not successful)
+
+    const response = updateExistingEntryById(dayRecord.entry_id, content);
+    console.log(response);
+
+    console.log("Saved!", content);
+  });
+
+  useEffect(() => {
+    console.log("Editor state", editorState);
+  }, [editorState]);
+
   return (
     <EditorContainer
       pose={props.pose}
