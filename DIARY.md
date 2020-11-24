@@ -39,6 +39,8 @@ At the time the editor lacked some basic MVP features like a readonly mode. The 
 Once rehabilitated from that mistake, I decided to set up a list of pros and cons of various editors and editor frameworks.  
 [The list can be found as an GitHub issue here.](https://github.com/mriot/diarium/issues/31)
 
+Alright, framework or editor?
+
 ## 4. The Backend
 
 ### 4.1. API Design
