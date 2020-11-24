@@ -17,10 +17,11 @@ export const createNewEntry = recordData => {
 export const updateExistingEntryById = (id, recordData) => {
   try {
     return axios.put(`${BACKEND_URL}/entries?id=${id}`, {
+      data: recordData
+    }, {
       headers: {
         Authorization: `Bearer ${getToken()}`
-      },
-      data: recordData
+      }
     });
   } catch (error) {
     return error.response;
