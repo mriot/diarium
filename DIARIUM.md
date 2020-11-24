@@ -10,6 +10,7 @@
   - Hooks ❤️
   - Recoil for shared state management ❤️
 - Draft.js (WYSIWYG Framework)
+- TinyMCE ecosystem (WYSIWYG editor)
 - Several libraries, most notably...
   - Moment.js and Day.js
 - Serviceworkers (offline capabilities)
@@ -28,7 +29,7 @@
 ### Server
 
 - Using a Raspberry PI as Webserver
-- SSH (managing the PI via CLI)
+- SSH (managing the PI)
 - Setting up a VPN to access the Raspberry via internet
 
 ### Mobile App
@@ -38,9 +39,9 @@
 ### Misc
 
 - JS APIs and things
-  - Fetch
+  - Fetch and Axios
   - Promises + Async / Await
   - Object destructuring
   - Spread operator
 - Using a JS linter (eslint) with a (slightly) customized styleguide
-- How hard it is to find a good WYSIWYG-Editor
+- How hard it is to find a good, active WYSIWYG-Editor
