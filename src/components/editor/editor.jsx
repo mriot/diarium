@@ -58,17 +58,20 @@ export default function Editor(props) {
     saveStatusText: ""
   });
 
-  const autoSaver = new AutoSave(editorState, (content) => {
+  const autoSaver = new AutoSave(editorState, async (content) => {
     // todo: save status text: Saving...
     // todo: handle backend save
     // todo: handle editor dirty (set to false when save was successful)
     // todo: save status text: Saved! (if successful)
     // todo: save status text: Error! (if not successful)
 
-    const response = updateExistingEntryById(dayRecord.entry_id, content);
+    const response = await updateExistingEntryById(dayRecord.entry_id, { content });
     console.log(response);
+    if (response.ok) {
+      setDayRecord(response.data);
+    }
 
-    console.log("Saved!", content);
+    console.log("Saved!");
   });
 
   useEffect(() => {
