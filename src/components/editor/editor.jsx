@@ -26,6 +26,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { dayRecordAtom, readModeAtom } from "../../atoms";
 import parse from "html-react-parser";
 import { updateExistingEntryById } from "../../backend/recordManipulation";
+import root from "react-shadow";
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer)`
@@ -96,9 +97,9 @@ export default function Editor(props) {
       </div>
 
       {readMode && (
-        <div>
+        <root.div>
           {dayRecord && parse(dayRecord?.content)}
-        </div>
+        </root.div>
       )}
 
       {!readMode && (
