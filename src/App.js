@@ -73,7 +73,7 @@ export default function App() {
       tags: []
     });
 
-    if (response.ok) {
+    if (response.status === 200) {
       setReadMode(false);
       setDayRecord(response.data);
     }
