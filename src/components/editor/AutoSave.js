@@ -4,45 +4,51 @@ export default class AutoSave {
     let internalTimer = null;
 
     const save = () => {
-      console.log(editorState);
-      if (!editorState) { console.error("No editorState provided"); }
-      if (!editorState?.isDirty()) { return false; }
+      if (!editorState) {
+        console.error("AutoSave: No editorState provided");
+        return false;
+      }
+
+      if (!editorState.isDirty()) {
+        console.log("NOT DIRTY");
+        return false;
+      }
 
       try {
-        console.log("Saving...");
         saveCallback(editorState.getContent());
-        // todo: check if request was successful first
-        editorState.setDirty(false);
       } catch (error) {
         console.error("Error while trying to save content", error);
       }
     };
 
+    const clearAllTimers = () => {
+      clearTimeout(timer);
+      clearTimeout(internalTimer);
+      internalTimer = null;
+    };
+
     const setInternalTimer = () => {
       internalTimer = setTimeout(() => {
-        internalTimer = null;
+        clearAllTimers();
         save();
-      }, 6000);
+      }, 10000);
     };
 
     // replace a previously scheduled save with each invocation
-    this.start = function (timeout = 3000) {
-      this.clear();
+    this.start = (timeout = 2000) => {
+      clearTimeout(timer);
 
       timer = setTimeout(() => {
-        this.clear(true);
+        clearAllTimers();
         save();
       }, timeout);
 
       if (!internalTimer) { setInternalTimer(); }
     };
 
-    this.clear = function (all) {
-      clearTimeout(timer);
-      if (all) {
-        clearTimeout(internalTimer);
-        internalTimer = null;
-      }
+    this.saveNow = () => {
+      clearAllTimers();
+      save();
     };
   }
 }
