@@ -69,7 +69,7 @@ export default function App() {
   const createNewEntryForSelectedDay = async () => {
     const response = await createNewEntry({
       assigned_day: dayjs(selectedDay).format("YYYY-MM-DD"),
-      content: `<h1>${dayjs(selectedDay).format("dddd, D. MMMM YYYY")}</h1>\n\n`,
+      content: `<h1>${dayjs(selectedDay).format("dddd, D. MMMM YYYY")}</h1><hr><p></p>`,
       tags: []
     });
 
