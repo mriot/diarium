@@ -12,7 +12,7 @@
 import { Editor as TinyEditor } from "@tinymce/tinymce-react";
 import { editorAnimation } from "./animations";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Toolbar from "./toolbar";
 import posed from "react-pose";
 import styled from "styled-components";
@@ -53,30 +53,33 @@ export default function Editor(props) {
   const [editorState, setEditorState] = useState(null);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const readMode = useRecoilValue(readModeAtom);
+  const [saveStatusText, setSaveStatusText] = useState("");
   const [localState, setLocalState] = useState({
-    zenMode: false,
-    saveStatusText: ""
+    zenMode: false
   });
 
-  const autoSaver = new AutoSave(editorState, async (content) => {
-    // todo: save status text: Saving...
-    // todo: handle backend save
-    // todo: handle editor dirty (set to false when save was successful)
-    // todo: save status text: Saved! (if successful)
-    // todo: save status text: Error! (if not successful)
+  const autoSaver = useMemo(() => {
+    return new AutoSave(editorState, async (content) => {
+      setSaveStatusText("Saving...");
 
-    const response = await updateExistingEntryById(dayRecord.entry_id, { content });
-    console.log(response);
-    if (response.ok) {
-      setDayRecord(response.data);
-    }
+      const response = await updateExistingEntryById(dayRecord.entry_id, { content });
+      // console.log(response);
+      if (response.status === 200) {
+        setDayRecord(response.data);
+        setSaveStatusText("Saved!");
+        editorState.save();
+        return true;
+      }
 
-    console.log("Saved!");
-  });
+      setSaveStatusText("Error!" + response.status);
+    });
+  }, [dayRecord, editorState, setDayRecord]);
 
   useEffect(() => {
-    console.log("Editor state", editorState);
-  }, [editorState]);
+    if (editorState) {
+      editorState.addShortcut("Meta+S", "Save editor content", () => autoSaver.saveNow());
+    }
+  }, [editorState, autoSaver]);
 
   return (
     <EditorContainer
@@ -86,7 +89,7 @@ export default function Editor(props) {
       <Toolbar
         toolbarStatus={{
           zenModeActive: false,
-          saveStatusText: "okay"
+          saveStatusText
         }}
       />
 
@@ -94,7 +97,7 @@ export default function Editor(props) {
         display: "flex",
         fontSize: "14px"
       }}>
-        <button onClick={() => autoSaver.start(0)}>save now</button>
+        <button onClick={() => autoSaver.saveNow()}>save now</button>
         <button onClick={() => console.log(editorState)}>log editor state</button>
         <button onClick={() => console.log(editorState.getContent())}>log editor content</button>
       </div>
@@ -109,7 +112,12 @@ export default function Editor(props) {
         <TinyEditor
           apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
           initialValue={dayRecord?.content}
-          onEditorChange={() => autoSaver.start()}
+          onEditorChange={() => {
+            if (editorState.isDirty()) {
+              autoSaver.start();
+              setSaveStatusText("Unsaved changes...");
+            }
+          }}
           init={{
             // ! settings for local skin file
             // skin: false,
@@ -126,6 +134,7 @@ export default function Editor(props) {
             toolbar_sticky: true,
             browser_spellcheck: true,
             custom_undo_redo_levels: 50,
+            auto_focus: true,
 
             plugins: [
               "anchor", "autolink", "help", "paste", "print",
@@ -137,7 +146,7 @@ export default function Editor(props) {
             setup: (editor) => {
               setEditorState(editor);
 
-              editor.addShortcut("Meta+S", "Save editor content", () => autoSaver.start(0));
+              // editor.focus();
 
               editor.ui.registry.addSplitButton("alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
               editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
