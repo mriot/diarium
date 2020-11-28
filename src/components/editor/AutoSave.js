@@ -9,11 +9,6 @@ export default class AutoSave {
         return false;
       }
 
-      if (!editorState.isDirty()) {
-        console.log("NOT DIRTY");
-        return false;
-      }
-
       try {
         saveCallback(editorState.getContent());
       } catch (error) {
