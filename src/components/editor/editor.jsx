@@ -27,6 +27,8 @@ import { dayRecordAtom, readModeAtom } from "../../atoms";
 import parse from "html-react-parser";
 import { updateExistingEntryById } from "../../backend/recordManipulation";
 import root from "react-shadow";
+import SaveStatusText from "./SaveStatusText";
+import dayjs from "dayjs";
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer)`
@@ -60,13 +62,11 @@ export default function Editor(props) {
 
   const autoSaver = useMemo(() => {
     return new AutoSave(editorState, async (content) => {
-      setSaveStatusText("Saving...");
-
       const response = await updateExistingEntryById(dayRecord.entry_id, { content });
       // console.log(response);
       if (response.status === 200) {
         setDayRecord(response.data);
-        setSaveStatusText("Saved!");
+        setSaveStatusText("Saved! " + dayjs(response.data.updated_at).format("HH:mm:ss (D.MM.YYYY)"));
         editorState.save();
         setPrevContentLength(content.length);
         return true;
@@ -90,15 +90,17 @@ export default function Editor(props) {
       <Toolbar
         toggleZenMode={() => setZenMode(!zenMode)}
         isZenModeActive={zenMode}
-        saveStatusText={!readMode ? saveStatusText : ""}
       />
 
       <div style={{
         display: "flex",
         fontSize: "14px"
       }}>
-        <button onClick={() => editorState.execCommand("mceFullScreen")}>fullscreen</button>
-        <button onClick={() => autoSaver.saveNow()}>save now</button>
+        <button onClick={() => {
+          setInterval(() => {
+            console.log("is dirty?", !editorState.isNotDirty);
+          }, 500);
+        }}>DEV</button>
         <button onClick={() => console.log(editorState)}>log editor state</button>
         <button onClick={() => console.log(editorState.getContent())}>log editor content</button>
       </div>
@@ -109,6 +111,8 @@ export default function Editor(props) {
         </root.div>
       )}
 
+      <SaveStatusText text={saveStatusText} />
+
       {!readMode && (
         <TinyEditor
           apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
@@ -118,13 +122,17 @@ export default function Editor(props) {
             // todo: merge the if statements together
             if (editor.isDirty()) {
               autoSaver.start();
-              setSaveStatusText("Unsaved changes...");
+              setSaveStatusText("Saving changes...");
             } else if (content.length !== prevContentLength) {
               console.log("isDirty() did fail");
               autoSaver.start();
-              setSaveStatusText("Unsaved changes...");
+              setSaveStatusText("Saving changes...");
             }
           }}
+          // onChange={(...args) => console.log("onChange:", ...args)}
+          // onDirty={(editor) => console.log("onDirty: isDirty() =>", editor.target.isDirty())}
+          // onKeyUp={(event) => console.log("onKeyUp:", event)}
+          // onSaveContent={(...args) => console.log("onSaveContent:", ...args)}
           init={{
             // ! settings for local skin file
             // skin: false,

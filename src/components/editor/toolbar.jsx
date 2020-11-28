@@ -120,7 +120,7 @@ export default function Toolbar(props) {
     <StyledToolbar {...props}>
       <LeftSide>
         <SaveStatusText>
-          {props.saveStatusText}
+          {/* {props.saveStatusText} */}
         </SaveStatusText>
       </LeftSide>
 
@@ -142,7 +142,6 @@ export default function Toolbar(props) {
 }
 
 Toolbar.propTypes = {
-  saveStatusText: PropTypes.string.isRequired,
   isZenModeActive: PropTypes.bool,
   toggleZenMode: PropTypes.func
 };
