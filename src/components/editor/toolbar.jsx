@@ -1,10 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowsAltH, faBold, faCode, faColumns, faCompress, faDivide, faExpand, faFont, faImage, faItalic, faLink, faListOl, faListUl, faMinus, faRemoveFormat, faReply, faRulerHorizontal, faShare, faUnderline, faUndoAlt, faVihara } from "@fortawesome/free-solid-svg-icons";
+import { faCompress, faExpand, faVihara } from "@fortawesome/free-solid-svg-icons";
 import { toolbarItemsAnimation } from "./animations";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import posed from "react-pose";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
+import { readModeAtom } from "../../atoms";
 
 const StyledToolbar = styled.div`
   width: 100%;
@@ -20,7 +22,7 @@ const StyledToolbar = styled.div`
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   
-  ${props => props.toolbarStatus.zenModeActive && `
+  ${props => props.isZenModeActive && `
     border-radius: 0;
     border-bottom: none;
   `}
@@ -75,13 +77,13 @@ const SaveStatusText = styled.div`
 
 export default function Toolbar(props) {
   const [fullscreenMode, setFullscreenMode] = useState(false);
-  const [readMode, setReadMode] = useState(false); // TODO: useRecoilState
+  const readMode = useRecoilValue(readModeAtom);
 
   const toolbarItems = [
     {
       title: "Zen-Mode",
       onClick: () => props.toggleZenMode(),
-      isActive: () => props.toolbarStatus.zenModeActive,
+      isActive: () => props.isZenModeActive,
       icon: faVihara
     },
     {
@@ -118,7 +120,7 @@ export default function Toolbar(props) {
     <StyledToolbar {...props}>
       <LeftSide>
         <SaveStatusText>
-          {props.toolbarStatus.saveStatusText}
+          {props.saveStatusText}
         </SaveStatusText>
       </LeftSide>
 
@@ -138,3 +140,9 @@ export default function Toolbar(props) {
     </StyledToolbar>
   );
 }
+
+Toolbar.propTypes = {
+  saveStatusText: PropTypes.string.isRequired,
+  isZenModeActive: PropTypes.bool,
+  toggleZenMode: PropTypes.func
+};

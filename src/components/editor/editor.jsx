@@ -35,6 +35,7 @@ const EditorContainer = styled(PosedEditorContainer)`
   height: 100%;
   color: #fff;
   position: relative;
+  background-color: #20232a;
   flex-direction: column;
   transform-origin: center;
   backface-visibility: hidden;
@@ -54,9 +55,7 @@ export default function Editor(props) {
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const readMode = useRecoilValue(readModeAtom);
   const [saveStatusText, setSaveStatusText] = useState("");
-  const [localState, setLocalState] = useState({
-    zenMode: false
-  });
+  const [zenMode, setZenMode] = useState(false);
 
   const autoSaver = useMemo(() => {
     return new AutoSave(editorState, async (content) => {
@@ -84,19 +83,19 @@ export default function Editor(props) {
   return (
     <EditorContainer
       pose={props.pose}
-      isZenModeActive={false}
+      isZenModeActive={zenMode}
     >
       <Toolbar
-        toolbarStatus={{
-          zenModeActive: false,
-          saveStatusText
-        }}
+        toggleZenMode={() => setZenMode(!zenMode)}
+        isZenModeActive={zenMode}
+        saveStatusText={!readMode ? saveStatusText : ""}
       />
 
       <div style={{
         display: "flex",
         fontSize: "14px"
       }}>
+        <button onClick={() => editorState.execCommand("mceFullScreen")}>fullscreen</button>
         <button onClick={() => autoSaver.saveNow()}>save now</button>
         <button onClick={() => console.log(editorState)}>log editor state</button>
         <button onClick={() => console.log(editorState.getContent())}>log editor content</button>
@@ -138,7 +137,7 @@ export default function Editor(props) {
 
             plugins: [
               "anchor", "autolink", "help", "paste", "print",
-              "searchreplace", "wordcount", "preview",
+              "searchreplace", "wordcount", "preview", "fullscreen",
               // formatting
               "codesample", "hr", "image", "link", "lists", "table"
             ],
