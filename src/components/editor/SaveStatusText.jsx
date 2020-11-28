@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 
+// && -> to give it more specificity
+// https://github.com/styled-components/styled-components/issues/1816#issuecomment-398454088
 const StyledSaveStatusText = styled.div`
  && {
     color: #9c9c9c;
