@@ -56,6 +56,7 @@ export default function Editor(props) {
   const readMode = useRecoilValue(readModeAtom);
   const [saveStatusText, setSaveStatusText] = useState("");
   const [zenMode, setZenMode] = useState(false);
+  const [prevContentLength, setPrevContentLength] = useState(0);
 
   const autoSaver = useMemo(() => {
     return new AutoSave(editorState, async (content) => {
@@ -67,6 +68,7 @@ export default function Editor(props) {
         setDayRecord(response.data);
         setSaveStatusText("Saved!");
         editorState.save();
+        setPrevContentLength(content.length);
         return true;
       }
 
@@ -111,8 +113,14 @@ export default function Editor(props) {
         <TinyEditor
           apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
           initialValue={dayRecord?.content}
-          onEditorChange={() => {
-            if (editorState.isDirty()) {
+          onEditorChange={(content, editor) => {
+            // https://github.com/tinymce/tinymce/issues/6285
+            // todo: merge the if statements together
+            if (editor.isDirty()) {
+              autoSaver.start();
+              setSaveStatusText("Unsaved changes...");
+            } else if (content.length !== prevContentLength) {
+              console.log("isDirty() did fail");
               autoSaver.start();
               setSaveStatusText("Unsaved changes...");
             }
