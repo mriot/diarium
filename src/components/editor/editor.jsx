@@ -23,12 +23,12 @@ import {
 import AutoSave from "./AutoSave";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { dayRecordAtom, readModeAtom } from "../../atoms";
-import parse from "html-react-parser";
 import { updateExistingEntryById } from "../../backend/recordManipulation";
-import root from "react-shadow";
+import root from "react-shadow/styled-components";
 import SaveStatusText from "./SaveStatusText";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import Content from "./Content";
 
 dayjs.extend(relativeTime);
 
@@ -88,7 +88,16 @@ export default function Editor(props) {
 
       {readMode && (
         <root.div>
-          {dayRecord && parse(dayRecord?.content)}
+          {
+            <Content>
+              {dayRecord ? dayRecord?.content : (`
+                <h1 style='margin: 25% auto; text-align:center;'>
+                  Wow, such empty
+                  <p>🌚</p>
+                </h1>
+              `)}
+            </Content>
+          }
         </root.div>
       )}
 
