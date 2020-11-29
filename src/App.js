@@ -82,7 +82,7 @@ export default function App() {
   const deleteEntryFromSelectedDay = async () => {
     // NOTE: security check is made on button press in <Navigation />
     if (!dayRecord) return false;
-    const result = await deleteEntryById(dayRecord.id);
+    const result = await deleteEntryById(dayRecord.entry_id);
 
     if (result.error) {
       toast.error(`Der Eintrag konnte nicht gelöscht werden. 🙈 Der Server antwortete mit: ${result.error}`);
