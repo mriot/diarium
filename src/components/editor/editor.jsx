@@ -12,8 +12,7 @@
 import { Editor as TinyEditor } from "@tinymce/tinymce-react";
 import { editorAnimation } from "./animations";
 import PropTypes from "prop-types";
-import React, { useEffect, useState, useMemo, useCallback } from "react";
-import Toolbar from "./toolbar";
+import React, { useEffect, useState, useMemo } from "react";
 import posed from "react-pose";
 import styled from "styled-components";
 import {
@@ -44,15 +43,6 @@ const EditorContainer = styled(PosedEditorContainer)`
   flex-direction: column;
   transform-origin: center;
   backface-visibility: hidden;
-
-  ${props => props.isZenModeActive && `
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-  `}
 `;
 
 export default function Editor(props) {
@@ -60,7 +50,6 @@ export default function Editor(props) {
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const readMode = useRecoilValue(readModeAtom);
   const [saveStatusText, setSaveStatusText] = useState("");
-  const [zenMode, setZenMode] = useState(false);
   const [prevContentLength, setPrevContentLength] = useState(0);
 
   const autoSaver = useMemo(() => {
@@ -87,14 +76,7 @@ export default function Editor(props) {
   }, [editorState, autoSaver]);
 
   return (
-    <EditorContainer
-      pose={props.pose}
-      isZenModeActive={zenMode}
-    >
-      <Toolbar
-        toggleZenMode={() => setZenMode(!zenMode)}
-        isZenModeActive={zenMode}
-      />
+    <EditorContainer pose={props.pose}>
 
       <div style={{
         display: "flex",
