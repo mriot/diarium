@@ -216,3 +216,7 @@ export default function Editor(props) {
     </EditorContainer>
   );
 };
+
+Editor.propTypes = {
+  pose: PropTypes.string
+};
