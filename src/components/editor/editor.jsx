@@ -29,6 +29,9 @@ import { updateExistingEntryById } from "../../backend/recordManipulation";
 import root from "react-shadow";
 import SaveStatusText from "./SaveStatusText";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 const PosedEditorContainer = posed.div(editorAnimation);
 const EditorContainer = styled(PosedEditorContainer)`
@@ -66,7 +69,8 @@ export default function Editor(props) {
       // console.log(response);
       if (response.status === 200) {
         setDayRecord(response.data);
-        setSaveStatusText("Saved! " + dayjs(response.data.updated_at).format("HH:mm:ss (D.MM.YYYY)"));
+        setSaveStatusText("Gespeichert " + dayjs(response.data.updated_at).fromNow());
+        // setSaveStatusText("Saved! " + dayjs(response.data.updated_at).format("HH:mm:ss (D.MM.YYYY)"));
         editorState.save();
         setPrevContentLength(content.length);
         return true;
