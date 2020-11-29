@@ -78,18 +78,13 @@ export default function Editor(props) {
   return (
     <EditorContainer pose={props.pose}>
 
-      <div style={{
+      {/* <div style={{
         display: "flex",
         fontSize: "14px"
       }}>
-        <button onClick={() => {
-          setInterval(() => {
-            console.log("is dirty?", !editorState.isNotDirty);
-          }, 500);
-        }}>DEV</button>
         <button onClick={() => console.log(editorState)}>log editor state</button>
         <button onClick={() => console.log(editorState.getContent())}>log editor content</button>
-      </div>
+      </div> */}
 
       {readMode && (
         <root.div>
