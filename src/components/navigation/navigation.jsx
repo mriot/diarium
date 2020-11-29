@@ -62,7 +62,7 @@ export default function Navigation(props) {
                   "Bist du dir sicher, dass du diesen Eintrag löschen möchtest? 😐\n" +
                   "Gib zum Bestätigen bitte 'ok' ein"
                 ) === "ok") {
-                  this.props.deleteEntry();
+                  props.deleteEntry();
                 }
               }}
             />
