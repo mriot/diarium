@@ -161,7 +161,7 @@ export default function Editor(props) {
               },
               misc: {
                 title: "Misc",
-                items: "codesample codeformat anchor | print"
+                items: "codesample codeformat anchor | fullscreen print"
               }
             },
 
