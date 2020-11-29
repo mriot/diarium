@@ -19,14 +19,14 @@ const StyledSaveStatusText = styled.div`
 `;
 
 export default function SaveStatusText(props) {
-  const node = document.querySelector(".tox-menubar");
+  const NODE = document.querySelector(".tox-menubar");
 
   return (
-    node && ReactDOM.createPortal(
+    NODE && ReactDOM.createPortal(
       <StyledSaveStatusText {...props}>
         {props.text}
       </StyledSaveStatusText>,
-      document.querySelector(".tox-menubar")
+      NODE
     )
   );
 }
