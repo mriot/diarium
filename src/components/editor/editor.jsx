@@ -106,9 +106,13 @@ export default function Editor(props) {
         </root.div>
       )}
 
-      <SaveStatusText text={saveStatusText} />
-
       {!readMode && (
+        <>
+          <SaveStatusText text={saveStatusText} />
+
+          <TinyEditor
+            apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
+            initialValue={dayRecord?.content}
             onEditorChange={(content, editor) => {
             // https://github.com/tinymce/tinymce/issues/6285
               if (editor.isDirty() || (prevContentLength && content.length !== prevContentLength)) {
@@ -116,106 +120,109 @@ export default function Editor(props) {
                 setSaveStatusText("Saving changes...");
               }
             }}
+            // onChange={(...args) => console.log("onChange:", ...args)}
+            // onDirty={(editor) => console.log("onDirty: isDirty() =>", editor.target.isDirty())}
+            // onKeyUp={(event) => console.log("onKeyUp:", event)}
+            // onSaveContent={(...args) => console.log("onSaveContent:", ...args)}
+            init={{
             // ! settings for local skin file
             // skin: false,
             // skin_url: "LOREM",
             // content_css: "dark",
 
-            skin: "oxide",
-            // content_css: "dark",
-            height: "100%",
-            width: "100%",
-            resize: false,
-            branding: true,
-            contextmenu: false,
-            toolbar_sticky: true,
-            browser_spellcheck: true,
-            custom_undo_redo_levels: 50,
-            auto_focus: true,
+              skin: "oxide",
+              // content_css: "dark",
+              height: "100%",
+              width: "100%",
+              resize: false,
+              branding: true,
+              contextmenu: false,
+              toolbar_sticky: true,
+              browser_spellcheck: true,
+              custom_undo_redo_levels: 50,
+              auto_focus: true,
 
-            plugins: [
-              "anchor", "autolink", "help", "paste", "print",
-              "searchreplace", "wordcount", "preview", "fullscreen",
-              "codesample", "hr", "image", "link", "lists",
-              "table", "emoticons"
-            ],
+              plugins: [
+                "anchor", "autolink", "help", "paste", "print",
+                "searchreplace", "wordcount", "preview", "fullscreen",
+                "codesample", "hr", "image", "link", "lists",
+                "table", "emoticons"
+              ],
 
-            setup: (editor) => {
-              setEditorState(editor);
+              setup: (editor) => {
+                setEditorState(editor);
 
-              // editor.focus();
+                // editor.focus();
 
-              editor.ui.registry.addSplitButton("alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
-              editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
-              editor.ui.registry.addToggleButton("inlinecode", GET_INLINECODE_BUTTON_CONFIG(editor));
-            },
-
-            emoticons_append: {
-              shrug: {
-                keywords: ["shrug"],
-                char: "¯\\_(ツ)_/¯"
-              }
-            },
-
-            menu: {
-              font: {
-                title: "Font",
-                items: "fontformats fontsizes lineheight"
+                editor.ui.registry.addSplitButton("custom_alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
+                editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
               },
-              misc: {
-                title: "Misc",
-                items: "codesample codeformat anchor | fullscreen print"
-              }
-            },
 
-            menubar: "font table misc help",
+              emoticons_append: {
+                shrug: {
+                  keywords: ["shrug"],
+                  char: "¯\\_(ツ)_/¯"
+                }
+              },
 
-            toolbar: [
-              { name: "history", items: ["undo", "redo"] },
-              { name: "format", items: ["formatselect"] },
-              {
-                name: "style",
-                items: [
-                  "bold",
-                  "italic",
-                  "underline",
-                  "strikethrough",
-                  "forecolor",
-                  "backcolor"
-                ]
+              menu: {
+                font: {
+                  title: "Font",
+                  items: "fontformats fontsizes lineheight"
+                },
+                misc: {
+                  title: "Misc",
+                  items: "codesample codeformat anchor | fullscreen print"
+                }
               },
-              {
-                name: "media",
-                items: [
-                  "hr",
-                  "link",
-                  "image",
-                  "emoticons"
-                  // "table",
-                  // "inlinecode",
-                  // "codesample"
-                ]
-              },
-              {
-                name: "indentation",
-                items: [
-                  "alignment",
-                  "custom_lists",
-                  "outdent",
-                  "indent"
-                ]
-              },
-              { name: "misc", items: ["removeformat"] }
-            ],
 
-            block_formats: `
+              menubar: "font table misc help",
+
+              toolbar: [
+                { name: "history", items: ["undo", "redo"] },
+                { name: "format", items: ["formatselect"] },
+                {
+                  name: "style",
+                  items: [
+                    "bold",
+                    "italic",
+                    "underline",
+                    "strikethrough",
+                    "forecolor",
+                    "backcolor"
+                  ]
+                },
+                {
+                  name: "media",
+                  items: [
+                    "hr",
+                    "link",
+                    "image",
+                    "emoticons"
+                  ]
+                },
+                {
+                  name: "indentation",
+                  items: [
+                    "custom_alignment",
+                    "custom_lists",
+                    "blockquote",
+                    "outdent",
+                    "indent"
+                  ]
+                },
+                { name: "misc", items: ["removeformat"] }
+              ],
+
+              block_formats: `
               Paragraph=p;
               Heading 1=h1;
               Heading 2=h2;
               Heading 3=h3;
               Preformatted=pre;` // ! it doesn't work for some reason when the backtick is on the next line
-          }}
-        />
+            }}
+          />
+        </>
       )}
     </EditorContainer>
   );
