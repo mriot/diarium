@@ -142,6 +142,22 @@ export default function Editor(props) {
 
                 editor.ui.registry.addSplitButton("custom_alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
                 editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
+                editor.ui.registry.addMenuItem("download_as_html", {
+                  icon: "save",
+                  text: "Save as file",
+                  onAction: function () {
+                    const data = editor.getContent();
+                    const blob = new Blob([data], { type: "text/html" });
+                    const a = window.document.createElement("a");
+
+                    a.href = window.URL.createObjectURL(blob);
+                    a.download = dayRecord.assigned_day + ".html";
+
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                  }
+                });
               },
 
               emoticons_append: {
@@ -158,7 +174,7 @@ export default function Editor(props) {
                 },
                 misc: {
                   title: "Misc",
-                  items: "codesample codeformat anchor | fullscreen print"
+                  items: "codesample codeformat anchor | fullscreen print download_as_html"
                 }
               },
 
