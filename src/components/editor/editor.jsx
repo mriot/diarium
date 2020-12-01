@@ -144,8 +144,8 @@ export default function Editor(props) {
             plugins: [
               "anchor", "autolink", "help", "paste", "print",
               "searchreplace", "wordcount", "preview", "fullscreen",
-              // formatting
-              "codesample", "hr", "image", "link", "lists", "table"
+              "codesample", "hr", "image", "link", "lists",
+              "table", "emoticons"
             ],
 
             setup: (editor) => {
@@ -156,6 +156,13 @@ export default function Editor(props) {
               editor.ui.registry.addSplitButton("alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
               editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
               editor.ui.registry.addToggleButton("inlinecode", GET_INLINECODE_BUTTON_CONFIG(editor));
+            },
+
+            emoticons_append: {
+              shrug: {
+                keywords: ["shrug"],
+                char: "¯\\_(ツ)_/¯"
+              }
             },
 
             menu: {
@@ -190,7 +197,8 @@ export default function Editor(props) {
                 items: [
                   "hr",
                   "link",
-                  "image"
+                  "image",
+                  "emoticons"
                   // "table",
                   // "inlinecode",
                   // "codesample"
