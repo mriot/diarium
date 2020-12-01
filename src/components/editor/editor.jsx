@@ -51,7 +51,7 @@ export default function Editor(props) {
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const [readMode, setReadMode] = useRecoilState(readModeAtom);
   const [saveStatusText, setSaveStatusText] = useState("");
-  const [prevContentLength, setPrevContentLength] = useState(0);
+  const [prevContentLength, setPrevContentLength] = useState(null);
 
   const autoSaver = useMemo(() => {
     return new AutoSave(editorState, async (content) => {
@@ -109,26 +109,13 @@ export default function Editor(props) {
       <SaveStatusText text={saveStatusText} />
 
       {!readMode && (
-        <TinyEditor
-          apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
-          initialValue={dayRecord?.content}
-          onEditorChange={(content, editor) => {
+            onEditorChange={(content, editor) => {
             // https://github.com/tinymce/tinymce/issues/6285
-            // todo: merge the if statements together
-            if (editor.isDirty()) {
-              autoSaver.start();
-              setSaveStatusText("Saving changes...");
-            } else if (content.length !== prevContentLength) {
-              console.log("isDirty() did fail");
-              autoSaver.start();
-              setSaveStatusText("Saving changes...");
-            }
-          }}
-          // onChange={(...args) => console.log("onChange:", ...args)}
-          // onDirty={(editor) => console.log("onDirty: isDirty() =>", editor.target.isDirty())}
-          // onKeyUp={(event) => console.log("onKeyUp:", event)}
-          // onSaveContent={(...args) => console.log("onSaveContent:", ...args)}
-          init={{
+              if (editor.isDirty() || (prevContentLength && content.length !== prevContentLength)) {
+                autoSaver.start();
+                setSaveStatusText("Saving changes...");
+              }
+            }}
             // ! settings for local skin file
             // skin: false,
             // skin_url: "LOREM",
