@@ -1,6 +1,6 @@
 import { faFire, faMap, faPen, faPlusSquare, faSignOutAlt, faStar, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { isLoggedInAtom, readModeAtom, showHeatmapAtom } from "../../atoms";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { isLoggedInAtom, readModeAtom, sharedAutoSaverAtom, showHeatmapAtom } from "../../atoms";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import NavButton from "./nav-button";
 import PropTypes from "prop-types";
 import React from "react";
@@ -47,6 +47,7 @@ export default function Navigation(props) {
   const [readMode, setReadMode] = useRecoilState(readModeAtom);
   const [showHeatmap, setShowHeatmap] = useRecoilState(showHeatmapAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
+  const sharedAutoSaver = useRecoilValue(sharedAutoSaverAtom);
 
   return (
     <Nav>
@@ -73,6 +74,9 @@ export default function Navigation(props) {
               icon={faPen}
               active={!readMode}
               onClick={() => {
+                if (!readMode && sharedAutoSaver.isEditorDirty()) {
+                  sharedAutoSaver.saveNow();
+                }
                 setReadMode(!readMode);
                 // todo: change view to editor (e.g. close highlights)
               }}

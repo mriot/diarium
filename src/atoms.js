@@ -34,3 +34,8 @@ export const showHeatmapAtom = atom({
   key: "showHeatmapAtom",
   default: false
 });
+
+export const sharedAutoSaverAtom = atom({
+  key: "sharedAutoSaverAtom",
+  default: null
+});

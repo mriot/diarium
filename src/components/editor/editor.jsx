@@ -17,12 +17,11 @@ import posed from "react-pose";
 import styled from "styled-components";
 import {
   GET_ALIGNMENT_BUTTON_CONFIG,
-  GET_INLINECODE_BUTTON_CONFIG,
   GET_LIST_BUTTON_CONFIG
 } from "./_custom";
 import AutoSave from "./AutoSave";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { dayRecordAtom, readModeAtom } from "../../atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { dayRecordAtom, readModeAtom, sharedAutoSaverAtom } from "../../atoms";
 import { updateExistingEntryById } from "../../backend/recordManipulation";
 import root from "react-shadow/styled-components";
 import SaveStatusText from "./SaveStatusText";
@@ -51,7 +50,7 @@ export default function Editor(props) {
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const [readMode, setReadMode] = useRecoilState(readModeAtom);
   const [saveStatusText, setSaveStatusText] = useState("");
-  const [prevContentLength, setPrevContentLength] = useState(null);
+  const setSharedAutoSaver = useSetRecoilState(sharedAutoSaverAtom);
 
   const autoSaver = useMemo(() => {
     return new AutoSave(editorState, async (content) => {
@@ -60,9 +59,7 @@ export default function Editor(props) {
       if (response.status === 200) {
         setDayRecord(response.data);
         setSaveStatusText("Gespeichert " + dayjs(response.data.updated_at).fromNow());
-        // setSaveStatusText("Saved! " + dayjs(response.data.updated_at).format("HH:mm:ss (D.MM.YYYY)"));
         editorState.save();
-        setPrevContentLength(content.length);
         return true;
       }
 
@@ -70,15 +67,19 @@ export default function Editor(props) {
     });
   }, [dayRecord, editorState, setDayRecord]);
 
+  useEffect(() => {
+    setSharedAutoSaver(autoSaver);
+
+    if (editorState) {
+      editorState.addShortcut("Meta+S", "Save editor content", () => {
+        autoSaver.saveNow();
+      });
+    }
+  }, [autoSaver, editorState, setSharedAutoSaver]);
+
   useHotkeys("e", () => {
     if (dayRecord && readMode) setReadMode(false);
   }, {}, [dayRecord, readMode]);
-
-  useEffect(() => {
-    if (editorState) {
-      editorState.addShortcut("Meta+S", "Save editor content", () => autoSaver.saveNow());
-    }
-  }, [editorState, autoSaver]);
 
   return (
     <EditorContainer pose={props.pose}>
@@ -105,16 +106,11 @@ export default function Editor(props) {
             apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
             initialValue={dayRecord?.content}
             onEditorChange={(content, editor) => {
-            // https://github.com/tinymce/tinymce/issues/6285
-              if (editor.isDirty() || (prevContentLength && content.length !== prevContentLength)) {
-                autoSaver.start();
+              if (autoSaver.isEditorDirty()) {
+                autoSaver.scheduleSave();
                 setSaveStatusText("Saving changes...");
               }
             }}
-            // onChange={(...args) => console.log("onChange:", ...args)}
-            // onDirty={(editor) => console.log("onDirty: isDirty() =>", editor.target.isDirty())}
-            // onKeyUp={(event) => console.log("onKeyUp:", event)}
-            // onSaveContent={(...args) => console.log("onSaveContent:", ...args)}
             init={{
             // ! settings for local skin file
             // skin: false,
@@ -142,7 +138,6 @@ export default function Editor(props) {
 
               setup: (editor) => {
                 setEditorState(editor);
-
                 // editor.focus();
 
                 editor.ui.registry.addSplitButton("custom_alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
