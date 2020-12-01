@@ -29,6 +29,7 @@ import SaveStatusText from "./SaveStatusText";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Content from "./Content";
+import { useHotkeys } from "react-hotkeys-hook";
 
 dayjs.extend(relativeTime);
 
@@ -48,7 +49,7 @@ const EditorContainer = styled(PosedEditorContainer)`
 export default function Editor(props) {
   const [editorState, setEditorState] = useState(null);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
-  const readMode = useRecoilValue(readModeAtom);
+  const [readMode, setReadMode] = useRecoilState(readModeAtom);
   const [saveStatusText, setSaveStatusText] = useState("");
   const [prevContentLength, setPrevContentLength] = useState(0);
 
@@ -68,6 +69,10 @@ export default function Editor(props) {
       setSaveStatusText("Error!" + response.status);
     });
   }, [dayRecord, editorState, setDayRecord]);
+
+  useHotkeys("e", () => {
+    if (dayRecord && readMode) setReadMode(false);
+  }, {}, [dayRecord, readMode]);
 
   useEffect(() => {
     if (editorState) {
