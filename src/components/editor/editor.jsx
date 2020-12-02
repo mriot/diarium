@@ -84,18 +84,14 @@ export default function Editor(props) {
   return (
     <EditorContainer pose={props.pose}>
       {readMode && (
-        <root.div>
-          {
-            <Content>
-              {dayRecord ? dayRecord?.content : (`
-                <h1 style='margin: 25% auto; text-align:center;'>
-                  Wow, such empty
-                  <p>🌚</p>
-                </h1>
-              `)}
-            </Content>
-          }
-        </root.div>
+        <Content>
+          {dayRecord ? dayRecord?.content : (`
+            <h1 style='margin: 25% auto; text-align:center;'>
+              Wow, such empty
+              <p>🌚</p>
+            </h1>
+          `)}
+        </Content>
       )}
 
       {!readMode && (
