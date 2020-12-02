@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import parse from "html-react-parser";
 import PropTypes from "prop-types";
+import "../../themes/content.scss";
 
 const StyledContent = styled.div`
   /* Reset */
@@ -145,13 +146,35 @@ const StyledContent = styled.div`
     background-color: var(--secondary-color); 
     border-color: var(--link-color); 
   }
+
+
+  .mce-time-separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #000;
+  }
+
+  &::before {
+    margin-right: .25em;
+  }
+  
+  &::after {
+    margin-left: .25em;
+  }
+}
 `;
 
 export default function Content(props) {
   return (
-    <StyledContent>
+    <div className="content-view">
       {parse(props.children)}
-    </StyledContent>
+    </div>
   );
 }
 
