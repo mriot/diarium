@@ -124,6 +124,24 @@ export default function Editor(props) {
               browser_spellcheck: true,
               custom_undo_redo_levels: 50,
               auto_focus: true,
+              content_style: `
+                .mce-time-separator {
+                  display: flex;
+                  align-items: center;
+                  text-align: center;
+                }
+                .mce-time-separator::before, .mce-time-separator::after {
+                    content: '';
+                    flex: 1;
+                    border-bottom: 1px solid #000;
+                }
+                .mce-time-separator::before {
+                    margin-right: .25em;
+                }
+                .mce-time-separator::after {
+                    margin-left: .25em;
+                }
+              `,
 
               plugins: [
                 "anchor", "autolink", "help", "paste", "print",
@@ -138,6 +156,27 @@ export default function Editor(props) {
 
                 editor.ui.registry.addSplitButton("custom_alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
                 editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
+                editor.ui.registry.addButton("custom_hr", {
+                  icon: "insert-time",
+                  active: false,
+                  tooltip: "hr + time",
+                  onAction: () => {
+                    editor.insertContent(`
+                      <div class="mce-time-separator">${dayjs().format("HH:mm")}</div>
+                      <br>
+                    `);
+                  },
+                  onSetup: (buttonApi) => {
+                    const editorEventCallback = (eventApi) => {
+                      // buttonApi.setActive(eventApi.element.nodeName.toLowerCase() === "li");
+                    };
+                    editor.on("NodeChange", editorEventCallback);
+
+                    return function (buttonApi) {
+                      editor.off("NodeChange", editorEventCallback);
+                    };
+                  }
+                });
                 editor.ui.registry.addMenuItem("download_as_html", {
                   icon: "save",
                   text: "Save as file",
@@ -193,6 +232,7 @@ export default function Editor(props) {
                 {
                   name: "media",
                   items: [
+                    "custom_hr",
                     "hr",
                     "link",
                     "image",
