@@ -15,10 +15,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState, useMemo } from "react";
 import posed from "react-pose";
 import styled from "styled-components";
-import {
-  GET_ALIGNMENT_BUTTON_CONFIG,
-  GET_LIST_BUTTON_CONFIG
-} from "./_custom";
+import { ALIGNMENT_BUTTON, CUSTOM_EMOJIS, EXPORTHTML_BUTTON, LIST_BUTTON, TIMEDIVIDER_BUTTON } from "./editor_extensions";
 import AutoSave from "./AutoSave";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { dayRecordAtom, readModeAtom, sharedAutoSaverAtom } from "../../atoms";
@@ -121,14 +118,19 @@ export default function Editor(props) {
               branding: true,
               contextmenu: false,
               toolbar_sticky: true,
+              draggable_modal: true,
               browser_spellcheck: true,
               custom_undo_redo_levels: 50,
+              toolbar_mode: "sliding",
               auto_focus: true,
+              emoticons_append: CUSTOM_EMOJIS(),
               content_style: `
                 .mce-time-separator {
                   display: flex;
                   align-items: center;
                   text-align: center;
+                  font-size: 24px;
+                  font-weight: bold;
                 }
                 .mce-time-separator::before, .mce-time-separator::after {
                     content: '';
@@ -147,73 +149,34 @@ export default function Editor(props) {
                 "anchor", "autolink", "help", "paste", "print",
                 "searchreplace", "wordcount", "preview", "fullscreen",
                 "codesample", "hr", "image", "link", "lists",
-                "table", "emoticons"
+                "table", "emoticons", "media"
               ],
 
               setup: (editor) => {
                 setEditorState(editor);
-                // editor.focus();
 
-                editor.ui.registry.addSplitButton("custom_alignment", GET_ALIGNMENT_BUTTON_CONFIG(editor));
-                editor.ui.registry.addSplitButton("custom_lists", GET_LIST_BUTTON_CONFIG(editor));
-                editor.ui.registry.addButton("custom_hr", {
-                  icon: "insert-time",
-                  active: false,
-                  tooltip: "hr + time",
-                  onAction: () => {
-                    editor.insertContent(`
-                      <div class="mce-time-separator">${dayjs().format("HH:mm")}</div>
-                      <br>
-                    `);
-                  },
-                  onSetup: (buttonApi) => {
-                    const editorEventCallback = (eventApi) => {
-                      // buttonApi.setActive(eventApi.element.nodeName.toLowerCase() === "li");
-                    };
-                    editor.on("NodeChange", editorEventCallback);
-
-                    return function (buttonApi) {
-                      editor.off("NodeChange", editorEventCallback);
-                    };
-                  }
-                });
-                editor.ui.registry.addMenuItem("download_as_html", {
-                  icon: "save",
-                  text: "Save as file",
-                  onAction: function () {
-                    const data = editor.getContent();
-                    const blob = new Blob([data], { type: "text/html" });
-                    const a = window.document.createElement("a");
-
-                    a.href = window.URL.createObjectURL(blob);
-                    a.download = dayRecord.assigned_day + ".html";
-
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                  }
-                });
-              },
-
-              emoticons_append: {
-                shrug: {
-                  keywords: ["shrug"],
-                  char: "¯\\_(ツ)_/¯"
-                }
+                editor.ui.registry.addSplitButton("custom_alignment", ALIGNMENT_BUTTON(editor));
+                editor.ui.registry.addSplitButton("custom_lists", LIST_BUTTON(editor));
+                editor.ui.registry.addButton("timedivider", TIMEDIVIDER_BUTTON(editor, dayjs));
+                editor.ui.registry.addMenuItem("exporthtml", EXPORTHTML_BUTTON(editor, dayRecord));
               },
 
               menu: {
                 font: {
                   title: "Font",
-                  items: "fontformats fontsizes lineheight"
+                  items: "fontsizes lineheight fontformats"
                 },
                 misc: {
                   title: "Misc",
-                  items: "codesample codeformat anchor | fullscreen print download_as_html"
+                  items: "codesample codeformat anchor"
+                },
+                editor: {
+                  title: "Editor",
+                  items: "fullscreen print exporthtml"
                 }
               },
 
-              menubar: "font table misc help",
+              menubar: "font table misc editor help",
 
               toolbar: [
                 { name: "history", items: ["undo", "redo"] },
@@ -232,11 +195,12 @@ export default function Editor(props) {
                 {
                   name: "media",
                   items: [
-                    "custom_hr",
+                    "timedivider",
                     "hr",
                     "link",
+                    "emoticons",
                     "image",
-                    "emoticons"
+                    "media"
                   ]
                 },
                 {
@@ -244,20 +208,21 @@ export default function Editor(props) {
                   items: [
                     "custom_alignment",
                     "custom_lists",
-                    "blockquote",
                     "outdent",
-                    "indent"
+                    "indent",
+                    "blockquote"
                   ]
                 },
                 { name: "misc", items: ["removeformat"] }
               ],
 
               block_formats: `
-              Paragraph=p;
-              Heading 1=h1;
-              Heading 2=h2;
-              Heading 3=h3;
-              Preformatted=pre;` // ! it doesn't work for some reason when the backtick is on the next line
+                Paragraph=p;
+                Heading 1=h1;
+                Heading 2=h2;
+                Heading 3=h3;
+                Preformatted=pre;
+              `.trim() // only to support template literals here ¯\_(ツ)_/¯
             }}
           />
         </>

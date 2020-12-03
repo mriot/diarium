@@ -1,4 +1,13 @@
-export const GET_ALIGNMENT_BUTTON_CONFIG = (editor) => {
+export const CUSTOM_EMOJIS = () => {
+  return {
+    shrug: {
+      keywords: ["shrug"],
+      char: "¯\\_(ツ)_/¯"
+    }
+  };
+};
+
+export const ALIGNMENT_BUTTON = (editor) => {
   return {
     icon: "align-left",
     onAction: () => {
@@ -39,7 +48,7 @@ export const GET_ALIGNMENT_BUTTON_CONFIG = (editor) => {
   };
 };
 
-export const GET_LIST_BUTTON_CONFIG = (editor) => {
+export const LIST_BUTTON = (editor) => {
   return {
     icon: "unordered-list",
     active: false,
@@ -72,7 +81,7 @@ export const GET_LIST_BUTTON_CONFIG = (editor) => {
   };
 };
 
-export const GET_INLINECODE_BUTTON_CONFIG = (editor) => {
+export const INLINECODE_BUTTON = (editor) => {
   return {
     icon: "sourcecode",
     tooltip: "Inline code",
@@ -89,6 +98,38 @@ export const GET_INLINECODE_BUTTON_CONFIG = (editor) => {
       return function (buttonApi) {
         editor.off("NodeChange", editorEventCallback);
       };
+    }
+  };
+};
+
+export const TIMEDIVIDER_BUTTON = (editor, dayjs) => {
+  return {
+    icon: "insert-time",
+    active: false,
+    tooltip: "hr + time",
+    onAction: () => {
+      editor.insertContent(`
+        <div class="mce-time-separator">${dayjs().format("HH:mm")} Uhr</div>
+      `);
+    }
+  };
+};
+
+export const EXPORTHTML_BUTTON = (editor, dayRecord) => {
+  return {
+    icon: "save",
+    text: "Save as HTML",
+    onAction: function () {
+      const data = editor.getContent();
+      const blob = new Blob([data], { type: "text/html" });
+      const a = window.document.createElement("a");
+
+      a.href = window.URL.createObjectURL(blob);
+      a.download = dayRecord.assigned_day + ".html";
+
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
   };
 };
