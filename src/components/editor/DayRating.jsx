@@ -52,7 +52,9 @@ const COLORS = [
 export default function DayRating(props) {
   const NODE = document.querySelector(".tox-menubar");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(COLORS[props.rating].color || "#fff");
+  const [selectedColor, setSelectedColor] = useState(
+    props.rating ? COLORS[props.rating].color : "#fff"
+  );
 
   return (
     NODE && ReactDOM.createPortal(
