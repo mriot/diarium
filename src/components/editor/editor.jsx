@@ -26,6 +26,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Content from "./Content";
 import { useHotkeys } from "react-hotkeys-hook";
+import DayRating from "./DayRating";
 
 dayjs.extend(relativeTime);
 
@@ -47,6 +48,7 @@ export default function Editor(props) {
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const [readMode, setReadMode] = useRecoilState(readModeAtom);
   const [saveStatusText, setSaveStatusText] = useState("");
+  const [editorReady, setEditorReady] = useState(false);
   const setSharedAutoSaver = useSetRecoilState(sharedAutoSaverAtom);
 
   const autoSaver = useMemo(() => {
@@ -93,10 +95,16 @@ export default function Editor(props) {
 
       {!readMode && (
         <>
-          <SaveStatusText text={saveStatusText} />
+          {editorReady && (
+            <>
+              <DayRating rating={dayRecord.day_rating} />
+              <SaveStatusText text={saveStatusText} />
+            </>
+          )}
 
           <TinyEditor
             apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
+            onInit={() => setEditorReady(true)}
             initialValue={dayRecord?.content}
             onEditorChange={(content, editor) => {
               if (autoSaver.isEditorDirty()) {
