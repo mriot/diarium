@@ -176,7 +176,7 @@ export default function Editor(props) {
                 }
               },
 
-              menubar: "font table misc editor help",
+              menubar: "font table misc editor",
 
               toolbar: [
                 { name: "history", items: ["undo", "redo"] },
@@ -213,7 +213,7 @@ export default function Editor(props) {
                     "blockquote"
                   ]
                 },
-                { name: "misc", items: ["removeformat"] }
+                { name: "misc", items: ["removeformat", "help"] }
               ],
 
               block_formats: `
