@@ -1,8 +1,11 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useState } from "react/cjs/react.development";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { dayRecordAtom } from "../../atoms";
+import { updateExistingEntryById } from "../../backend/recordManipulation";
 
 const StyledDayRating = styled.div`
  && {
@@ -52,15 +55,14 @@ const COLORS = [
 export default function DayRating(props) {
   const NODE = document.querySelector(".tox-menubar");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(
-    props.rating ? COLORS[props.rating].color : "#fff"
-  );
+  const [rating, setRating] = useState(props.rating ?? null);
+  const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
 
   return (
     NODE && ReactDOM.createPortal(
       <StyledDayRating className="tox-mbtn" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         Day Rating
-        <ColorPreview color={selectedColor} />
+        <ColorPreview color={COLORS[rating]?.color ?? "#fff"} />
 
         {isMenuOpen && (
           <ColorPicker className="tox-menu tox-swatches-menu">
@@ -76,10 +78,21 @@ export default function DayRating(props) {
                   className="tox-swatch"
                   aria-disabled="false"
                   aria-checked="false"
-                  onClick={() => {
-                    setSelectedColor(COLORS[index].color);
-                  }}
                   style={{ backgroundColor: item.color }}
+                  onClick={async () => {
+                    if (index !== rating && dayRecord) {
+                      setRating(index);
+                      const response = await updateExistingEntryById(dayRecord.entry_id, {
+                        rating: index
+                      });
+
+                      if (response.status === 200) {
+                        setDayRecord(response.data);
+                      } else {
+                        alert("Error " + response.status);
+                      }
+                    }
+                  }}
                 />
               )}
             </div>
