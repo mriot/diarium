@@ -61,19 +61,18 @@ export default function TagEditor(props) {
 
   useEffect(() => {
     setCheckboxDisabled(readMode);
-  }, []);
+  }, [readMode]);
 
-  const _updateSelectedTags = (newSelectedTags) => {
-    updateExistingEntryById(dayRecord.id, { tags: newSelectedTags })
-      .then(result => {
-        if (!result.error) {
-          setDayRecord(result);
-        } else {
-          toast.error("Die Tags konnten leider nicht geupdated werden... 😟");
-        }
-        setSpinnerActive(false);
-      })
-      .catch(error => console.log(error));
+  const _updateSelectedTags = async (newSelectedTags) => {
+    const response = await updateExistingEntryById(dayRecord.entry_id, { tags: newSelectedTags });
+
+    if (response.status === 200) {
+      setDayRecord(response.data);
+    } else {
+      toast.error("Die Tags konnten leider nicht geupdated werden... 😟");
+    }
+
+    setSpinnerActive(false);
   };
 
   const addToSelectedTags = (tag) => {
