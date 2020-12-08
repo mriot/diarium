@@ -34,14 +34,14 @@ export default function MetaData() {
       <MetaInfoBlock>
           Zuletzt bearbeitet:
         <span>
-          {dayRecord ? `${dayjs(dayRecord.updated_at).format("dd, D.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
+          {dayRecord ? `${dayjs(dayRecord.updated_at).format("dd, DD.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
         </span>
       </MetaInfoBlock>
 
       <MetaInfoBlock>
           Erstellt:
         <span>
-          {dayRecord ? `${dayjs(dayRecord.created_at).format("dd, D.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
+          {dayRecord ? `${dayjs(dayRecord.created_at).format("dd, DD.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
         </span>
       </MetaInfoBlock>
     </StyledMetaData>

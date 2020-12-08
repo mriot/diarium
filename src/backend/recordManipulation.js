@@ -3,11 +3,10 @@ import axios from "axios";
 
 export const createNewEntry = recordData => {
   try {
-    return axios.post(`${BACKEND_URL}/entries`, {
+    return axios.post(`${BACKEND_URL}/entries`, recordData, {
       headers: {
         Authorization: `Bearer ${getToken()}`
-      },
-      data: recordData
+      }
     });
   } catch (error) {
     return error.response;
@@ -16,11 +15,10 @@ export const createNewEntry = recordData => {
 
 export const updateExistingEntryById = (id, recordData) => {
   try {
-    return axios.put(`${BACKEND_URL}/entries?id=${id}`, {
+    return axios.put(`${BACKEND_URL}/entries?id=${id}`, recordData, {
       headers: {
         Authorization: `Bearer ${getToken()}`
-      },
-      data: recordData
+      }
     });
   } catch (error) {
     return error.response;

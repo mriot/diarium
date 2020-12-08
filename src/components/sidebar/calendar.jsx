@@ -9,6 +9,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
+import usePrevious from "../../hooks/usePrevious";
 
 const StyledCalendar = styled(ReactCalendar)`
   border-bottom: 1px solid #191919;
@@ -19,10 +20,11 @@ export default function Calendar() {
   const readMode = useRecoilValue(readModeAtom);
   const showHeatmap = useRecoilValue(showHeatmapAtom);
   const [selectedDay, setSelectedDay] = useRecoilState(selectedDayAtom);
-  const setDayRecord = useSetRecoilState(dayRecordAtom);
+  const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const setIsLoading = useSetRecoilState(isLoadingAtom);
   const [fetchedEntries, setFetchedEntries] = useState(null);
   const [fetchedHolidays, setFetchedHolidays] = useState(null);
+  const prevSelectedDay = usePrevious(selectedDay);
 
   useEffect(() => {
     const dateFromUrl = dayjs(window.location.pathname, "YYYY/MM/DD");
@@ -33,27 +35,41 @@ export default function Calendar() {
     };
   }, [setSelectedDay]);
 
-  // load data related to currently selected day
+  // SELECTED DAY
   useEffect(() => {
     if (!selectedDay) return;
-    setIsLoading(true);
+    if (dayjs(selectedDay).isSame(prevSelectedDay)) return;
 
-    // range start and end dates -> 7 days +- offset
+    (async () => {
+      const response = await getRecordForDay(...dayjs(selectedDay).format("YYYY-MM-DD").split("-"));
+      setDayRecord(response.data);
+    })();
+  }, [prevSelectedDay, selectedDay, setDayRecord]);
+
+  // MONTH OVERVIEW
+  useEffect(() => {
+    if (!selectedDay) return;
+    if (dayjs(selectedDay).isSame(prevSelectedDay)) return;
+
     const start = dayjs(selectedDay).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
     const end = dayjs(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
-    Promise.all([
-      getRecordForDay(...dayjs(selectedDay).format("YYYY-MM-DD").split("-")),
-      getRecordsInRange(start, end, ["assigned_day", "tags", "day_rating"]),
-      fetchHolidays(dayjs(selectedDay).format("YYYY"))
-    ]).then(([dayRecord, recordsInRange, holidays]) => {
-      setDayRecord(dayRecord.data);
-      setFetchedEntries(recordsInRange.data);
-      setFetchedHolidays(holidays);
+    (async () => {
+      const response = await getRecordsInRange(start, end, ["assigned_day", "tags", "day_rating"]);
+      setFetchedEntries(response.data.entries);
+    })();
+  }, [prevSelectedDay, selectedDay]);
 
-      setIsLoading(false);
-    });
-  }, [selectedDay, setDayRecord, setIsLoading]);
+  // HOLIDAYS
+  useEffect(() => {
+    if (!selectedDay) return;
+    if (dayjs(selectedDay).isSame(prevSelectedDay, "year")) return;
+
+    (async () => {
+      const response = await fetchHolidays(dayjs(selectedDay).format("YYYY"));
+      setFetchedHolidays(response);
+    })();
+  }, [prevSelectedDay, selectedDay]);
 
   if (!selectedDay) return null;
   return (
@@ -80,11 +96,18 @@ export default function Calendar() {
             tileClassNames.push("holiday");
           }
 
-          // find entry that matches current tiles date
-          const tileMatchingEntry = fetchedEntries.entries.find(entry =>
-            dayjs(date).isSame(entry.assigned_day)
-          );
+          let tileMatchingEntry;
+          // use actual entry (if available) because it's likely always up to date
+          if (dayRecord && dayjs(date).isSame(dayRecord.assigned_day)) {
+            tileMatchingEntry = dayRecord;
+          } else {
+            // find entry that matches current tiles date
+            tileMatchingEntry = fetchedEntries.find(entry =>
+              dayjs(date).isSame(entry.assigned_day)
+            );
+          }
 
+          // if no matching entry found, return here as there is nothing else to do
           if (!tileMatchingEntry) return tileClassNames;
 
           // apply tags as classnames (+ 'marked'-class as this day has content)
