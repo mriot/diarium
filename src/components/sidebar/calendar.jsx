@@ -1,7 +1,7 @@
 import "../../themes/calendar-eros.scss";
 import "react-calendar/dist/Calendar.css";
 import { Calendar as ReactCalendar } from "react-calendar";
-import { Redirect } from "react-router-dom";
+import { Redirect, useLocation } from "react-router-dom";
 import { dayRecordAtom, isLoadingAtom, readModeAtom, selectedDayAtom, showHeatmapAtom } from "../../atoms";
 import { fetchHolidays } from "../../lib/external";
 import { getRecordForDay, getRecordsInRange } from "../../backend/getters";
@@ -25,15 +25,12 @@ export default function Calendar() {
   const [fetchedEntries, setFetchedEntries] = useState(null);
   const [fetchedHolidays, setFetchedHolidays] = useState(null);
   const prevSelectedDay = usePrevious(selectedDay);
+  const location = useLocation();
 
   useEffect(() => {
-    const dateFromUrl = dayjs(window.location.pathname, "YYYY/MM/DD");
+    const dateFromUrl = dayjs(location.pathname, "YYYY/MM/DD");
     setSelectedDay(dateFromUrl.isValid() ? dateFromUrl.toDate() : dayjs().toDate());
-
-    return () => {
-      // todo: cleanup: unlisten for history changes
-    };
-  }, [setSelectedDay]);
+  }, [setSelectedDay, location]);
 
   // SELECTED DAY
   useEffect(() => {
