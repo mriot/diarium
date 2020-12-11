@@ -13,6 +13,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import Content from "./Content";
 import { useHotkeys } from "react-hotkeys-hook";
 import DayRating from "./DayRating";
+import { motion } from "framer-motion";
 
 dayjs.extend(relativeTime);
 
