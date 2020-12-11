@@ -6,7 +6,7 @@ import { createNewEntry, deleteEntryById } from "./backend/recordManipulation";
 import { dayRecordAtom, isLoggedInAtom, readModeAtom, selectedDayAtom } from "./atoms";
 import { isTokenValid } from "./backend/auth";
 import { loginContainerAnimation, mainLayoutContainerAnimation } from "./animations";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import Editor from "./components/editor/editor";
 import Highlights from "./components/highlights/highlights";
 import Login from "./components/login/login";
@@ -37,7 +37,7 @@ const LoginContainer = posed.div(loginContainerAnimation);
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInAtom);
-  const selectedDay = useRecoilValue(selectedDayAtom);
+  const [selectedDay, setSelectedDay] = useRecoilState(selectedDayAtom);
   const [readMode, setReadMode] = useRecoilState(readModeAtom);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const [showHighlights, setShowHighlights] = useState(false);
@@ -94,6 +94,8 @@ export default function App() {
     console.log("The deleted entry:", result);
     setReadMode(true);
     setDayRecord(null);
+    // hack to trigger calendar month overview refresh
+    setSelectedDay(dayjs(selectedDay).add(1, "ms").toDate());
     return true;
   };
 

@@ -50,7 +50,6 @@ export default function Calendar() {
   useEffect(() => {
     if (!selectedDay) return;
     if (dayjs(selectedDay).isSame(prevSelectedDay)) return;
-    if (dayRecord !== null) return; // pass if entry got deleted
 
     const start = dayjs(selectedDay).startOf("month").subtract(7, "days").format("YYYY-MM-DD");
     const end = dayjs(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
@@ -59,7 +58,7 @@ export default function Calendar() {
       const response = await getRecordsInRange(start, end, ["assigned_day", "tags", "day_rating"]);
       setFetchedEntries(response.data.entries);
     })();
-  }, [prevSelectedDay, selectedDay, dayRecord]);
+  }, [prevSelectedDay, selectedDay]);
 
   // HOLIDAYS
   useEffect(() => {
@@ -132,7 +131,6 @@ export default function Calendar() {
 
         // ARROW NAVIGATION
         onActiveStartDateChange={({ activeStartDate, view }) => {
-          if (view !== "month") return;
           setSelectedDay(activeStartDate); // select first day of month
         }}
 
