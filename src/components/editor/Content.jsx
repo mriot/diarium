@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import parse from "html-react-parser";
 import PropTypes from "prop-types";
 import "../../themes/content.scss";
+import { useRecoilState } from "recoil";
+import { dayRecordAtom } from "../../atoms";
 
 const StyledContent = styled.div`
   /* Reset */
@@ -171,8 +173,18 @@ const StyledContent = styled.div`
 `;
 
 export default function Content(props) {
+  const dayRecord = useRecoilState(dayRecordAtom);
+  let nodeRef = null;
+
+  useEffect(() => {
+    nodeRef.scrollTop = 0;
+  }, [dayRecord, nodeRef]);
+
   return (
-    <div className="content-view">
+    <div
+      className="content-view"
+      ref={(ref) => (nodeRef = ref)}
+    >
       {parse(props.children)}
     </div>
   );
