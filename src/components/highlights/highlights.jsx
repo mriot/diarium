@@ -1,14 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import posed from "react-pose";
-import { highlightsAnimation } from "./animations";
 import HighlightCard from "./highlight-card";
 import YearAccordion from "./YearAccordion";
 import dayjs from "dayjs";
 
-const PosedHighlightsContainer = posed.div(highlightsAnimation);
-const HighlightsContainer = styled(PosedHighlightsContainer)`
+const HighlightsContainer = styled.div`
   width: 100%;
   height: 100%;
   color: #fff;
@@ -57,7 +54,6 @@ export default function Highlights(props) {
             date={item.date}
             tags={item.tags}
             desc={item.desc}
-            pose={accordionOpen ? "show" : "hide"}
           />
         ))
       )}
@@ -71,7 +67,6 @@ export default function Highlights(props) {
             date={item.date}
             tags={item.tags}
             desc={item.desc}
-            pose={accordionOpen ? "show" : "hide"}
           />
         ))
       )}
@@ -85,7 +80,6 @@ export default function Highlights(props) {
             date={item.date}
             tags={item.tags}
             desc={item.desc}
-            pose={accordionOpen ? "show" : "hide"}
           />
         ))
       )}

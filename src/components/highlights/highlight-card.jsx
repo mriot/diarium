@@ -1,12 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import posed from "react-pose";
 import PropTypes from "prop-types";
-import { highlightCardAnimation } from "./animations";
 import dayjs from "dayjs";
 
-const PosedHighlightCard = posed.div(highlightCardAnimation);
-const StyledHighlightCard = styled(PosedHighlightCard)`
+const StyledHighlightCard = styled.div`
   color: #222;
   display: flex;
   align-items: center;

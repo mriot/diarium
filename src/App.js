@@ -5,7 +5,6 @@ import { ToastContainer, toast } from "react-toastify";
 import { createNewEntry, deleteEntryById } from "./backend/recordManipulation";
 import { dayRecordAtom, isLoggedInAtom, readModeAtom, selectedDayAtom } from "./atoms";
 import { isTokenValid } from "./backend/auth";
-import { loginContainerAnimation, mainLayoutContainerAnimation } from "./animations";
 import { useRecoilState } from "recoil";
 import Editor from "./components/editor/editor";
 import Highlights from "./components/highlights/highlights";
@@ -14,11 +13,9 @@ import Navigation from "./components/navigation/navigation";
 import React, { useEffect, useState } from "react";
 import Sidebar from "./components/sidebar/sidebar";
 import dayjs from "dayjs";
-import posed, { PoseGroup } from "react-pose";
 import styled from "styled-components";
 
-const PosedLayout = posed.div(mainLayoutContainerAnimation);
-const Layout = styled(PosedLayout)`
+const Layout = styled.div`
   position: relative;
   max-height: 100vh;
   height: 100vh;
@@ -33,7 +30,6 @@ const Main = styled.main`
   overflow-x: hidden;
   height: 100%;
 `;
-const LoginContainer = posed.div(loginContainerAnimation);
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInAtom);
@@ -111,40 +107,36 @@ export default function App() {
         </Switch>
       )}
 
-      <PoseGroup style={{ width: "100%", height: "100%" }}>
-        {!isLoggedIn && (
-          <LoginContainer key="posed-login-container-771634">
-            <Redirect to="/login" />
-            <Route path="/login" exact>
-              <Login />
-            </Route>
-          </LoginContainer>
-        )}
+      {!isLoggedIn && (
+        <div style={{ height: "100%" }}>
+          <Redirect to="/login" />
+          <Route path="/login" exact>
+            <Login />
+          </Route>
+        </div>
+      )}
 
-        {isLoggedIn && (
-          <Layout key="posed-layout-831276">
-            <Navigation
-              isHighlightsViewActive={showHighlights}
-              setHighlightsView={() => setShowHighlights(!showHighlights)}
-              isCreateButtonVisible={!dayRecord}
-              createNewEntry={() => createNewEntryForSelectedDay()}
-              deleteEntry={() => deleteEntryFromSelectedDay()}
-            />
+      {isLoggedIn && (
+        <Layout>
+          <Navigation
+            isHighlightsViewActive={showHighlights}
+            setHighlightsView={() => setShowHighlights(!showHighlights)}
+            isCreateButtonVisible={!dayRecord}
+            createNewEntry={() => createNewEntryForSelectedDay()}
+            deleteEntry={() => deleteEntryFromSelectedDay()}
+          />
 
-            <Sidebar/>
+          <Sidebar/>
 
-            <Main>
-              <PoseGroup withParent={false}>
-                {showHighlights && (
-                  <Highlights key="highlights" />
-                )}
-              </PoseGroup>
+          <Main>
+            {showHighlights && (
+              <Highlights key="highlights" />
+            )}
 
-              <Editor pose={showHighlights ? "hidden" : "visible"} />
-            </Main>
-          </Layout>
-        )}
-      </PoseGroup>
+            <Editor />
+          </Main>
+        </Layout>
+      )}
 
       <ToastContainer
         // hideProgressBar={true}

@@ -1,26 +1,12 @@
-// import "./LOREM/skins/ui/LOREM/skin.min.css";
-
-// ! to load tiny locally
-// import tinymce from "tinymce";
-// import "tinymce/icons/default";
-// import "tinymce/plugins/link";
-// import "tinymce/plugins/paste";
-// import "tinymce/themes/silver";
-// ...
-// import "tinymce/skins/ui/oxide/skin.css";
-
 import { Editor as TinyEditor } from "@tinymce/tinymce-react";
-import { editorAnimation } from "./animations";
 import PropTypes from "prop-types";
 import React, { useEffect, useState, useMemo } from "react";
-import posed from "react-pose";
 import styled from "styled-components";
 import { ALIGNMENT_BUTTON, CUSTOM_EMOJIS, EXPORTHTML_BUTTON, LIST_BUTTON, TIMEDIVIDER_BUTTON } from "./editor_extensions";
 import AutoSave from "./AutoSave";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { dayRecordAtom, readModeAtom, sharedAutoSaverAtom } from "../../atoms";
 import { updateExistingEntryById } from "../../backend/recordManipulation";
-import root from "react-shadow/styled-components";
 import SaveStatusText from "./SaveStatusText";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -30,8 +16,7 @@ import DayRating from "./DayRating";
 
 dayjs.extend(relativeTime);
 
-const PosedEditorContainer = posed.div(editorAnimation);
-const EditorContainer = styled(PosedEditorContainer)`
+const EditorContainer = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
@@ -81,7 +66,7 @@ export default function Editor(props) {
   }, {}, [dayRecord, readMode]);
 
   return (
-    <EditorContainer pose={props.pose}>
+    <EditorContainer>
       {readMode && (
         <Content>
           {dayRecord ? dayRecord?.content : (`
@@ -239,6 +224,4 @@ export default function Editor(props) {
   );
 };
 
-Editor.propTypes = {
-  pose: PropTypes.string
-};
+Editor.propTypes = {};
