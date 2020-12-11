@@ -107,17 +107,15 @@
       background-color: #3C3F47 !important;
     }
     
-    // today
+    // tile that holds current day (aka today)
     &--now {
       z-index: 1;
       outline: 1px dashed #929292;
       background-color: #262931;
     }
 
-    // month/year/decade/...-tile that holds today
+    // tile that holds selected day
     &--hasActive {
-      outline: none;
-      text-decoration: underline;
       background-color: inherit;
     }
 
