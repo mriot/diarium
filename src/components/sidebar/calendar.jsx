@@ -128,7 +128,9 @@ export default function Calendar() {
 
         // ARROW NAVIGATION
         onActiveStartDateChange={({ activeStartDate, view }) => {
-          setSelectedDay(activeStartDate); // select first day of month
+          setSelectedDay(
+            dayjs().isSame(activeStartDate, "month") ? dayjs().toDate() : activeStartDate
+          );
         }}
 
         // onClickDay={(...args) => console.log("onClickDay", ...args)}
