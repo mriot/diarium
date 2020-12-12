@@ -2,9 +2,9 @@ import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useState } from "react/cjs/react.development";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { dayRecordAtom } from "../../atoms";
+import { dayRecordAtom, showHeatmapAtom } from "../../atoms";
 import { updateExistingEntryById } from "../../backend/recordManipulation";
 
 const StyledDayRating = styled.div`
@@ -57,6 +57,15 @@ export default function DayRating(props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [rating, setRating] = useState(props.rating ?? null);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
+  const setShowHeatmap = useSetRecoilState(showHeatmapAtom);
+
+  useEffect(() => {
+    setShowHeatmap(isMenuOpen);
+
+    return () => {
+      setShowHeatmap(false);
+    };
+  }, [isMenuOpen, setShowHeatmap]);
 
   return (
     NODE && ReactDOM.createPortal(
