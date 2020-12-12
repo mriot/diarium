@@ -3,8 +3,7 @@ import styled from "styled-components";
 import parse from "html-react-parser";
 import PropTypes from "prop-types";
 import "../../themes/content.scss";
-import { useRecoilState } from "recoil";
-import { dayRecordAtom } from "../../atoms";
+import { motion } from "framer-motion";
 
 const StyledContent = styled.div`
   /* Reset */
@@ -173,19 +172,25 @@ const StyledContent = styled.div`
 `;
 
 export default function Content(props) {
-  const dayRecord = useRecoilState(dayRecordAtom);
   let nodeRef = null;
 
   useEffect(() => {
     nodeRef.scrollTop = 0;
-  }, [dayRecord, nodeRef]);
+  }, [nodeRef]);
 
-  return (
-    <div
-      className="content-view"
-      ref={(ref) => (nodeRef = ref)}
+  const MotionContent = () => (
+    <motion.div
+      style={{ opacity: 0, y: -15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
       {parse(props.children)}
+    </motion.div>
+  );
+
+  return (
+    <div className="content-view" ref={(ref) => (nodeRef = ref)}>
+      <MotionContent content={props.children} />
     </div>
   );
 }
