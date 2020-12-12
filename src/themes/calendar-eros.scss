@@ -25,7 +25,7 @@
 
     &.day-rating-enabled {
       .react-calendar__tile {
-        color: #fff;
+        color: #fff !important;
         
         &.marked,
         &--now,
