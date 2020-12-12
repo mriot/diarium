@@ -90,7 +90,10 @@ export default function Editor(props) {
 
           <TinyEditor
             apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
-            onInit={() => setEditorReady(true)}
+            onInit={() => {
+              // hack to prevent error in tinymce
+              setTimeout(() => setEditorReady(true));
+            }}
             initialValue={dayRecord?.content}
             onEditorChange={(content, editor) => {
               if (autoSaver.isEditorDirty()) {
