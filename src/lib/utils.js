@@ -1,6 +1,6 @@
 /**
  * Utility to check if the given object is empty
- * @param {Object} obj
+ * @param {object} obj
  */
 export function isEmptyObject(obj) {
   let prop;
@@ -10,4 +10,12 @@ export function isEmptyObject(obj) {
     }
   }
   return true;
+}
+
+/**
+ * Utility to check if dayRecord is not null and not empty
+ * @param {object} dayRecord
+ */
+export function isDayRecordReady(dayRecord) {
+  return !!(dayRecord && !isEmptyObject(dayRecord));
 }
