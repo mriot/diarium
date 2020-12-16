@@ -5,15 +5,15 @@ import styled from "styled-components";
 import { ALIGNMENT_BUTTON, CUSTOM_EMOJIS, EXPORTHTML_BUTTON, LIST_BUTTON, TIMEDIVIDER_BUTTON } from "./editor_extensions";
 import AutoSave from "./AutoSave";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { dayRecordAtom, readModeAtom, sharedAutoSaverAtom } from "../../atoms";
-import { updateExistingEntryById } from "../../backend/recordManipulation";
+import { dayRecordAtom, readModeAtom, sharedAutoSaverAtom } from "../../../atoms";
+import { updateExistingEntryById } from "../../../backend/recordManipulation";
 import SaveStatusText from "./SaveStatusText";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import Content from "./Content";
+import Content from "../Content";
 import { useHotkeys } from "react-hotkeys-hook";
-import DayRating from "./DayRating";
-import { isDayRecordReady, isEmptyObject } from "../../lib/utils";
+import DayRating from "../DayRating";
+import { isDayRecordReady, isEmptyObject } from "../../../lib/utils";
 
 dayjs.extend(relativeTime);
 
@@ -68,8 +68,6 @@ export default function Editor(props) {
 
   return (
     <EditorContainer>
-      {console.log(dayRecord)}
-
       {isDayRecordReady(dayRecord) && readMode && (
         <Content>
           {dayRecord?.content || (`
