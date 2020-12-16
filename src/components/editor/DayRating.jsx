@@ -6,6 +6,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { dayRecordAtom, showHeatmapAtom } from "../../atoms";
 import { updateExistingEntryById } from "../../backend/recordManipulation";
+import { isDayRecordReady, isEmptyObject } from "../../lib/utils";
 
 const StyledDayRating = styled.div`
  && {
@@ -89,7 +90,7 @@ export default function DayRating(props) {
                   aria-checked="false"
                   style={{ backgroundColor: item.color }}
                   onClick={async () => {
-                    if (index !== rating && dayRecord) {
+                    if (index !== rating && isDayRecordReady(dayRecord)) {
                       setRating(index);
                       const response = await updateExistingEntryById(dayRecord.entry_id, {
                         rating: index

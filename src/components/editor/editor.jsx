@@ -13,7 +13,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import Content from "./Content";
 import { useHotkeys } from "react-hotkeys-hook";
 import DayRating from "./DayRating";
-import { motion } from "framer-motion";
+import { isDayRecordReady, isEmptyObject } from "../../lib/utils";
 
 dayjs.extend(relativeTime);
 
@@ -63,14 +63,16 @@ export default function Editor(props) {
   }, [autoSaver, editorState, setSharedAutoSaver]);
 
   useHotkeys("e", () => {
-    if (dayRecord && readMode) setReadMode(false);
+    if (isDayRecordReady(dayRecord) && readMode) setReadMode(false);
   }, {}, [dayRecord, readMode]);
 
   return (
     <EditorContainer>
-      {readMode && (
+      {console.log(dayRecord)}
+
+      {isDayRecordReady(dayRecord) && readMode && (
         <Content>
-          {dayRecord ? dayRecord?.content : (`
+          {dayRecord?.content || (`
             <h1 style='margin: 25% auto; text-align:center;'>
               Wow, such empty
               <p>🌚</p>

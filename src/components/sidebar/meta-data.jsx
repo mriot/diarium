@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
+import { isDayRecordReady } from "../../lib/utils";
 
 const StyledMetaData = styled.div`
   display: flex;
@@ -34,14 +35,14 @@ export default function MetaData() {
       <MetaInfoBlock>
           Zuletzt bearbeitet:
         <span>
-          {dayRecord ? `${dayjs(dayRecord.updated_at).format("dd, DD.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
+          {isDayRecordReady(dayRecord) ? `${dayjs(dayRecord.updated_at).format("dd, DD.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
         </span>
       </MetaInfoBlock>
 
       <MetaInfoBlock>
           Erstellt:
         <span>
-          {dayRecord ? `${dayjs(dayRecord.created_at).format("dd, DD.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
+          {isDayRecordReady(dayRecord) ? `${dayjs(dayRecord.created_at).format("dd, DD.MM.YYYY — HH:mm:ss")} Uhr` : "n/a"}
         </span>
       </MetaInfoBlock>
     </StyledMetaData>

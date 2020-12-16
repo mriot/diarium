@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
 import usePrevious from "../../hooks/usePrevious";
+import { isDayRecordReady } from "../../lib/utils";
 
 const StyledCalendar = styled(ReactCalendar)`
   border-bottom: 1px solid #191919;
@@ -95,7 +96,7 @@ export default function Calendar() {
 
           let tileMatchingEntry;
           // use actual entry (if available) because it's likely always up to date
-          if (dayRecord && dayjs(date).isSame(dayRecord.assigned_day)) {
+          if (isDayRecordReady(dayRecord) && dayjs(date).isSame(dayRecord.assigned_day)) {
             tileMatchingEntry = dayRecord;
           } else {
             // find entry that matches current tiles date

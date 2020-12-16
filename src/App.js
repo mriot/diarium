@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./components/sidebar/sidebar";
 import dayjs from "dayjs";
 import styled from "styled-components";
+import { isDayRecordReady, isEmptyObject } from "./lib/utils";
 
 const Layout = styled.div`
   position: relative;
@@ -77,7 +78,7 @@ export default function App() {
 
   const deleteEntryFromSelectedDay = async () => {
     // NOTE: security check is made on button press in <Navigation />
-    if (!dayRecord) return false;
+    if (isDayRecordReady(dayRecord)) return false;
     const result = await deleteEntryById(dayRecord.entry_id);
 
     if (result.error) {
@@ -121,7 +122,7 @@ export default function App() {
           <Navigation
             isHighlightsViewActive={showHighlights}
             setHighlightsView={() => setShowHighlights(!showHighlights)}
-            isCreateButtonVisible={!dayRecord}
+            isCreateButtonVisible={isEmptyObject(dayRecord)}
             createNewEntry={() => createNewEntryForSelectedDay()}
             deleteEntry={() => deleteEntryFromSelectedDay()}
           />
