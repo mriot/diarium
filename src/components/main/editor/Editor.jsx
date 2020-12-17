@@ -10,9 +10,7 @@ import { updateExistingEntryById } from "../../../backend/recordManipulation";
 import SaveStatusText from "./SaveStatusText";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useHotkeys } from "react-hotkeys-hook";
 import DayRating from "./DayRating";
-import { isDayRecordReady, isEmptyObject } from "../../../lib/utils";
 
 dayjs.extend(relativeTime);
 
@@ -54,10 +52,6 @@ export default function Editor(props) {
       });
     }
   }, [autoSaver, editorState, setSharedAutoSaver]);
-
-  useHotkeys("e", () => {
-    if (readMode) setReadMode(false);
-  });
 
   return (
     <EditorRoot>

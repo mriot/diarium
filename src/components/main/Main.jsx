@@ -1,10 +1,11 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { readModeAtom } from "../../atoms";
 import Content from "./Content";
 import Editor from "./editor/Editor";
+import { useHotkeys } from "react-hotkeys-hook";
 
 const MainView = styled.div`
   display: flex;
@@ -20,7 +21,11 @@ const MainView = styled.div`
 `;
 
 export default function Main() {
-  const readMode = useRecoilValue(readModeAtom);
+  const [readMode, setReadMode] = useRecoilState(readModeAtom);
+
+  useHotkeys("e", () => {
+    if (readMode) setReadMode(false);
+  });
 
   return (
     <MainView>
