@@ -4,9 +4,9 @@ import ReactDOM from "react-dom";
 import { useState } from "react/cjs/react.development";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { dayRecordAtom, showHeatmapAtom } from "../../atoms";
-import { updateExistingEntryById } from "../../backend/recordManipulation";
-import { isDayRecordReady, isEmptyObject } from "../../lib/utils";
+import { dayRecordAtom, showHeatmapAtom } from "../../../atoms";
+import { updateExistingEntryById } from "../../../backend/recordManipulation";
+import { isDayRecordReady, isEmptyObject } from "../../../lib/utils";
 
 const StyledDayRating = styled.div`
  && {
