@@ -1,11 +1,14 @@
-import { faFire, faMap, faPen, faPlusSquare, faSignOutAlt, faStar, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { isLoggedInAtom, readModeAtom, sharedAutoSaverAtom, showHeatmapAtom } from "../../atoms";
+import { faFire, faPen, faPlusSquare, faSignOutAlt, faStar, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { dayRecordAtom, isLoggedInAtom, readModeAtom, sharedAutoSaverAtom, showHeatmapAtom } from "../../atoms";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import NavButton from "./nav-button";
 import PropTypes from "prop-types";
 import React from "react";
 import Search from "./search";
 import styled from "styled-components";
+import useDeleteEntry from "../../hooks/useDeleteEntry";
+import useCreateEntry from "../../hooks/useCreateEntry";
+import { isEmptyObject } from "../../lib/utils";
 
 const Nav = styled.nav`
   width: 100%;
@@ -34,7 +37,6 @@ const RightSide = styled.div`
 const ButtonContainer = styled.div`
   position: relative;
   display: flex;
-  /* margin-right: 20px; */
 `;
 const Separator = styled.div`
   width: 2px;
@@ -43,32 +45,28 @@ const Separator = styled.div`
   background-color: #414247;
 `;
 
-export default function Navigation(props) {
+export default function Navigation() {
   const [readMode, setReadMode] = useRecoilState(readModeAtom);
   const [showHeatmap, setShowHeatmap] = useRecoilState(showHeatmapAtom);
   const setIsLoggedIn = useSetRecoilState(isLoggedInAtom);
   const sharedAutoSaver = useRecoilValue(sharedAutoSaverAtom);
+  const dayRecord = useRecoilValue(dayRecordAtom);
+  const createEntry = useCreateEntry();
+  const deleteEntry = useDeleteEntry();
+  const isCreateButtonVisible = isEmptyObject(dayRecord);
 
   return (
     <Nav>
       <Logo>DIARIUM</Logo>
       <RightSide>
         <ButtonContainer>
-          {!props.isCreateButtonVisible && !readMode && (
+          {!isCreateButtonVisible && !readMode && (
             <NavButton
               icon={faTrash}
-              onClick={() => {
-                if (prompt(
-                  // eslint-disable-next-line prefer-template
-                  "Bist du dir sicher, dass du diesen Eintrag löschen möchtest? 😐\n" +
-                  "Gib zum Bestätigen bitte 'ok' ein"
-                ) === "ok") {
-                  props.deleteEntry();
-                }
-              }}
+              onClick={() => deleteEntry()}
             />
           )}
-          {!props.isCreateButtonVisible && (
+          {!isCreateButtonVisible && (
             <NavButton
               value="Bearbeiten"
               icon={faPen}
@@ -82,14 +80,11 @@ export default function Navigation(props) {
               }}
             />
           )}
-          {props.isCreateButtonVisible && (
+          {isCreateButtonVisible && (
             <NavButton
               value="Erstellen"
               icon={faPlusSquare}
-              onClick={() => {
-                props.createNewEntry();
-                // todo: change view to editor (e.g. close highlights)
-              }}
+              onClick={() => createEntry()}
             />
           )}
           <NavButton
@@ -97,15 +92,6 @@ export default function Navigation(props) {
             icon={faFire}
             active={showHeatmap}
             onClick={() => setShowHeatmap(!showHeatmap)}
-          />
-          <NavButton
-            value="Highlights"
-            icon={faStar}
-            active={props.isHighlightsViewActive}
-            onClick={() => {
-              props.setHighlightsView(!props.isHighlightsViewActive);
-              if (!props.isHighlightsViewActive) setReadMode(true);
-            }}
           />
         </ButtonContainer>
 
@@ -122,10 +108,4 @@ export default function Navigation(props) {
   );
 }
 
-Navigation.propTypes = {
-  isHighlightsViewActive: PropTypes.bool.isRequired,
-  setHighlightsView: PropTypes.func.isRequired,
-  isCreateButtonVisible: PropTypes.bool.isRequired,
-  createNewEntry: PropTypes.func.isRequired,
-  deleteEntry: PropTypes.func.isRequired
-};
+Navigation.propTypes = {};
