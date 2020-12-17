@@ -10,23 +10,16 @@ import { updateExistingEntryById } from "../../../backend/recordManipulation";
 import SaveStatusText from "./SaveStatusText";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import Content from "../Content";
 import { useHotkeys } from "react-hotkeys-hook";
-import DayRating from "../DayRating";
+import DayRating from "./DayRating";
 import { isDayRecordReady, isEmptyObject } from "../../../lib/utils";
 
 dayjs.extend(relativeTime);
 
-const EditorContainer = styled.div`
-  display: flex;
+const EditorRoot = styled.div`
   width: 100%;
   height: 100%;
-  color: #fff;
   position: relative;
-  background-color: #20232a;
-  flex-direction: column;
-  transform-origin: center;
-  backface-visibility: hidden;
 `;
 
 export default function Editor(props) {
@@ -63,168 +56,153 @@ export default function Editor(props) {
   }, [autoSaver, editorState, setSharedAutoSaver]);
 
   useHotkeys("e", () => {
-    if (isDayRecordReady(dayRecord) && readMode) setReadMode(false);
-  }, {}, [dayRecord, readMode]);
+    if (readMode) setReadMode(false);
+  });
 
   return (
-    <EditorContainer>
-      {isDayRecordReady(dayRecord) && readMode && (
-        <Content>
-          {dayRecord?.content || (`
-            <h1 style='margin: 25% auto; text-align:center;'>
-              Wow, such empty
-              <p>🌚</p>
-            </h1>
-          `)}
-        </Content>
-      )}
-
-      {!readMode && (
+    <EditorRoot>
+      {editorReady && (
         <>
-          {editorReady && (
-            <>
-              <DayRating rating={dayRecord.day_rating} />
-              <SaveStatusText text={saveStatusText} />
-            </>
-          )}
-
-          <TinyEditor
-            apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
-            onInit={() => {
-              // hack to prevent error in tinymce
-              setTimeout(() => setEditorReady(true));
-            }}
-            initialValue={dayRecord?.content}
-            onEditorChange={(content, editor) => {
-              if (autoSaver.isEditorDirty()) {
-                autoSaver.scheduleSave();
-                setSaveStatusText("Saving changes...");
-              }
-            }}
-            init={{
-            // ! settings for local skin file
-            // skin: false,
-            // skin_url: "LOREM",
-            // content_css: "dark",
-
-              skin: "oxide",
-              // content_css: "dark",
-              height: "100%",
-              width: "100%",
-              resize: false,
-              branding: true,
-              contextmenu: false,
-              toolbar_sticky: true,
-              draggable_modal: true,
-              browser_spellcheck: true,
-              custom_undo_redo_levels: 50,
-              toolbar_mode: "sliding",
-              auto_focus: true,
-              emoticons_append: CUSTOM_EMOJIS(),
-              content_style: `
-                .mce-time-separator {
-                  display: flex;
-                  align-items: center;
-                  text-align: center;
-                  font-size: 24px;
-                  font-weight: bold;
-                }
-                .mce-time-separator::before, .mce-time-separator::after {
-                    content: '';
-                    flex: 1;
-                    border-bottom: 1px solid #000;
-                }
-                .mce-time-separator::before {
-                    margin-right: .25em;
-                }
-                .mce-time-separator::after {
-                    margin-left: .25em;
-                }
-              `,
-
-              plugins: [
-                "anchor", "autolink", "help", "paste", "print",
-                "searchreplace", "wordcount", "preview", "fullscreen",
-                "codesample", "hr", "image", "link", "lists",
-                "table", "emoticons", "media"
-              ],
-
-              setup: (editor) => {
-                setEditorState(editor);
-
-                editor.ui.registry.addSplitButton("custom_alignment", ALIGNMENT_BUTTON(editor));
-                editor.ui.registry.addSplitButton("custom_lists", LIST_BUTTON(editor));
-                editor.ui.registry.addButton("timedivider", TIMEDIVIDER_BUTTON(editor, dayjs));
-                editor.ui.registry.addMenuItem("exporthtml", EXPORTHTML_BUTTON(editor, dayRecord));
-              },
-
-              menu: {
-                font: {
-                  title: "Font",
-                  items: "fontsizes lineheight fontformats"
-                },
-                misc: {
-                  title: "Misc",
-                  items: "codesample codeformat anchor"
-                },
-                editor: {
-                  title: "Editor",
-                  items: "fullscreen print exporthtml"
-                }
-              },
-
-              menubar: "font table misc editor",
-
-              toolbar: [
-                { name: "history", items: ["undo", "redo"] },
-                { name: "format", items: ["formatselect"] },
-                {
-                  name: "style",
-                  items: [
-                    "bold",
-                    "italic",
-                    "underline",
-                    "strikethrough",
-                    "forecolor",
-                    "backcolor"
-                  ]
-                },
-                {
-                  name: "media",
-                  items: [
-                    "timedivider",
-                    "hr",
-                    "link",
-                    "emoticons",
-                    "image",
-                    "media"
-                  ]
-                },
-                {
-                  name: "indentation",
-                  items: [
-                    "custom_alignment",
-                    "custom_lists",
-                    "outdent",
-                    "indent",
-                    "blockquote"
-                  ]
-                },
-                { name: "misc", items: ["removeformat", "help"] }
-              ],
-
-              block_formats: `
-                Paragraph=p;
-                Heading 1=h1;
-                Heading 2=h2;
-                Heading 3=h3;
-                Preformatted=pre;
-              `.trim() // only to support template literals here ¯\_(ツ)_/¯
-            }}
-          />
+          <DayRating rating={dayRecord.day_rating} />
+          <SaveStatusText text={saveStatusText} />
         </>
       )}
-    </EditorContainer>
+
+      <TinyEditor
+        apiKey="adfvxug5xcx5iley920j6gbywuhg4260ocmpzbckdako4w6p"
+        onInit={() => {
+          // hack to prevent error in tinymce
+          setTimeout(() => setEditorReady(true));
+        }}
+        initialValue={dayRecord?.content}
+        onEditorChange={(content, editor) => {
+          if (autoSaver.isEditorDirty()) {
+            autoSaver.scheduleSave();
+            setSaveStatusText("Saving changes...");
+          }
+        }}
+        init={{
+          // ! settings for local skin file
+          // skin: false,
+          // skin_url: "LOREM",
+          // content_css: "dark",
+
+          skin: "oxide",
+          // content_css: "dark",
+          height: "100%",
+          width: "100%",
+          resize: false,
+          branding: true,
+          contextmenu: false,
+          toolbar_sticky: true,
+          draggable_modal: true,
+          browser_spellcheck: true,
+          custom_undo_redo_levels: 50,
+          toolbar_mode: "sliding",
+          auto_focus: true,
+          emoticons_append: CUSTOM_EMOJIS(),
+          content_style: `
+            .mce-time-separator {
+              display: flex;
+              align-items: center;
+              text-align: center;
+              font-size: 24px;
+              font-weight: bold;
+            }
+            .mce-time-separator::before, .mce-time-separator::after {
+                content: '';
+                flex: 1;
+                border-bottom: 1px solid #000;
+            }
+            .mce-time-separator::before {
+                margin-right: .25em;
+            }
+            .mce-time-separator::after {
+                margin-left: .25em;
+            }
+          `,
+
+          plugins: [
+            "anchor", "autolink", "help", "paste", "print",
+            "searchreplace", "wordcount", "preview", "fullscreen",
+            "codesample", "hr", "image", "link", "lists",
+            "table", "emoticons", "media"
+          ],
+
+          setup: (editor) => {
+            setEditorState(editor);
+
+            editor.ui.registry.addSplitButton("custom_alignment", ALIGNMENT_BUTTON(editor));
+            editor.ui.registry.addSplitButton("custom_lists", LIST_BUTTON(editor));
+            editor.ui.registry.addButton("timedivider", TIMEDIVIDER_BUTTON(editor, dayjs));
+            editor.ui.registry.addMenuItem("exporthtml", EXPORTHTML_BUTTON(editor, dayRecord));
+          },
+
+          menu: {
+            font: {
+              title: "Font",
+              items: "fontsizes lineheight fontformats"
+            },
+            misc: {
+              title: "Misc",
+              items: "codesample codeformat anchor"
+            },
+            editor: {
+              title: "Editor",
+              items: "fullscreen print exporthtml"
+            }
+          },
+
+          menubar: "font table misc editor",
+
+          toolbar: [
+            { name: "history", items: ["undo", "redo"] },
+            { name: "format", items: ["formatselect"] },
+            {
+              name: "style",
+              items: [
+                "bold",
+                "italic",
+                "underline",
+                "strikethrough",
+                "forecolor",
+                "backcolor"
+              ]
+            },
+            {
+              name: "media",
+              items: [
+                "timedivider",
+                "hr",
+                "link",
+                "emoticons",
+                "image",
+                "media"
+              ]
+            },
+            {
+              name: "indentation",
+              items: [
+                "custom_alignment",
+                "custom_lists",
+                "outdent",
+                "indent",
+                "blockquote"
+              ]
+            },
+            { name: "misc", items: ["removeformat", "help"] }
+          ],
+
+          block_formats: `
+            Paragraph=p;
+            Heading 1=h1;
+            Heading 2=h2;
+            Heading 3=h3;
+            Preformatted=pre;
+          `.trim() // only to support template literals here ¯\_(ツ)_/¯
+        }}
+      />
+    </EditorRoot>
   );
 };
 
