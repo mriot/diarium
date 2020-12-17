@@ -1,19 +1,10 @@
-import { Editor as TinyEditor } from "@tinymce/tinymce-react";
 import PropTypes from "prop-types";
-import React, { useEffect, useState, useMemo } from "react";
+import React from "react";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { ALIGNMENT_BUTTON, CUSTOM_EMOJIS, EXPORTHTML_BUTTON, LIST_BUTTON, TIMEDIVIDER_BUTTON } from "./editor_extensions";
-import AutoSave from "./AutoSave";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { dayRecordAtom, readModeAtom, sharedAutoSaverAtom } from "../../../atoms";
-import { updateExistingEntryById } from "../../../backend/recordManipulation";
-import SaveStatusText from "./SaveStatusText";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import Content from "../Content";
-import { useHotkeys } from "react-hotkeys-hook";
-import DayRating from "../DayRating";
-import { isDayRecordReady, isEmptyObject } from "../../../lib/utils";
+import { readModeAtom } from "../../atoms";
+import Content from "./Content";
+import Editor from "./editor/Editor";
 
 const MainView = styled.div`
   display: flex;
@@ -25,12 +16,15 @@ const MainView = styled.div`
   flex-direction: column;
   transform-origin: center;
   backface-visibility: hidden;
+  overflow-x: hidden;
 `;
 
 export default function Main() {
+  const readMode = useRecoilValue(readModeAtom);
+
   return (
     <MainView>
-
+      {readMode ? <Content /> : <Editor />}
     </MainView>
   );
 }
