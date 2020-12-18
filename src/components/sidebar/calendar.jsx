@@ -2,15 +2,16 @@ import "../../themes/calendar-eros.scss";
 import "react-calendar/dist/Calendar.css";
 import { Calendar as ReactCalendar } from "react-calendar";
 import { Redirect, useLocation } from "react-router-dom";
-import { dayRecordAtom, isLoadingAtom, readModeAtom, selectedDayAtom, showHeatmapAtom } from "../../atoms";
+import { dayRecordAtom, readModeAtom, selectedDayAtom, showHeatmapAtom } from "../../atoms";
 import { fetchHolidays } from "../../lib/external";
 import { getRecordForDay, getRecordsInRange } from "../../backend/getters";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
 import usePrevious from "../../hooks/usePrevious";
 import { isDayRecordReady } from "../../lib/utils";
+import useLoadingBar from "../../hooks/useLoadingBar";
 
 const StyledCalendar = styled(ReactCalendar)`
   border-bottom: 1px solid #191919;
@@ -22,11 +23,11 @@ export default function Calendar() {
   const showHeatmap = useRecoilValue(showHeatmapAtom);
   const [selectedDay, setSelectedDay] = useRecoilState(selectedDayAtom);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
-  const setIsLoading = useSetRecoilState(isLoadingAtom);
   const [fetchedEntries, setFetchedEntries] = useState(null);
   const [fetchedHolidays, setFetchedHolidays] = useState(null);
   const prevSelectedDay = usePrevious(selectedDay);
   const location = useLocation();
+  const [addLoader, removeLoader] = useLoadingBar();
 
   useEffect(() => {
     const dateFromUrl = dayjs(location.pathname, "YYYY/MM/DD");
@@ -39,10 +40,12 @@ export default function Calendar() {
     if (dayjs(selectedDay).isSame(prevSelectedDay)) return;
 
     (async () => {
+      addLoader();
       const response = await getRecordForDay(...dayjs(selectedDay).format("YYYY-MM-DD").split("-"));
       setDayRecord(response.data);
+      removeLoader();
     })();
-  }, [prevSelectedDay, selectedDay, setDayRecord]);
+  }, [addLoader, prevSelectedDay, removeLoader, selectedDay, setDayRecord]);
 
   // MONTH OVERVIEW
   useEffect(() => {
@@ -53,10 +56,12 @@ export default function Calendar() {
     const end = dayjs(selectedDay).endOf("month").add(7, "days").format("YYYY-MM-DD");
 
     (async () => {
+      addLoader();
       const response = await getRecordsInRange(start, end, ["assigned_day", "tags", "day_rating"]);
       setFetchedEntries(response.data.entries);
+      removeLoader();
     })();
-  }, [prevSelectedDay, selectedDay]);
+  }, [addLoader, prevSelectedDay, removeLoader, selectedDay]);
 
   // HOLIDAYS
   useEffect(() => {
@@ -64,10 +69,12 @@ export default function Calendar() {
     if (dayjs(selectedDay).isSame(prevSelectedDay, "year")) return;
 
     (async () => {
+      addLoader();
       const response = await fetchHolidays(dayjs(selectedDay).format("YYYY"));
       setFetchedHolidays(response);
+      removeLoader();
     })();
-  }, [prevSelectedDay, selectedDay]);
+  }, [addLoader, prevSelectedDay, removeLoader, selectedDay]);
 
   if (!selectedDay) return null;
   return (
