@@ -2,10 +2,11 @@ import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useState } from "react/cjs/react.development";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { dayRecordAtom } from "../../atoms";
-import { updateExistingEntryById } from "../../backend/recordManipulation";
+import { dayRecordAtom, showHeatmapAtom } from "../../../atoms";
+import { updateExistingEntryById } from "../../../backend/recordManipulation";
+import { isDayRecordReady, isEmptyObject } from "../../../lib/utils";
 
 const StyledDayRating = styled.div`
  && {
@@ -57,6 +58,15 @@ export default function DayRating(props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [rating, setRating] = useState(props.rating ?? null);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
+  const setShowHeatmap = useSetRecoilState(showHeatmapAtom);
+
+  useEffect(() => {
+    setShowHeatmap(isMenuOpen);
+
+    return () => {
+      setShowHeatmap(false);
+    };
+  }, [isMenuOpen, setShowHeatmap]);
 
   return (
     NODE && ReactDOM.createPortal(
@@ -80,7 +90,7 @@ export default function DayRating(props) {
                   aria-checked="false"
                   style={{ backgroundColor: item.color }}
                   onClick={async () => {
-                    if (index !== rating && dayRecord) {
+                    if (index !== rating && isDayRecordReady(dayRecord)) {
                       setRating(index);
                       const response = await updateExistingEntryById(dayRecord.entry_id, {
                         rating: index

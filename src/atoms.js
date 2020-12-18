@@ -25,9 +25,9 @@ export const selectedDayAtom = atom({
   default: null
 });
 
-export const isLoadingAtom = atom({
-  key: "isLoadingAtom",
-  default: false
+export const loadingAtom = atom({
+  key: "loadingAtom",
+  default: 0
 });
 
 export const showHeatmapAtom = atom({

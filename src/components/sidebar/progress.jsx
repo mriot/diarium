@@ -4,7 +4,7 @@ import styled from "styled-components";
 import ProgressBar from "../common/progressbar";
 import { countAllEntries, countRecordsInRange } from "../../backend/counters";
 import { useRecoilValue } from "recoil";
-import { selectedDayAtom } from "../../atoms";
+import { dayRecordAtom, selectedDayAtom } from "../../atoms";
 import dayjs from "dayjs";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 
@@ -30,6 +30,7 @@ const TotalDescription = styled(ProgressDescription)`
 
 export default function Progress() {
   const selectedDay = useRecoilValue(selectedDayAtom);
+  const dayRecord = useRecoilValue(dayRecordAtom);
   const [progressMonth, setProgressMonth] = useState({ count: 0, percent: 0 });
   const [progressYear, setProgressYear] = useState({ count: 0, percent: 0 });
   const [progressTotal, setProgressTotal] = useState(0);
@@ -45,10 +46,10 @@ export default function Progress() {
         console.error(error);
       }
     })();
-  }, []);
+  }, [dayRecord]);
 
   useEffect(() => {
-    if (!dayjs(selectedDay).isValid()) return;
+    if (!selectedDay || !dayjs(selectedDay).isValid()) return;
 
     (async () => {
       try {

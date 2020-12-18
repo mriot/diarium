@@ -3,6 +3,7 @@
 .content-view {
   all: initial;
   margin: 0 10px;
+  overflow-y: auto;
 
   * {
     margin: 0;

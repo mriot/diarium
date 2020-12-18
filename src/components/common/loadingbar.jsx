@@ -1,26 +1,26 @@
-import { isLoadingAtom } from "../../atoms";
 import { useRecoilValue } from "recoil";
+import { loadingAtom } from "../../atoms";
 import React from "react";
 import styled, { keyframes } from "styled-components";
 
 const box1 = keyframes`
   0% {
-    left:-35%;
-    right:100%;
+    left: -35%;
+    right: 100%;
   }
-  60%,100% {
-    left:100%;
-    right:-90%;
+  60%, 100% {
+    left: 100%;
+    right: -90%;
   }
 `;
 const box2 = keyframes`
   0% {
-    left:-200%;
-    right:100%;
+    left: -200%;
+    right: 100%;
   }
-  60%,100% {
-    left:107%;
-    right:-8%;
+  60%, 100% {
+    left: 107%;
+    right: -8%;
   }
 `;
 
@@ -55,14 +55,10 @@ const StyledLoadingbar = styled.div`
   /* src: https://codepen.io/inertia/pen/oeQKXW */
 `;
 
-export default function Loadingbar(props) {
-  const isLoading = useRecoilValue(isLoadingAtom);
+export default function Loadingbar() {
+  const loading = useRecoilValue(loadingAtom);
 
   return (
-    <StyledLoadingbar active={isLoading} />
+    <StyledLoadingbar active={loading > 0} />
   );
 }
-
-Loadingbar.propTypes = {};
-
-Loadingbar.defaultProps = {};

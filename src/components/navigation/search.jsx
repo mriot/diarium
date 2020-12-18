@@ -1,11 +1,9 @@
 import { NavLink } from "react-router-dom";
 import { search } from "../../backend/search";
-import { searchResultAnimation } from "./animations";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import TextInput from "../common/textinput";
 import dayjs from "dayjs";
-import posed, { PoseGroup } from "react-pose";
 import styled from "styled-components";
 
 const StyledSearch = styled.div`
@@ -34,8 +32,7 @@ const SearchResultContainer = styled.div`
   box-shadow: 1px 5px 7px 1px rgba(0, 0, 0, 0.5);
   background-color: #20232a;
 `;
-const PosedResult = posed(NavLink)(searchResultAnimation);
-const SearchResult = styled(PosedResult)`
+const SearchResult = styled(NavLink)`
   display: block;
   color: inherit;
   padding: 10px;
@@ -103,20 +100,18 @@ export default function Search(props) {
       />
 
       <SearchResultContainer>
-        <PoseGroup>
-          {showSearchResults && searchResults.map(item => (
-            <SearchResult
-              key={item.entry_id}
-              title={item.content}
-              to={`/${dayjs(item.assigned_day).format("YYYY/MM/DD")}`}
-            >
-              <span>{dayjs(item.assigned_day).format("dd, DD. MMMM YYYY")}</span>
-              <div>
-                {item.sanitized_content}
-              </div>
-            </SearchResult>
-          ))}
-        </PoseGroup>
+        {showSearchResults && searchResults.map(item => (
+          <SearchResult
+            key={item.entry_id}
+            title={item.content}
+            to={`/${dayjs(item.assigned_day).format("YYYY/MM/DD")}`}
+          >
+            <span>{dayjs(item.assigned_day).format("dd, DD. MMMM YYYY")}</span>
+            <div>
+              {item.sanitized_content}
+            </div>
+          </SearchResult>
+        ))}
       </SearchResultContainer>
     </StyledSearch>
   );
