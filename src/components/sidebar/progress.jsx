@@ -49,7 +49,7 @@ export default function Progress() {
   }, [dayRecord]);
 
   useEffect(() => {
-    if (!dayjs(selectedDay).isValid()) return;
+    if (!selectedDay || !dayjs(selectedDay).isValid()) return;
 
     (async () => {
       try {
