@@ -18,6 +18,8 @@ const StyledSidebar = styled.aside`
   max-height: 100%;
   box-sizing: border-box;
   background-color: #20232a;
+  border-right: 1px solid #191919;
+  z-index: 1;
 `;
 const Today = styled.div`
   color: ${WHITE};
