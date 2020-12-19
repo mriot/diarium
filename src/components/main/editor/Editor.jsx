@@ -5,14 +5,11 @@ import styled from "styled-components";
 import { ALIGNMENT_BUTTON, CUSTOM_EMOJIS, EXPORTHTML_BUTTON, LIST_BUTTON, TIMEDIVIDER_BUTTON } from "./editor_extensions";
 import AutoSave from "./AutoSave";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { dayRecordAtom, readModeAtom, sharedAutoSaverAtom } from "../../../atoms";
+import { dayRecordAtom, sharedAutoSaverAtom } from "../../../atoms";
 import { updateExistingEntryById } from "../../../backend/recordManipulation";
-import SaveStatusText from "./SaveStatusText";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import SaveStatus from "./SaveStatus";
 import DayRating from "./DayRating";
-
-dayjs.extend(relativeTime);
+import dayjs from "dayjs";
 
 const EditorRoot = styled.div`
   width: 100%;
@@ -23,7 +20,7 @@ const EditorRoot = styled.div`
 export default function Editor(props) {
   const [editorState, setEditorState] = useState(null);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
-  const [saveStatusText, setSaveStatusText] = useState("");
+  const [saveStatus, setSaveStatus] = useState({ time: dayRecord?.updated_at });
   const [editorReady, setEditorReady] = useState(false);
   const setSharedAutoSaver = useSetRecoilState(sharedAutoSaverAtom);
 
@@ -32,12 +29,12 @@ export default function Editor(props) {
       const response = await updateExistingEntryById(dayRecord.entry_id, { content });
       if (response.status === 200) {
         setDayRecord(response.data);
-        setSaveStatusText("Gespeichert " + dayjs(response.data.updated_at).fromNow());
+        setSaveStatus({ time: response.data.updated_at });
         editorState.save();
         return true;
       }
 
-      setSaveStatusText("Error!" + response.status);
+      setSaveStatus({ error: response.statusText });
     });
   }, [dayRecord, editorState, setDayRecord]);
 
@@ -56,7 +53,7 @@ export default function Editor(props) {
       {editorReady && (
         <>
           <DayRating rating={dayRecord.day_rating} />
-          <SaveStatusText text={saveStatusText} />
+          <SaveStatus status={saveStatus} />
         </>
       )}
 
@@ -70,7 +67,7 @@ export default function Editor(props) {
         onEditorChange={(content, editor) => {
           if (autoSaver.isEditorDirty()) {
             autoSaver.scheduleSave();
-            setSaveStatusText("Saving changes...");
+            setSaveStatus();
           }
         }}
         init={{
