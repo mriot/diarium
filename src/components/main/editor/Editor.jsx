@@ -23,7 +23,6 @@ const EditorRoot = styled.div`
 export default function Editor(props) {
   const [editorState, setEditorState] = useState(null);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
-  const [readMode, setReadMode] = useRecoilState(readModeAtom);
   const [saveStatusText, setSaveStatusText] = useState("");
   const [editorReady, setEditorReady] = useState(false);
   const setSharedAutoSaver = useSetRecoilState(sharedAutoSaverAtom);
@@ -31,7 +30,6 @@ export default function Editor(props) {
   const autoSaver = useMemo(() => {
     return new AutoSave(editorState, async (content) => {
       const response = await updateExistingEntryById(dayRecord.entry_id, { content });
-      // console.log(response);
       if (response.status === 200) {
         setDayRecord(response.data);
         setSaveStatusText("Gespeichert " + dayjs(response.data.updated_at).fromNow());
@@ -120,7 +118,7 @@ export default function Editor(props) {
             "anchor", "autolink", "help", "paste", "print",
             "searchreplace", "wordcount", "preview", "fullscreen",
             "codesample", "hr", "image", "link", "lists",
-            "table", "emoticons", "media"
+            "table", "emoticons", "media", "textpattern"
           ],
 
           setup: (editor) => {
@@ -131,6 +129,20 @@ export default function Editor(props) {
             editor.ui.registry.addButton("timedivider", TIMEDIVIDER_BUTTON(editor, dayjs));
             editor.ui.registry.addMenuItem("exporthtml", EXPORTHTML_BUTTON(editor, dayRecord));
           },
+
+          textpattern_patterns: [
+            { start: "*", end: "*", format: "italic" },
+            { start: "**", end: "**", format: "bold" },
+
+            { start: "h1.", format: "h1" },
+            { start: "h2. ", format: "h2" },
+            { start: "h3. ", format: "h3" },
+
+            { start: "1. ", cmd: "InsertOrderedList" },
+            { start: "- ", cmd: "InsertUnorderedList" },
+
+            { start: "---", replacement: "<hr/>" }
+          ],
 
           menu: {
             font: {
