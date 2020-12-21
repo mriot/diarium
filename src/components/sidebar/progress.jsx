@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import ProgressBar from "../common/progressbar";
-import { count, countAllEntries, countRecordsInRange } from "../../backend/counters";
+import { count } from "../../backend/counters";
 import { useRecoilValue } from "recoil";
-import { dayRecordAtom, selectedDayAtom } from "../../atoms";
+import { dayRecordAtom } from "../../atoms";
 import dayjs from "dayjs";
 import isLeapYear from "dayjs/plugin/isLeapYear";
 import { toast } from "react-toastify";
 import usePrevious from "../../hooks/usePrevious";
-import { isEmptyObject } from "../../lib/utils";
+import useSelectedDay from "../../hooks/useSelectedDay";
 
 const ProgressContainer = styled.div`
   padding: 0 0 5px 5px;
@@ -32,36 +32,17 @@ const TotalDescription = styled(ProgressDescription)`
 `;
 
 export default function Progress() {
-  const selectedDay = useRecoilValue(selectedDayAtom);
   const dayRecord = useRecoilValue(dayRecordAtom);
   const [progressMonth, setProgressMonth] = useState({ count: 0, percent: 0 });
   const [progressYear, setProgressYear] = useState({ count: 0, percent: 0 });
   const [progressTotal, setProgressTotal] = useState(0);
-  const prevSelectedDay = usePrevious(selectedDay);
+  const selectedDay = useSelectedDay();
+  const prevDayRecord = usePrevious(dayRecord);
 
   dayjs.extend(isLeapYear);
 
-  // 1x bei allem
-  // 2x beim Löschen
   useEffect(() => {
-    if (!dayRecord) return;
-
-    // console.log(dayRecord);
-  }, [dayRecord]);
-
-  // 2x bei init
-  // 2x bei wechsel
-  // 0x beim erstellen
-  // 1x beim löschen
-  useEffect(() => {
-    if (!selectedDay) return;
-
-    // console.log(dayjs(selectedDay).format("YYYY-MM-DD"));
-  }, [selectedDay]);
-
-  useEffect(() => {
-    if (!dayRecord || !selectedDay) return;
-    // console.log("progress");
+    if (!dayRecord || dayRecord === prevDayRecord) return;
 
     const date = dayjs(selectedDay);
 
@@ -84,7 +65,7 @@ export default function Progress() {
         percent: ((data.month / date.daysInMonth()) * 100).toFixed(2)
       });
     })();
-  }, [selectedDay, dayRecord, prevSelectedDay]);
+  }, [selectedDay, dayRecord, prevDayRecord]);
 
   return (
     <ProgressContainer>
