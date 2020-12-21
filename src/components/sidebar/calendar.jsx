@@ -83,74 +83,74 @@ export default function Calendar() {
 
   if (!selectedDay) return null;
   return (
-    <>
-      <Redirect push to={`/${dayjs(selectedDay).format("YYYY/MM/DD")}`} />
+    <StyledCalendar
+      className={["calendar-dark-theme", showHeatmap ? "day-rating-enabled" : ""]}
+      key="diarium_calendar_key"
+      value={selectedDay}
+      // activeStartDate={selectedDay}
+      minDetail={!readMode ? "month" : "decade"}
+      minDate={!readMode ? dayjs(selectedDay).toDate() : null}
+      maxDate={!readMode ? dayjs(selectedDay).toDate() : null}
+      tileDisabled={() => !readMode}
 
-      <StyledCalendar
-        className={["calendar-dark-theme", showHeatmap ? "day-rating-enabled" : ""]}
-        key="diarium_calendar_key"
-        value={selectedDay}
-        activeStartDate={selectedDay}
-        minDetail={!readMode ? "month" : "decade"}
-        minDate={!readMode ? dayjs(selectedDay).toDate() : null}
-        maxDate={!readMode ? dayjs(selectedDay).toDate() : null}
-        tileDisabled={() => !readMode}
-        tileClassName={({ activeStartDate, date, view }) => {
-          if (view !== "month") return false;
-          if (!fetchedEntries || !fetchedHolidays) return false;
+      // VALUE CHANGED (day selected)
+      onChange={newDate => {
+        const date = dayjs(newDate).format("/YYYY/MM/DD");
+        console.log("onChange pushing", date);
+        history.push(date);
+      }}
 
-          const tileClassNames = [];
+      // NAVIGATION + "ActiveStartDate" change. For whatever reason...
+      onActiveStartDateChange={({ activeStartDate, view }) => {
+        const date = dayjs().isSame(activeStartDate, "month") ? new Date() : activeStartDate;
+        const temp = dayjs(date).format("/YYYY/MM/DD");
+        console.log("onActiveStartDateChange pushing", temp);
+        history.push(temp);
+      }}
 
-          // add holiday class if date happens to be a holiday
-          if (fetchedHolidays[dayjs(date).format("YYYY-MM-DD")]) {
-            tileClassNames.push("holiday");
-          }
+      // onClickDay={(...args) => console.log("onClickDay", ...args)}
+      // onClickMonth={(...args) => console.log("onClickMonth", ...args)}
+      // onClickYear={(...args) => console.log("onClickYear", ...args)}
 
-          let tileMatchingEntry;
-          // use actual entry (if available) because it's likely always up to date
-          if (isDayRecordReady(dayRecord) && dayjs(date).isSame(dayRecord.assigned_day)) {
-            tileMatchingEntry = dayRecord;
-          } else {
-            // find entry that matches current tiles date
-            tileMatchingEntry = fetchedEntries.find(entry =>
-              dayjs(date).isSame(entry.assigned_day)
-            );
-          }
+      tileClassName={({ activeStartDate, date, view }) => {
+        if (view !== "month") return false;
+        if (!fetchedEntries || !fetchedHolidays) return false;
 
-          // if no matching entry found, return here as there is nothing else to do
-          if (!tileMatchingEntry) return tileClassNames;
+        const tileClassNames = [];
 
-          // apply tags as classnames (+ 'marked'-class as this day has content)
-          tileClassNames.push(...tileMatchingEntry.tags, "marked");
+        // add holiday class if date happens to be a holiday
+        if (fetchedHolidays[dayjs(date).format("YYYY-MM-DD")]) {
+          tileClassNames.push("holiday");
+        }
 
-          /** only apply day-rating classes for the current month
+        let tileMatchingEntry;
+        // use actual entry (if available) because it's likely always up to date
+        if (isDayRecordReady(dayRecord) && dayjs(date).isSame(dayRecord.assigned_day)) {
+          tileMatchingEntry = dayRecord;
+        } else {
+          // find entry that matches current tiles date
+          tileMatchingEntry = fetchedEntries.find(entry =>
+            dayjs(date).isSame(entry.assigned_day)
+          );
+        }
+
+        // if no matching entry found, return here as there is nothing else to do
+        if (!tileMatchingEntry) return tileClassNames;
+
+        // apply tags as classnames (+ 'marked'-class as this day has content)
+        tileClassNames.push(...tileMatchingEntry.tags, "marked");
+
+        /** only apply day-rating classes for the current month
            * this may change in the future
            * problem is the reduced opacity for neighboring months which falsifies the colors
           */
-          if (tileMatchingEntry.day_rating && dayjs(selectedDay).month() === dayjs(date).month()) {
-            tileClassNames.push(`day-rating-${tileMatchingEntry.day_rating}`);
-          }
+        if (tileMatchingEntry.day_rating && dayjs(selectedDay).month() === dayjs(date).month()) {
+          tileClassNames.push(`day-rating-${tileMatchingEntry.day_rating}`);
+        }
 
-          return tileClassNames;
-        }}
-
-        // VALUE CHANGED (day selected)
-        onChange={newValue => {
-          setSelectedDay(newValue);
-        }}
-
-        // ARROW NAVIGATION
-        onActiveStartDateChange={({ activeStartDate, view }) => {
-          setSelectedDay(
-            dayjs().isSame(activeStartDate, "month") ? dayjs().toDate() : activeStartDate
-          );
-        }}
-
-        // onClickDay={(...args) => console.log("onClickDay", ...args)}
-        // onClickMonth={(...args) => console.log("onClickMonth", ...args)}
-        // onClickYear={(...args) => console.log("onClickYear", ...args)}
-      />
-    </>
+        return tileClassNames;
+      }}
+    />
   );
 }
 
