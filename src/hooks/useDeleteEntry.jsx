@@ -3,13 +3,18 @@ import { dayRecordAtom, readModeAtom, selectedDayAtom } from "../atoms";
 import { deleteEntryById } from "../backend/recordManipulation";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
+import { useHistory, useLocation } from "react-router-dom";
 
 export default function useDeleteEntry() {
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const setReadMode = useSetRecoilState(readModeAtom);
-  const [selectedDay, setSelectedDay] = useRecoilState(selectedDayAtom);
+  // const [selectedDay, setSelectedDay] = useRecoilState(selectedDayAtom);
+  const history = useHistory();
+  const location = useLocation();
 
   return async () => {
+    const selectedDay = dayjs(location.pathname, "YYYY/MM/DD");
+
     if (prompt(
       "Bist du dir sicher, dass du den Eintrag vom " +
       `${dayjs(selectedDay).format("dd, DD.MM.YYYY")} löschen möchtest? 😐\n` +
@@ -29,7 +34,8 @@ export default function useDeleteEntry() {
     setReadMode(true);
     setDayRecord({});
     // hack to trigger calendar month overview refresh
-    setSelectedDay(dayjs(selectedDay).add(1, "ms").toDate());
+    // setSelectedDay(dayjs(selectedDay).add(1, "ms").toDate());
+    history.replace(dayjs(selectedDay).format("/YYYY/MM/DD"), { updateCalendar: true });
     return true;
   };
 };
