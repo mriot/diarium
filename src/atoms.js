@@ -20,11 +20,6 @@ export const dayRecordAtom = atom({
   default: null
 });
 
-export const selectedDayAtom = atom({
-  key: "selectedDayAtom",
-  default: null
-});
-
 export const loadingAtom = atom({
   key: "loadingAtom",
   default: 0

@@ -104,7 +104,7 @@ export default function Search(props) {
           <SearchResult
             key={item.entry_id}
             title={item.content}
-            to={`/${dayjs(item.assigned_day).format("YYYY/MM/DD")}`}
+            to={dayjs(item.assigned_day).format("/YYYY/MM/DD")}
           >
             <span>{dayjs(item.assigned_day).format("dd, DD. MMMM YYYY")}</span>
             <div>

@@ -5,14 +5,11 @@ import styled from "styled-components";
 import { ALIGNMENT_BUTTON, CUSTOM_EMOJIS, EXPORTHTML_BUTTON, LIST_BUTTON, TIMEDIVIDER_BUTTON } from "./editor_extensions";
 import AutoSave from "./AutoSave";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { dayRecordAtom, readModeAtom, sharedAutoSaverAtom } from "../../../atoms";
+import { dayRecordAtom, sharedAutoSaverAtom } from "../../../atoms";
 import { updateExistingEntryById } from "../../../backend/recordManipulation";
-import SaveStatusText from "./SaveStatusText";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import SaveStatus from "./SaveStatus";
 import DayRating from "./DayRating";
-
-dayjs.extend(relativeTime);
+import dayjs from "dayjs";
 
 const EditorRoot = styled.div`
   width: 100%;
@@ -23,23 +20,21 @@ const EditorRoot = styled.div`
 export default function Editor(props) {
   const [editorState, setEditorState] = useState(null);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
-  const [readMode, setReadMode] = useRecoilState(readModeAtom);
-  const [saveStatusText, setSaveStatusText] = useState("");
+  const [saveStatus, setSaveStatus] = useState({ time: dayRecord?.updated_at });
   const [editorReady, setEditorReady] = useState(false);
   const setSharedAutoSaver = useSetRecoilState(sharedAutoSaverAtom);
 
   const autoSaver = useMemo(() => {
     return new AutoSave(editorState, async (content) => {
       const response = await updateExistingEntryById(dayRecord.entry_id, { content });
-      // console.log(response);
       if (response.status === 200) {
         setDayRecord(response.data);
-        setSaveStatusText("Gespeichert " + dayjs(response.data.updated_at).fromNow());
+        setSaveStatus({ time: response.data.updated_at });
         editorState.save();
         return true;
       }
 
-      setSaveStatusText("Error!" + response.status);
+      setSaveStatus({ error: response.statusText });
     });
   }, [dayRecord, editorState, setDayRecord]);
 
@@ -58,7 +53,7 @@ export default function Editor(props) {
       {editorReady && (
         <>
           <DayRating rating={dayRecord.day_rating} />
-          <SaveStatusText text={saveStatusText} />
+          <SaveStatus status={saveStatus} />
         </>
       )}
 
@@ -72,7 +67,7 @@ export default function Editor(props) {
         onEditorChange={(content, editor) => {
           if (autoSaver.isEditorDirty()) {
             autoSaver.scheduleSave();
-            setSaveStatusText("Saving changes...");
+            setSaveStatus();
           }
         }}
         init={{
@@ -120,7 +115,7 @@ export default function Editor(props) {
             "anchor", "autolink", "help", "paste", "print",
             "searchreplace", "wordcount", "preview", "fullscreen",
             "codesample", "hr", "image", "link", "lists",
-            "table", "emoticons", "media"
+            "table", "emoticons", "media", "textpattern"
           ],
 
           setup: (editor) => {
@@ -131,6 +126,20 @@ export default function Editor(props) {
             editor.ui.registry.addButton("timedivider", TIMEDIVIDER_BUTTON(editor, dayjs));
             editor.ui.registry.addMenuItem("exporthtml", EXPORTHTML_BUTTON(editor, dayRecord));
           },
+
+          textpattern_patterns: [
+            { start: "*", end: "*", format: "italic" },
+            { start: "**", end: "**", format: "bold" },
+
+            { start: "h1.", format: "h1" },
+            { start: "h2. ", format: "h2" },
+            { start: "h3. ", format: "h3" },
+
+            { start: "1. ", cmd: "InsertOrderedList" },
+            { start: "- ", cmd: "InsertUnorderedList" },
+
+            { start: "---", replacement: "<hr/>" }
+          ],
 
           menu: {
             font: {

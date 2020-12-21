@@ -84,7 +84,7 @@ export default function App() {
       )}
 
       <ToastContainer
-        // hideProgressBar={true}
+        hideProgressBar={true}
         position="bottom-right"
         autoClose={10000}
         newestOnTop

@@ -1,6 +1,4 @@
 import { WHITE } from "../../themes/diarium-theme";
-import { selectedDayAtom } from "../../atoms";
-import { useSetRecoilState } from "recoil";
 import Calendar from "./calendar";
 import Loadingbar from "../common/loadingbar";
 import MetaData from "./meta-data";
@@ -9,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import TagEditor from "./tag-editor";
 import dayjs from "dayjs";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 
 const StyledSidebar = styled.aside`
   position: relative;
@@ -18,6 +17,8 @@ const StyledSidebar = styled.aside`
   max-height: 100%;
   box-sizing: border-box;
   background-color: #20232a;
+  border-right: 1px solid #191919;
+  z-index: 1;
 `;
 const Today = styled.div`
   color: ${WHITE};
@@ -33,7 +34,7 @@ const Today = styled.div`
 
 export default function Sidebar() {
   const [dateToday, setDateToday] = useState(dayjs());
-  const setSelectedDay = useSetRecoilState(selectedDayAtom);
+  const history = useHistory();
 
   useEffect(() => {
     // run "today updater" each minute
@@ -55,7 +56,7 @@ export default function Sidebar() {
 
   return (
     <StyledSidebar>
-      <Today onClick={() => setSelectedDay(new Date())}>
+      <Today onClick={() => history.push(dayjs().format("/YYYY/MM/DD"), { updateCalendar: true })}>
         {dayjs(dateToday).format("dddd, D. MMMM YYYY")}
       </Today>
 
