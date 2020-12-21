@@ -107,8 +107,12 @@ export default function Calendar() {
         history.push(date);
       }}
 
-      // NAVIGATION + "ActiveStartDate" change. For whatever reason...
-      onActiveStartDateChange={({ activeStartDate, view }) => {
+      // NAVIGATION and "ActiveStartDate" change
+      onActiveStartDateChange={({ activeStartDate, value, view }) => {
+        // value = new selected date
+        if (dayjs(activeStartDate).isSame(value, "month")) return;
+
+        // select "today" instead of first day of month if possible
         const date = dayjs().isSame(activeStartDate, "month") ? new Date() : activeStartDate;
         history.push(dayjs(date).format("/YYYY/MM/DD"));
       }}
