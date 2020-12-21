@@ -28,6 +28,7 @@ export default function Calendar() {
   const [fetchedEntries, setFetchedEntries] = useState(null);
   const [fetchedHolidays, setFetchedHolidays] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
+  const [calendarView, setCalendarView] = useState("month");
 
   const prevSelectedDay = usePrevious(selectedDay);
   const location = useLocation();
@@ -42,9 +43,10 @@ export default function Calendar() {
       history.replace(date.format("/YYYY/MM/DD"));
     }
 
-    // force trigger calendar refresh
+    // force trigger calendar refresh/reset
     if (location.state?.updateCalendar) {
       date = date.add(1, "ms");
+      setCalendarView("month");
     }
 
     setSelectedDay(date.toDate());
@@ -103,6 +105,7 @@ export default function Calendar() {
       minDate={!readMode ? dayjs(selectedDay).toDate() : null}
       maxDate={!readMode ? dayjs(selectedDay).toDate() : null}
       tileDisabled={() => !readMode}
+      view={calendarView}
 
       // VALUE CHANGED (day selected)
       onChange={newDate => {
@@ -120,9 +123,13 @@ export default function Calendar() {
         history.push(dayjs(date).format("/YYYY/MM/DD"));
       }}
 
-      // onClickDay={(...args) => console.log("onClickDay", ...args)}
-      // onClickMonth={(...args) => console.log("onClickMonth", ...args)}
-      // onClickYear={(...args) => console.log("onClickYear", ...args)}
+      onDrillUp={({ activeStartDate, view }) => {
+        setCalendarView(view);
+      }}
+
+      onDrillDown={({ activeStartDate, view }) => {
+        setCalendarView(view);
+      }}
 
       tileClassName={({ activeStartDate, date, view }) => {
         if (view !== "month") return false;

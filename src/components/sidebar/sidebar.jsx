@@ -56,7 +56,7 @@ export default function Sidebar() {
 
   return (
     <StyledSidebar>
-      <Today onClick={() => history.push(dayjs().format("/YYYY/MM/DD"))}>
+      <Today onClick={() => history.push(dayjs().format("/YYYY/MM/DD"), { updateCalendar: true })}>
         {dayjs(dateToday).format("dddd, D. MMMM YYYY")}
       </Today>
 
