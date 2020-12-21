@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useLocation, useHistory } from "react-router-dom";
@@ -15,5 +14,5 @@ export default function useSelectedDay() {
     history.replace(selectedDay.format("/YYYY/MM/DD"));
   }
 
-  return useRef(selectedDay.format("/YYYY/MM/DD"));
+  return selectedDay.toDate();
 }
