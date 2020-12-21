@@ -1,14 +1,13 @@
 import "../../themes/calendar-eros.scss";
 import "react-calendar/dist/Calendar.css";
 import { Calendar as ReactCalendar } from "react-calendar";
-import { Redirect, useHistory, useLocation } from "react-router-dom";
-import { dayRecordAtom, readModeAtom, selectedDayAtom, showHeatmapAtom } from "../../atoms";
+import { useHistory, useLocation } from "react-router-dom";
+import { dayRecordAtom, readModeAtom, showHeatmapAtom } from "../../atoms";
 import { fetchHolidays } from "../../lib/external";
 import { getRecordForDay, getRecordsInRange } from "../../backend/getters";
 import { useRecoilState, useRecoilValue } from "recoil";
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
 import styled from "styled-components";
 import usePrevious from "../../hooks/usePrevious";
 import { isDayRecordReady } from "../../lib/utils";
@@ -22,7 +21,6 @@ const StyledCalendar = styled(ReactCalendar)`
 export default function Calendar() {
   const readMode = useRecoilValue(readModeAtom);
   const showHeatmap = useRecoilValue(showHeatmapAtom);
-  // const [selectedDay, setSelectedDay] = useRecoilState(selectedDayAtom);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const [fetchedEntries, setFetchedEntries] = useState(null);
   const [fetchedHolidays, setFetchedHolidays] = useState(null);
@@ -34,10 +32,20 @@ export default function Calendar() {
   const [addLoader, removeLoader] = useLoadingBar();
 
   useEffect(() => {
-    console.log("sync");
-    const date = dayjs(location.pathname, "YYYY/MM/DD");
-    setSelectedDay(date.isValid() ? date.toDate() : new Date());
-  }, [location, setSelectedDay]);
+    let date = dayjs(location.pathname, "YYYY/MM/DD");
+
+    if (!date.isValid()) {
+      date = dayjs(); // if invalid, use today's date
+      history.replace(date.format("YYYY/MM/DD"));
+    }
+
+    // force trigger calendar refresh
+    if (location.state?.updateCalendar) {
+      date = date.add(1, "ms");
+    }
+
+    setSelectedDay(date.toDate());
+  }, [history, location, setSelectedDay]);
 
   // DATA FOR SELECTED DAY
   useEffect(() => {
@@ -87,7 +95,7 @@ export default function Calendar() {
       className={["calendar-dark-theme", showHeatmap ? "day-rating-enabled" : ""]}
       key="diarium_calendar_key"
       value={selectedDay}
-      // activeStartDate={selectedDay}
+      activeStartDate={selectedDay}
       minDetail={!readMode ? "month" : "decade"}
       minDate={!readMode ? dayjs(selectedDay).toDate() : null}
       maxDate={!readMode ? dayjs(selectedDay).toDate() : null}
@@ -96,16 +104,13 @@ export default function Calendar() {
       // VALUE CHANGED (day selected)
       onChange={newDate => {
         const date = dayjs(newDate).format("/YYYY/MM/DD");
-        console.log("onChange pushing", date);
         history.push(date);
       }}
 
       // NAVIGATION + "ActiveStartDate" change. For whatever reason...
       onActiveStartDateChange={({ activeStartDate, view }) => {
         const date = dayjs().isSame(activeStartDate, "month") ? new Date() : activeStartDate;
-        const temp = dayjs(date).format("/YYYY/MM/DD");
-        console.log("onActiveStartDateChange pushing", temp);
-        history.push(temp);
+        history.push(dayjs(date).format("/YYYY/MM/DD"));
       }}
 
       // onClickDay={(...args) => console.log("onClickDay", ...args)}
