@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import TagEditor from "./tag-editor";
 import dayjs from "dayjs";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 
 const StyledSidebar = styled.aside`
   position: relative;
@@ -35,7 +36,7 @@ const Today = styled.div`
 
 export default function Sidebar() {
   const [dateToday, setDateToday] = useState(dayjs());
-  const setSelectedDay = useSetRecoilState(selectedDayAtom);
+  const history = useHistory();
 
   useEffect(() => {
     // run "today updater" each minute
@@ -57,7 +58,7 @@ export default function Sidebar() {
 
   return (
     <StyledSidebar>
-      <Today onClick={() => setSelectedDay(new Date())}>
+      <Today onClick={() => history.push(dayjs().format("/YYYY/MM/DD"))}>
         {dayjs(dateToday).format("dddd, D. MMMM YYYY")}
       </Today>
 
