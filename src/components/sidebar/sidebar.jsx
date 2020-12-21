@@ -1,6 +1,4 @@
 import { WHITE } from "../../themes/diarium-theme";
-import { selectedDayAtom } from "../../atoms";
-import { useSetRecoilState } from "recoil";
 import Calendar from "./calendar";
 import Loadingbar from "../common/loadingbar";
 import MetaData from "./meta-data";
