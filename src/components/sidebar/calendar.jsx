@@ -12,6 +12,9 @@ import styled from "styled-components";
 import usePrevious from "../../hooks/usePrevious";
 import { isDayRecordReady } from "../../lib/utils";
 import useLoadingBar from "../../hooks/useLoadingBar";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 const StyledCalendar = styled(ReactCalendar)`
   border-bottom: 1px solid #191919;
@@ -32,11 +35,11 @@ export default function Calendar() {
   const [addLoader, removeLoader] = useLoadingBar();
 
   useEffect(() => {
-    let date = dayjs(location.pathname, "YYYY/MM/DD");
+    let date = dayjs(location.pathname, "/YYYY/MM/DD", true);
 
     if (!date.isValid()) {
       date = dayjs(); // if invalid, use today's date
-      history.replace(date.format("YYYY/MM/DD"));
+      history.replace(date.format("/YYYY/MM/DD"));
     }
 
     // force trigger calendar refresh
