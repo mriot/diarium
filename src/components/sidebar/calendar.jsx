@@ -1,13 +1,14 @@
 import "../../themes/calendar-eros.scss";
 import "react-calendar/dist/Calendar.css";
 import { Calendar as ReactCalendar } from "react-calendar";
-import { Redirect, useLocation } from "react-router-dom";
+import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { dayRecordAtom, readModeAtom, selectedDayAtom, showHeatmapAtom } from "../../atoms";
 import { fetchHolidays } from "../../lib/external";
 import { getRecordForDay, getRecordsInRange } from "../../backend/getters";
 import { useRecoilState, useRecoilValue } from "recoil";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import styled from "styled-components";
 import usePrevious from "../../hooks/usePrevious";
 import { isDayRecordReady } from "../../lib/utils";
@@ -21,20 +22,24 @@ const StyledCalendar = styled(ReactCalendar)`
 export default function Calendar() {
   const readMode = useRecoilValue(readModeAtom);
   const showHeatmap = useRecoilValue(showHeatmapAtom);
-  const [selectedDay, setSelectedDay] = useRecoilState(selectedDayAtom);
+  // const [selectedDay, setSelectedDay] = useRecoilState(selectedDayAtom);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const [fetchedEntries, setFetchedEntries] = useState(null);
   const [fetchedHolidays, setFetchedHolidays] = useState(null);
+  const [selectedDay, setSelectedDay] = useState(null);
+
   const prevSelectedDay = usePrevious(selectedDay);
   const location = useLocation();
+  const history = useHistory();
   const [addLoader, removeLoader] = useLoadingBar();
 
   useEffect(() => {
-    const dateFromUrl = dayjs(location.pathname, "YYYY/MM/DD");
-    setSelectedDay(dateFromUrl.isValid() ? dateFromUrl.toDate() : dayjs().toDate());
-  }, [setSelectedDay, location]);
+    console.log("sync");
+    const date = dayjs(location.pathname, "YYYY/MM/DD");
+    setSelectedDay(date.isValid() ? date.toDate() : new Date());
+  }, [location, setSelectedDay]);
 
-  // SELECTED DAY
+  // DATA FOR SELECTED DAY
   useEffect(() => {
     if (!selectedDay) return;
     if (dayjs(selectedDay).isSame(prevSelectedDay)) return;
