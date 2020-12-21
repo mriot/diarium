@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import ProgressBar from "../common/progressbar";
-import { countAllEntries, countRecordsInRange } from "../../backend/counters";
+import { count, countAllEntries, countRecordsInRange } from "../../backend/counters";
 import { useRecoilValue } from "recoil";
 import { dayRecordAtom, selectedDayAtom } from "../../atoms";
 import dayjs from "dayjs";
 import isLeapYear from "dayjs/plugin/isLeapYear";
+import { toast } from "react-toastify";
+import usePrevious from "../../hooks/usePrevious";
+import { isEmptyObject } from "../../lib/utils";
 
 const ProgressContainer = styled.div`
   padding: 0 0 5px 5px;
@@ -34,50 +37,54 @@ export default function Progress() {
   const [progressMonth, setProgressMonth] = useState({ count: 0, percent: 0 });
   const [progressYear, setProgressYear] = useState({ count: 0, percent: 0 });
   const [progressTotal, setProgressTotal] = useState(0);
+  const prevSelectedDay = usePrevious(selectedDay);
 
   dayjs.extend(isLeapYear);
 
+  // 1x bei allem
+  // 2x beim Löschen
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await countAllEntries();
-        setProgressTotal(response.data.all_records);
-      } catch (error) {
-        console.error(error);
-      }
-    })();
+    if (!dayRecord) return;
+
+    // console.log(dayRecord);
   }, [dayRecord]);
 
+  // 2x bei init
+  // 2x bei wechsel
+  // 0x beim erstellen
+  // 1x beim löschen
   useEffect(() => {
-    if (!selectedDay || !dayjs(selectedDay).isValid()) return;
+    if (!selectedDay) return;
+
+    // console.log(dayjs(selectedDay).format("YYYY-MM-DD"));
+  }, [selectedDay]);
+
+  useEffect(() => {
+    if (!dayRecord || !selectedDay) return;
+    // console.log("progress");
+
+    const date = dayjs(selectedDay);
 
     (async () => {
-      try {
-        const yearResponse = await countRecordsInRange(
-          dayjs(selectedDay).startOf("year").format("YYYY-MM-DD"),
-          dayjs(selectedDay).add(1, "year").startOf("year").format("YYYY-MM-DD")
-        );
-        const monthResponse = await countRecordsInRange(
-          dayjs(selectedDay).startOf("month").format("YYYY-MM-DD"),
-          dayjs(selectedDay).add(1, "month").startOf("month").format("YYYY-MM-DD")
-        );
+      const response = await count(date.format("YYYY/MM"));
+      const { data } = response;
 
-        const yearRecs = yearResponse.data.records_in_range;
-        const monthRecs = monthResponse.data.records_in_range;
-
-        setProgressYear({
-          count: yearRecs,
-          percent: ((yearRecs / (dayjs(selectedDay).isLeapYear() ? 366 : 365)) * 100).toFixed(2)
-        });
-        setProgressMonth({
-          count: monthRecs,
-          percent: ((monthRecs / dayjs(selectedDay).daysInMonth()) * 100).toFixed(2)
-        });
-      } catch (error) {
-        console.error(error);
+      if (response.status !== 200) {
+        toast.error("Could not check progress!");
+        return;
       }
+
+      setProgressTotal(data.total);
+      setProgressYear({
+        count: data.year,
+        percent: ((data.year / (date.isLeapYear() ? 366 : 365)) * 100).toFixed(2)
+      });
+      setProgressMonth({
+        count: data.month,
+        percent: ((data.month / date.daysInMonth()) * 100).toFixed(2)
+      });
     })();
-  }, [selectedDay]);
+  }, [selectedDay, dayRecord, prevSelectedDay]);
 
   return (
     <ProgressContainer>
