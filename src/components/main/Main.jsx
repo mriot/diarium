@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { readModeAtom } from "../../atoms";
+import { dayRecordAtom, readModeAtom } from "../../atoms";
 import Content from "./Content";
 import Editor from "./editor/Editor";
 import { useHotkeys } from "react-hotkeys-hook";
+import { isEmptyObject } from "../../lib/utils";
 
 const MainView = styled.div`
   display: flex;
@@ -22,10 +23,11 @@ const MainView = styled.div`
 
 export default function Main() {
   const [readMode, setReadMode] = useRecoilState(readModeAtom);
+  const dayRecord = useRecoilValue(dayRecordAtom);
 
   useHotkeys("e", () => {
-    if (readMode) setReadMode(false);
-  });
+    if (readMode && !isEmptyObject(dayRecord)) setReadMode(false);
+  }, [dayRecord, readMode]);
 
   return (
     <MainView>
