@@ -10,6 +10,7 @@ import { updateExistingEntryById } from "../../../backend/recordManipulation";
 import SaveStatus from "./SaveStatus";
 import DayRating from "./DayRating";
 import dayjs from "dayjs";
+import useLoadingBar from "../../../hooks/useLoadingBar";
 
 const EditorRoot = styled.div`
   width: 100%;
@@ -23,6 +24,11 @@ export default function Editor(props) {
   const [saveStatus, setSaveStatus] = useState({ time: dayRecord?.updated_at });
   const [editorReady, setEditorReady] = useState(false);
   const setSharedAutoSaver = useSetRecoilState(sharedAutoSaverAtom);
+  const [addLoader, removeLoader] = useLoadingBar();
+
+  useEffect(() => {
+    if (!editorReady) addLoader();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const autoSaver = useMemo(() => {
     return new AutoSave(editorState, async (content) => {
@@ -62,6 +68,7 @@ export default function Editor(props) {
         onInit={() => {
           // hack to prevent error in tinymce
           setTimeout(() => setEditorReady(true));
+          removeLoader();
         }}
         initialValue={dayRecord?.content}
         onEditorChange={(content, editor) => {
