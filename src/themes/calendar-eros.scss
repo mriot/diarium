@@ -104,14 +104,18 @@
 
     // selected
     &--active {
+      font-weight: bold;
       background-color: #3C3F47 !important;
     }
     
     // tile that holds current day (aka today)
     &--now {
       z-index: 1;
-      outline: 1px dashed #929292;
       background-color: #262931;
+
+      > abbr {
+        border-bottom: 2px solid;
+      }
     }
 
     // tile that holds selected day
