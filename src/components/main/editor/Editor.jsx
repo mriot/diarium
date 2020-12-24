@@ -135,8 +135,7 @@ export default function Editor(props) {
           },
 
           textpattern_patterns: [
-            { start: "*", end: "*", format: "italic" },
-            { start: "**", end: "**", format: "bold" },
+            { start: "```", end: "```", format: "code" },
 
             { start: "h1.", format: "h1" },
             { start: "h2. ", format: "h2" },
