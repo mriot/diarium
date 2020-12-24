@@ -3,17 +3,16 @@ import { dayRecordAtom, readModeAtom } from "../atoms";
 import { deleteEntryById } from "../backend/recordManipulation";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import useSelectedDay from "./useSelectedDay";
 
 export default function useDeleteEntry() {
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const setReadMode = useSetRecoilState(readModeAtom);
   const history = useHistory();
-  const location = useLocation();
+  const selectedDay = dayjs(useSelectedDay());
 
   return async () => {
-    const selectedDay = dayjs(location.pathname, "YYYY/MM/DD");
-
     if (prompt(
       "Bist du dir sicher, dass du den Eintrag vom " +
       `${selectedDay.format("dd, DD.MM.YYYY")} löschen möchtest? 😐\n` +
