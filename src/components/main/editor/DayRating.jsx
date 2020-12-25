@@ -1,12 +1,13 @@
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import { useState } from "react/cjs/react.development";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { dayRecordAtom, showHeatmapAtom } from "../../../atoms";
 import { updateExistingEntryById } from "../../../backend/recordManipulation";
-import { isDayRecordReady, isEmptyObject } from "../../../lib/utils";
+import useOutsideClick from "../../../hooks/useOutsideClick";
+import { isDayRecordReady } from "../../../lib/utils";
 
 const StyledDayRating = styled.div`
  && {
@@ -34,8 +35,27 @@ const ColorPicker = styled.div`
     top: 100%;
     left: 0;
     padding: 5px;
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(34,47,62,.1);
+  }
+`;
 
-    .tox-swatch:hover {
+const ColorTile = styled.div`
+  && {
+    width: 30px;
+    height: 30px;
+    color: transparent;
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    transition: all 150ms;
+
+    ${props => props.active ? "&" : "&:hover"} {
+      color: #fff;
       transform: none;
       box-shadow: inset 0 0 0 3px #fff !important;
     }
@@ -59,6 +79,10 @@ export default function DayRating(props) {
   const [rating, setRating] = useState(props.rating ?? null);
   const [dayRecord, setDayRecord] = useRecoilState(dayRecordAtom);
   const setShowHeatmap = useSetRecoilState(showHeatmapAtom);
+  const pickerRef = useRef(null);
+  useOutsideClick(pickerRef, (event) => {
+    if (isMenuOpen) setIsMenuOpen(false);
+  });
 
   useEffect(() => {
     setShowHeatmap(isMenuOpen);
@@ -70,42 +94,37 @@ export default function DayRating(props) {
 
   return (
     NODE && ReactDOM.createPortal(
-      <StyledDayRating className="tox-mbtn" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+      <StyledDayRating
+        ref={isMenuOpen ? pickerRef : null}
+        className="tox-mbtn"
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+      >
         Day Rating
         <ColorPreview color={COLORS[rating]?.color ?? "#fff"} />
-
         {isMenuOpen && (
-          <ColorPicker className="tox-menu tox-swatches-menu">
-            <div className="tox-swatches__row">
-              {COLORS.map((item, index) =>
-                <div
-                  key={index}
-                  title={item.title}
-                  data-mce-color={item.color}
-                  role="menuitemcheckbox"
-                  aria-haspopup="false"
-                  tabIndex="-1"
-                  className="tox-swatch"
-                  aria-disabled="false"
-                  aria-checked="false"
-                  style={{ backgroundColor: item.color }}
-                  onClick={async () => {
-                    if (index !== rating && isDayRecordReady(dayRecord)) {
-                      setRating(index);
-                      const response = await updateExistingEntryById(dayRecord.entry_id, {
-                        rating: index
-                      });
+          <ColorPicker>
+            {COLORS.map((item, index) =>
+              <ColorTile
+                key={index}
+                title={item.title}
+                style={{ backgroundColor: item.color }}
+                active={index === rating}
+                onClick={(event) => {
+                  event.stopPropagation();
 
-                      if (response.status === 200) {
-                        setDayRecord(response.data);
-                      } else {
-                        alert("Error " + response.status);
-                      }
-                    }
-                  }}
-                />
-              )}
-            </div>
+                  if (index !== rating && isDayRecordReady(dayRecord)) {
+                    setRating(index);
+                    updateExistingEntryById(dayRecord.entry_id, {
+                      rating: index
+                    }).then(res => {
+                      setDayRecord(res.data);
+                    }).catch(err => alert(err));
+                  }
+                }}
+              >
+                {index}
+              </ColorTile>
+            )}
           </ColorPicker>
         )}
       </StyledDayRating>,
