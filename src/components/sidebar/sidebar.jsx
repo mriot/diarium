@@ -39,16 +39,16 @@ export default function Sidebar() {
   useEffect(() => {
     // run "today updater" each minute
     setInterval(() => {
-      if (dayjs(dateToday).diff(dayjs(), "days") > 0) {
-        console.log("'todaysDate' is one day behind — updating...");
+      if (!dayjs().isSame(dateToday, "day")) {
+        console.log("'today' is behind — updating...");
         setDateToday(dayjs());
       }
     }, 1000 * 60); // 1 min
 
     // check date after user inactivity ended
     document.addEventListener("visibilitychange", () => {
-      if (!document.hidden && dayjs(dateToday).diff(dayjs(), "days") > 0) {
-        console.log("'todaysDate' is one day behind — updating...");
+      if (!document.hidden && !dayjs().isSame(dateToday, "day")) {
+        console.log("'today' is behind — updating...");
         setDateToday(dayjs());
       }
     });
