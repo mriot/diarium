@@ -8,7 +8,7 @@ import { isEmptyObject } from "../../lib/utils";
 
 export default function Content() {
   const dayRecord = useRecoilValue(dayRecordAtom);
-  const [content, setContent] = useState("You should never see this.");
+  const [content, setContent] = useState("");
   let nodeRef = null;
 
   useEffect(() => {

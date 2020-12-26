@@ -163,7 +163,7 @@ export default function Calendar() {
            * this may change in the future
            * problem is the reduced opacity for neighboring months which falsifies the colors
           */
-        if (tileMatchingEntry.day_rating && dayjs(selectedDay).month() === dayjs(date).month()) {
+        if (typeof tileMatchingEntry.day_rating === "number" && dayjs(selectedDay).month() === dayjs(date).month()) {
           tileClassNames.push(`day-rating-${tileMatchingEntry.day_rating}`);
         }
 
