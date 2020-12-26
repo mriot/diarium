@@ -10,6 +10,7 @@ import isLeapYear from "dayjs/plugin/isLeapYear";
 import { toast } from "react-toastify";
 import usePrevious from "../../hooks/usePrevious";
 import useSelectedDay from "../../hooks/useSelectedDay";
+import useChangeDetector from "../../hooks/useChangeDetector";
 
 const ProgressContainer = styled.div`
   padding: 0 0 5px 5px;
@@ -37,12 +38,20 @@ export default function Progress() {
   const [progressYear, setProgressYear] = useState({ count: 0, percent: 0 });
   const [progressTotal, setProgressTotal] = useState(0);
   const selectedDay = useSelectedDay();
+  const prevSelectedDay = usePrevious(selectedDay);
   const prevDayRecord = usePrevious(dayRecord);
+  // const change = useChangeDetector({ selectedDay: true, both: true, dayRecord: { created: true } });
+
+  // useEffect(() => {
+  //   if (change) console.log(change);
+  // }, [change]);
 
   dayjs.extend(isLeapYear);
 
   useEffect(() => {
-    if (!dayRecord || dayRecord === prevDayRecord) return;
+    // if (!dayRecord || dayRecord === prevDayRecord) return;
+    if (!selectedDay || dayjs(selectedDay).isSame(prevSelectedDay)) return;
+    console.log("udpate");
 
     const date = dayjs(selectedDay);
 
@@ -65,7 +74,7 @@ export default function Progress() {
         percent: ((data.month / date.daysInMonth()) * 100).toFixed(2)
       });
     })();
-  }, [selectedDay, dayRecord, prevDayRecord]);
+  }, [prevSelectedDay, selectedDay]);
 
   return (
     <ProgressContainer>
