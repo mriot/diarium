@@ -11,6 +11,7 @@ import SaveStatus from "./SaveStatus";
 import DayRating from "./DayRating";
 import dayjs from "dayjs";
 import useLoadingBar from "../../../hooks/useLoadingBar";
+import axios from "axios";
 
 const EditorRoot = styled.div`
   width: 100%;
@@ -95,6 +96,7 @@ export default function Editor(props) {
           browser_spellcheck: true,
           custom_undo_redo_levels: 50,
           toolbar_mode: "sliding",
+          image_title: true,
           auto_focus: true,
           emoticons_append: CUSTOM_EMOJIS(),
           content_style: `
@@ -133,6 +135,45 @@ export default function Editor(props) {
             editor.ui.registry.addButton("timedivider", TIMEDIVIDER_BUTTON(editor, dayjs));
             editor.ui.registry.addMenuItem("exporthtml", EXPORTHTML_BUTTON(editor, dayRecord));
           },
+
+          file_picker_callback: (callback, value, meta) => {
+            const input = document.createElement("input");
+            input.setAttribute("type", "file");
+            input.setAttribute("name", "file");
+            input.click();
+
+            console.log({ value }, { meta });
+
+            input.onchange = (event) => {
+              const fileList = event.target.files;
+
+              if (fileList.length > 0) {
+                const file = fileList[0];
+                // console.log(file);
+
+                const data = new FormData();
+                data.append("file", input.files[0]);
+
+                axios.post("http://localhost:5000/api/entries/uploads/2020/12/01", data)
+                  .then(res => {
+                    console.log(res);
+                    callback(res.data.path, {
+                      title: file.name,
+                      width: "100px",
+                      height: "100px"
+                    });
+                  });
+
+                const reader = new FileReader();
+                reader.onload = event => {
+                  // console.log("reader", event.target.result);
+                };
+                reader.readAsDataURL(file);
+              }
+            };
+          },
+
+          file_picker_types: "file image media",
 
           textpattern_patterns: [
             { start: "```", end: "```", format: "code" },
