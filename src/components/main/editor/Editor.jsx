@@ -97,6 +97,7 @@ export default function Editor(props) {
           custom_undo_redo_levels: 50,
           toolbar_mode: "sliding",
           image_title: true,
+          convert_urls: false,
           auto_focus: true,
           emoticons_append: CUSTOM_EMOJIS(),
           content_style: `
