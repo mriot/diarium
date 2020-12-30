@@ -11,8 +11,8 @@ import SaveStatus from "./SaveStatus";
 import DayRating from "./DayRating";
 import dayjs from "dayjs";
 import useLoadingBar from "../../../hooks/useLoadingBar";
-import axios from "axios";
 import { toast } from "react-toastify";
+import { uploadFile } from "../../../backend/upload";
 
 const EditorRoot = styled.div`
   width: 100%;
@@ -97,7 +97,6 @@ export default function Editor(props) {
           browser_spellcheck: true,
           custom_undo_redo_levels: 50,
           toolbar_mode: "sliding",
-          // image_title: true,
           convert_urls: false,
           auto_focus: true,
           emoticons_append: CUSTOM_EMOJIS(),
@@ -145,45 +144,42 @@ export default function Editor(props) {
             input.setAttribute("type", "file");
             input.click();
 
-            // console.log({ value }, { meta });
-
-            // fired when image selected
-            input.onchange = (event) => {
+            // fired when file selected
+            input.onchange = async (event) => {
               const fileList = event.target.files;
 
               if (fileList.length <= 0) return;
 
               const file = fileList[0];
-              // console.log(file);
+              const { type, name } = file;
 
-              // upload file
-              (async () => {
-                const data = new FormData();
-                data.append("file", input.files[0]);
-                const date = dayjs(dayRecord.assigned_day).format("YYYY/MM/DD");
-                const response = await axios.post(`/api/entries/uploads/${date}`, data);
+              if (type.split("/")[0] !== "image") {
+                return toast.error(`Files of type ${type} are not supported yet.`);
+              }
 
-                if (response.status !== 200) {
-                  console.log(response);
-                  return toast.error("Could not upload file");
-                }
+              const data = new FormData();
+              data.append("file", input.files[0]);
+              const response = await uploadFile(dayRecord.assigned_day, data);
 
-                // read file locally to extract meta data
-                const reader = new FileReader();
-                reader.onload = event => {
-                  // console.log("reader", event.target.result);
-                  const image = new Image();
-                  image.src = event.target.result;
-                  image.onload = (event) => {
-                    console.log("loaded", image.naturalWidth, image.naturalHeight);
-                    callback(response.data.path, {
-                      width: image.naturalWidth + "px",
-                      height: image.naturalHeight + "px"
-                    });
-                  };
+              if (response.status !== 200) {
+                console.log(response);
+                return toast.error("Could not upload file");
+              }
+
+              // read file locally to extract meta data
+              const reader = new FileReader();
+              reader.onload = event => {
+                const image = new Image();
+                image.src = event.target.result;
+                image.onload = (event) => {
+                  callback(response.data.path, {
+                    alt: name,
+                    width: image.naturalWidth + "px",
+                    height: image.naturalHeight + "px"
+                  });
                 };
-                reader.readAsDataURL(file);
-              })();
+              };
+              reader.readAsDataURL(file);
             };
           },
 
