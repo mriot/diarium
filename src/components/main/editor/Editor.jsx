@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import useLoadingBar from "../../../hooks/useLoadingBar";
 import { toast } from "react-toastify";
 import { uploadFile } from "../../../backend/upload";
+import "../../../themes/tinymce/skin.css";
 
 const EditorRoot = styled.div`
   width: 100%;
@@ -80,13 +81,8 @@ export default function Editor(props) {
           }
         }}
         init={{
-          // ! settings for local skin file
-          // skin: false,
-          // skin_url: "LOREM",
-          // content_css: "dark",
-
-          skin: "oxide",
-          // content_css: "dark",
+          skin: false, // skin css is imported above
+          content_css: ["/tinymce/content.css", "/tinymce/custom.css"], // resolves to "public/..."
           height: "100%",
           width: "100%",
           resize: false,
@@ -100,26 +96,6 @@ export default function Editor(props) {
           convert_urls: false,
           auto_focus: true,
           emoticons_append: CUSTOM_EMOJIS(),
-          content_style: `
-            .mce-time-separator {
-              display: flex;
-              align-items: center;
-              text-align: center;
-              font-size: 24px;
-              font-weight: bold;
-            }
-            .mce-time-separator::before, .mce-time-separator::after {
-                content: '';
-                flex: 1;
-                border-bottom: 1px solid #000;
-            }
-            .mce-time-separator::before {
-                margin-right: .25em;
-            }
-            .mce-time-separator::after {
-                margin-left: .25em;
-            }
-          `,
 
           plugins: [
             "anchor", "autolink", "help", "paste", "print",

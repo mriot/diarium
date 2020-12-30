@@ -1,0 +1,23 @@
+/* additional styles for tinymce that originally lived in 'content_css' */
+
+.mce-time-separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.mce-time-separator::before, .mce-time-separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #000;
+}
+
+.mce-time-separator::before {
+  margin-right: .25em;
+}
+
+.mce-time-separator::after {
+  margin-left: .25em;
+}
