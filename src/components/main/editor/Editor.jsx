@@ -12,6 +12,7 @@ import DayRating from "./DayRating";
 import dayjs from "dayjs";
 import useLoadingBar from "../../../hooks/useLoadingBar";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const EditorRoot = styled.div`
   width: 100%;
@@ -96,7 +97,7 @@ export default function Editor(props) {
           browser_spellcheck: true,
           custom_undo_redo_levels: 50,
           toolbar_mode: "sliding",
-          image_title: true,
+          // image_title: true,
           convert_urls: false,
           auto_focus: true,
           emoticons_append: CUSTOM_EMOJIS(),
@@ -138,39 +139,51 @@ export default function Editor(props) {
           },
 
           file_picker_callback: (callback, value, meta) => {
+            if (!dayRecord) return;
+
             const input = document.createElement("input");
             input.setAttribute("type", "file");
-            input.setAttribute("name", "file");
             input.click();
 
-            console.log({ value }, { meta });
+            // console.log({ value }, { meta });
 
+            // fired when image selected
             input.onchange = (event) => {
               const fileList = event.target.files;
 
-              if (fileList.length > 0) {
-                const file = fileList[0];
-                // console.log(file);
+              if (fileList.length <= 0) return;
 
+              const file = fileList[0];
+              // console.log(file);
+
+              // upload file
+              (async () => {
                 const data = new FormData();
                 data.append("file", input.files[0]);
+                const date = dayjs(dayRecord.assigned_day).format("YYYY/MM/DD");
+                const response = await axios.post(`/api/entries/uploads/${date}`, data);
 
-                axios.post("http://localhost:5000/api/entries/uploads/2020/12/01", data)
-                  .then(res => {
-                    console.log(res);
-                    callback(res.data.path, {
-                      title: file.name,
-                      width: "100px",
-                      height: "100px"
-                    });
-                  });
+                if (response.status !== 200) {
+                  console.log(response);
+                  return toast.error("Could not upload file");
+                }
 
+                // read file locally to extract meta data
                 const reader = new FileReader();
                 reader.onload = event => {
                   // console.log("reader", event.target.result);
+                  const image = new Image();
+                  image.src = event.target.result;
+                  image.onload = (event) => {
+                    console.log("loaded", image.naturalWidth, image.naturalHeight);
+                    callback(response.data.path, {
+                      width: image.naturalWidth + "px",
+                      height: image.naturalHeight + "px"
+                    });
+                  };
                 };
                 reader.readAsDataURL(file);
-              }
+              })();
             };
           },
 
