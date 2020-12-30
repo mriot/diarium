@@ -25,7 +25,7 @@ const StyledSaveStatus = styled.div`
 export default function SaveStatus(props) {
   const TARGET_NODE = document.querySelector(".tox-menubar");
 
-  console.log(props.status);
+  // console.log(props.status);
 
   const displayText = () => {
     const { status } = props;
