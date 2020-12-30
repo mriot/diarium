@@ -40,9 +40,9 @@ export default function SaveStatus(props) {
       if (dayjs().diff(saveTime, "hour") < 1) {
         return "Gespeichert " + saveTime.fromNow();
       } else if (dayjs().diff(saveTime, "day") < 1) {
-        return "Gespeichert heute um " + saveTime.format("HH:mm:ss") + " Uhr";
+        return "Gespeichert heute um " + saveTime.format("HH:mm") + " Uhr";
       } else {
-        return "Gespeichert am " + saveTime.format("dd, DD.MM.YYYY HH:mm:ss") + " Uhr";
+        return "Gespeichert am " + saveTime.format("dd, DD.MM.YYYY HH:mm") + " Uhr";
       }
     }
 
